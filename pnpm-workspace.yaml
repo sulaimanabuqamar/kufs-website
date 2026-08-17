@@ -1,0 +1,5 @@
+# sharp needs its native postinstall to run — it is used by the offline asset
+# and hero-frame generation scripts (WebP encoding).
+allowBuilds:
+  sharp: true
+  unrs-resolver: false
