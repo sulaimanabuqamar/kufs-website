@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Same double-chevron mark as src/components/layout/Wordmark.tsx.
+       Swap both together when the real logo arrives. Colours are literals
+       because a favicon cannot resolve CSS custom properties; they mirror
+       --color-bg and --color-accent in src/styles/tokens.css. -->
+  <rect width="32" height="32" rx="6" fill="#0a0b0d"/>
+  <path fill="#ff4d1c" d="M5 6h7.4l7.4 10-7.4 10H5l7.4-10L5 6Z"/>
+  <path fill="#ff4d1c" opacity="0.45" d="M16.2 6h7.4l7.4 10-7.4 10h-7.4l7.4-10-7.4-10Z"/>
+</svg>
