@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Season concept freeze",
+    "date": "2026-05-29",
+    "status": "done",
+    "description": "Target mass, wheelbase, aero philosophy and powertrain architecture locked for the 2027 car. Nothing structural moves after this date without a change request."
+  },
+  {
+    "title": "Chassis design review",
+    "date": "2026-07-18",
+    "status": "done",
+    "description": "Monocoque laminate schedule and impact structure signed off against the IMechE structural equivalency requirements, with two external reviewers from Apex Composites."
+  },
+  {
+    "title": "Monocoque layup",
+    "date": "2026-08-11",
+    "status": "active",
+    "description": "Tooling is cut and the first plies are down. Layup and autoclave cure run through September, with bonded inserts and suspension pickups following."
+  },
+  {
+    "title": "Powertrain dyno sign-off",
+    "date": "2026-11-06",
+    "status": "upcoming",
+    "description": "Full-power dyno pulls with the season's cooling package and final calibration, targeting a repeatable endurance-duty map rather than a peak headline figure."
+  },
+  {
+    "title": "Rolling chassis complete",
+    "date": "2027-03-05",
+    "status": "upcoming",
+    "description": "Suspension, uprights, steering and brakes assembled onto the cured tub. First corner-weighting and full geometry measurement on the setup pads."
+  },
+  {
+    "title": "Shakedown at Blyton Park",
+    "date": "2027-05-14",
+    "status": "upcoming",
+    "description": "First running of the complete car. Two days of systems validation and driver seat time before the summer test programme and scrutineering preparation."
+  }
+]

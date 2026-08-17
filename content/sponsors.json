@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Apex Composites",
+    "tier": "title",
+    "url": "https://example.com/apex-composites",
+    "since": 2023,
+    "blurb": "Apex Composites has been our title partner since 2023. They autoclave-cure our monocoque and both wing assemblies, and their laminate engineers sit in on every structural design review.",
+    "contribution": "Carbon fibre monocoque and aerodynamic surfaces, plus laminate design mentoring.",
+    "logo": {
+      "src": "/sponsors/apex-composites.webp",
+      "width": 480,
+      "height": 160,
+      "alt": "Apex Composites"
+    }
+  },
+  {
+    "name": "Meridian Motorsport",
+    "tier": "gold",
+    "url": "https://example.com/meridian-motorsport",
+    "since": 2024,
+    "blurb": "Meridian supply the damper package and give us two days a season on their seven-post rig — the single biggest step change in our vehicle dynamics programme.",
+    "contribution": "Adjustable dampers, seven-post rig time and suspension setup support.",
+    "logo": {
+      "src": "/sponsors/meridian-motorsport.webp",
+      "width": 480,
+      "height": 160,
+      "alt": "Meridian Motorsport"
+    }
+  },
+  {
+    "name": "Northgate Precision",
+    "tier": "silver",
+    "url": "https://example.com/northgate-precision",
+    "since": 2024,
+    "blurb": "Five-axis machining for our uprights, hubs and steering rack components, turned around inside a fortnight when we need it.",
+    "contribution": "Five-axis CNC machining of suspension and steering components.",
+    "logo": {
+      "src": "/sponsors/northgate-precision.webp",
+      "width": 480,
+      "height": 160,
+      "alt": "Northgate Precision"
+    }
+  },
+  {
+    "name": "Halden Analytics",
+    "tier": "bronze",
+    "url": "https://example.com/halden-analytics",
+    "since": 2025,
+    "blurb": "Halden fund our telemetry hardware and run a data-engineering workshop for the electronics subteam each October.",
+    "contribution": "Telemetry hardware budget and an annual data engineering workshop.",
+    "logo": {
+      "src": "/sponsors/halden-analytics.webp",
+      "width": 480,
+      "height": 160,
+      "alt": "Halden Analytics"
+    }
+  },
+  {
+    "name": "Cartwright Fabrication",
+    "tier": "inkind",
+    "url": "https://example.com/cartwright-fabrication",
+    "since": 2025,
+    "blurb": "TIG welding of the rear subframe and impact structure, donated at cost, with IMechE-compliant weld inspection documentation.",
+    "contribution": "Welding, fabrication and weld inspection sign-off.",
+    "logo": {
+      "src": "/sponsors/cartwright-fabrication.webp",
+      "width": 480,
+      "height": 160,
+      "alt": "Cartwright Fabrication"
+    }
+  }
+]
