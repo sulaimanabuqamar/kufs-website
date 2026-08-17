@@ -1,0 +1,170 @@
+@import "tailwindcss";
+@import "../styles/tokens.css";
+
+/* ==========================================================================
+   Base layer. Nothing here invents a value — every declaration reaches for a
+   token from src/styles/tokens.css.
+   ========================================================================== */
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* The sticky header is 4rem tall; keep in-page anchors clear of it. */
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* One visible focus treatment, everywhere, no exceptions. Ring sits at 3:1
+     against both the control and the page ground (see --color-focus). */
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Only suppress the default ring where we replace it with :focus-visible. */
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-contrast);
+  }
+
+  /* Media never overflows its column. */
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Respect the OS-level motion preference globally, not just in the hero.
+     Individual components still branch on it in JS where the work is more
+     than cosmetic (the scroll sequence never even loads). */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Centred page column, used by every section wrapper. */
+  .page-container {
+    width: 100%;
+    margin-inline: auto;
+    max-width: var(--container-page);
+    padding-inline: var(--spacing-gutter);
+  }
+
+  @media (min-width: 768px) {
+    .page-container {
+      padding-inline: 2rem;
+    }
+  }
+
+  /* ---- Hero geometry ----------------------------------------------------
+     The hero's layout is decided entirely in CSS, not JavaScript, so the
+     correct geometry is in place on first paint and there is no layout shift
+     when the client takes over.
+
+     Default (mobile, and any viewport under reduced-motion): an ordinary
+     one-viewport-tall band. No pinning, no tall scroll track.
+
+     Desktop with motion allowed: the track grows to several viewports and the
+     pane sticks to the top for the duration. `position: sticky` pins without
+     intercepting the scroll — the page keeps scrolling normally and the user
+     always continues past the hero. Nothing here hijacks the wheel, and there
+     is no scroll-jacking fallback path if JavaScript fails. */
+  .hero-track {
+    position: relative;
+    min-height: 100svh;
+  }
+
+  .hero-pane {
+    position: relative;
+    /* One viewport MINUS the 4rem sticky header. The header sits in normal
+       flow above the hero, so a full 100svh pane would push its bottom edge —
+       and the poster band anchored to it — below the fold on mobile. */
+    min-height: calc(100svh - 4rem);
+    overflow: hidden;
+  }
+
+  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+    .hero-track {
+      /* 3.2 viewports of scroll maps to 90 frames — about 28 frames per
+         viewport of travel, which reads as continuous without feeling slow. */
+      height: 320svh;
+      min-height: 0;
+    }
+
+    .hero-pane {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      min-height: 0;
+    }
+  }
+
+  /* Numeric readouts (countdown, stat tiles) must not jitter as digits
+     change width. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+}
+
+@layer utilities {
+  /* Visible only to screen readers until focused — used by the skip link. */
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}

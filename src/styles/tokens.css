@@ -1,0 +1,180 @@
+/* ==========================================================================
+   KUFS design tokens — THE single source of truth for brand values.
+   --------------------------------------------------------------------------
+   Everything visual on this site resolves back to this file. Swapping the
+   team's real palette, type scale or radii is a one-file edit: change the
+   values below and the whole site restyles. Do not hard-code a hex value,
+   font stack, or radius anywhere else in the codebase.
+
+   These live inside Tailwind's `@theme` block, which does two things at once:
+     1. emits every token as a real CSS custom property on :root, and
+     2. registers it with the Tailwind theme, generating utilities
+        (`--color-accent` -> `bg-accent` / `text-accent` / `border-accent`).
+
+   CONTRAST
+   Every colour pairing that carries text meets WCAG 2.1 AA
+   (4.5:1 body, 3:1 large text / non-text UI). Measured ratios are noted
+   against each token. When you swap in the real brand palette you MUST
+   re-measure — the comments are a contract, not decoration.
+   Re-measure with any WCAG contrast checker, or `node scripts/check-contrast.mjs`.
+   ========================================================================== */
+
+@theme {
+  /* ---------------------------------------------------------------------
+     COLOUR — semantic roles only. Never name a token after the colour it
+     currently happens to be; name it after the job it does.
+     PLACEHOLDER PALETTE: dark motorsport. Near-black ground, off-white text,
+     one saturated accent. Awaiting real team hex codes.
+     --------------------------------------------------------------------- */
+
+  /* Page ground. The darkest surface; everything else sits on top. */
+  --color-bg: #0a0b0d;
+
+  /* Raised panels: cards, the header when stuck, form fields. */
+  --color-surface: #14161a;
+
+  /* Second elevation: hover states, nested panels, table stripes. */
+  --color-surface-raised: #1c1f24;
+
+  /* Primary body and heading text.
+     17.87:1 on --color-bg · 16.44:1 on --color-surface · 15:1 on --color-surface-raised */
+  --color-text: #f2f4f7;
+
+  /* Secondary text: captions, metadata, supporting copy. Still AA for body.
+     9:1 on --color-bg · 8.28:1 on --color-surface · 7.56:1 on --color-surface-raised */
+  --color-text-muted: #a8b0bc;
+
+  /* The one saturated brand accent. Safe as body-size text on every surface.
+     5.94:1 on --color-bg · 5.46:1 on --color-surface · 4.98:1 on --color-surface-raised */
+  --color-accent: #ff4d1c;
+
+  /* Text/icons placed ON --color-accent (e.g. primary button label).
+     5.94:1 on --color-accent */
+  --color-accent-contrast: #0a0b0d;
+
+  /* Accent hover/active. Lighter, so it still reads on the dark ground.
+     8.18:1 on --color-bg · 8.18:1 against --color-accent-contrast */
+  --color-accent-hover: #ff8552;
+
+  /* Hairlines and decorative dividers. Non-essential boundaries only —
+     WCAG 1.4.11 does not apply to purely decorative separators.
+     1.48:1 on --color-bg · 1.36:1 on --color-surface */
+  --color-border: #2b3038;
+
+  /* Boundaries that carry meaning: input outlines, control edges, chips.
+     Meets the 3:1 non-text minimum on every surface.
+     4.07:1 on --color-bg · 3.75:1 on --color-surface · 3.42:1 on --color-surface-raised */
+  --color-border-strong: #6b7280;
+
+  /* Focus ring. Must clear 3:1 against BOTH the component and its background.
+     5.94:1 on --color-bg — same value as the accent, kept separate so the
+     ring can be re-tuned without moving the brand colour. */
+  --color-focus: #ff4d1c;
+
+  /* Status — used by milestone pills and the countdown.
+     done     10.5:1 on --color-bg ·  9.66:1 on --color-surface
+     active   5.94:1 on --color-bg ·  5.46:1 on --color-surface
+     upcoming    9:1 on --color-bg ·  8.28:1 on --color-surface */
+  --color-status-done: #3dd68c;
+  --color-status-active: #ff4d1c;
+  --color-status-upcoming: #a8b0bc;
+
+  /* ---------------------------------------------------------------------
+     TYPOGRAPHY
+     Placeholder stacks are system fonts: zero network cost, zero layout
+     shift, and a genuinely fast LCP. To swap in the real team faces, see
+     the "Swapping in real brand assets" table in README.md — it is a
+     two-file change (this file + src/app/layout.tsx for next/font).
+     --------------------------------------------------------------------- */
+  --font-display:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-body:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* Type scale. Fluid where it matters so the hero and section headings
+     shrink on phones without a pile of breakpoint overrides.
+     Utilities: text-display, text-h1 ... text-eyebrow */
+  --text-display: clamp(2.75rem, 1.4rem + 6vw, 6rem);
+  --text-display--line-height: 0.95;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 800;
+
+  --text-h1: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
+  --text-h1--line-height: 1.05;
+  --text-h1--letter-spacing: -0.025em;
+  --text-h1--font-weight: 800;
+
+  --text-h2: clamp(1.75rem, 1.25rem + 2.1vw, 2.75rem);
+  --text-h2--line-height: 1.12;
+  --text-h2--letter-spacing: -0.02em;
+  --text-h2--font-weight: 700;
+
+  --text-h3: clamp(1.25rem, 1.05rem + 0.85vw, 1.625rem);
+  --text-h3--line-height: 1.2;
+  --text-h3--letter-spacing: -0.01em;
+  --text-h3--font-weight: 700;
+
+  --text-h4: 1.125rem;
+  --text-h4--line-height: 1.35;
+  --text-h4--font-weight: 600;
+
+  --text-lead: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  --text-lead--line-height: 1.6;
+
+  --text-body: 1rem;
+  --text-body--line-height: 1.65;
+
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.55;
+
+  --text-caption: 0.8125rem;
+  --text-caption--line-height: 1.45;
+
+  /* All-caps label above a heading. Tracking is the whole point of it. */
+  --text-eyebrow: 0.75rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.16em;
+  --text-eyebrow--font-weight: 700;
+
+  /* ---------------------------------------------------------------------
+     SPACING
+     Tailwind derives its numeric scale (p-1, gap-6, ...) from --spacing.
+     The named tokens below are for rhythm that should stay consistent
+     across sections regardless of what a component author reaches for.
+     --------------------------------------------------------------------- */
+  --spacing: 0.25rem;
+
+  --spacing-gutter: 1.25rem; /* page side padding on mobile */
+  --spacing-section: clamp(3.5rem, 2rem + 6vw, 7rem); /* vertical section rhythm */
+  --spacing-section-tight: clamp(2.5rem, 1.5rem + 4vw, 4.5rem);
+  --spacing-stack: 1.5rem; /* default gap inside a content stack */
+
+  /* Maximum content measure. The site is a single centred column. */
+  --container-page: 78rem;
+  --container-prose: 42rem;
+
+  /* ---------------------------------------------------------------------
+     RADIUS
+     --------------------------------------------------------------------- */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-pill: 999px;
+
+  /* ---------------------------------------------------------------------
+     ELEVATION & MOTION
+     --------------------------------------------------------------------- */
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --shadow-raised: 0 2px 4px rgb(0 0 0 / 0.45), 0 16px 40px -16px rgb(0 0 0 / 0.7);
+
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 420ms;
+}
