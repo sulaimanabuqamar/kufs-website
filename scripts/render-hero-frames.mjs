@@ -33,7 +33,7 @@
  */
 
 import { createServer } from "node:http";
-import { readFile, mkdir, rm, writeFile, readdir } from "node:fs/promises";
+import { readFile, mkdir, rename, rm, writeFile, readdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { dirname, extname, join, normalize } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -45,6 +45,9 @@ import { chromium } from "playwright";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT_DIR = join(ROOT, "public", "hero", "frames");
+/** Frames are written here first and only swapped in once they pass the blank
+ *  check, so a failed run cannot destroy a good sequence that already works. */
+const STAGING_DIR = join(ROOT, "public", "hero", "frames.staging");
 const POSTER_PATH = join(ROOT, "public", "hero", "poster.webp");
 
 /* -------------------------------------------------------------------------
@@ -324,32 +327,60 @@ function settle(page) {
 }
 
 /**
- * Blocks until the renderer is producing stable output, or throws.
- * Stability = the same pose captured twice in a row is byte-identical.
+ * Blocks until the renderer is genuinely drawing, or throws.
+ *
+ * The naive check — "capture the same pose twice and compare" — is not enough,
+ * because two blank captures are also identical. It passed, and the run still
+ * produced twelve empty frames.
+ *
+ * So the test is two-sided:
+ *   - two DIFFERENT camera poses must produce DIFFERENT pixels
+ *     (proves something is actually being drawn), and
+ *   - the same pose captured twice must be identical
+ *     (proves the compositor has settled and is not mid-update).
+ *
+ * Only both together rule out a blank canvas.
  */
-async function warmUpRenderer(page, canvas, { attempts = 60 } = {}) {
-  let previous = null;
+async function warmUpRenderer(page, { attempts = 40 } = {}) {
+  // SwiftShader needs a moment to come up before any of this is meaningful.
+  await page.waitForTimeout(500);
+
+  const captureAt = async (progress) => {
+    await page.evaluate((t) => window.__setProgress(t), progress);
+    await settle(page);
+    return capture(page);
+  };
 
   for (let attempt = 0; attempt < attempts; attempt += 1) {
-    // Mid-path pose: guaranteed to have the car filling a good part of frame,
-    // so "identical" cannot be satisfied by two identical *blank* captures.
-    await page.evaluate(() => window.__setProgress(0.5));
-    await settle(page);
+    const poseA = await captureAt(0.5);
+    const poseB = await captureAt(0.05);
+    const poseAAgain = await captureAt(0.5);
 
-    const shot = await canvas.screenshot({ type: "png" });
+    const drawing = !poseA.equals(poseB);
+    const stable = poseA.equals(poseAAgain);
 
-    if (previous && shot.equals(previous) && shot.length > 4096) {
-      return;
-    }
-    previous = shot;
+    if (drawing && stable) return;
+
+    await page.waitForTimeout(150);
   }
 
   throw new Error(
-    "The WebGL canvas never produced a stable frame.\n" +
+    "The WebGL canvas never produced a stable, non-blank frame.\n" +
       "This usually means software rasterisation failed to start. Try:\n" +
       "  pnpm exec playwright install chromium\n" +
       "or run with your system Chrome by uninstalling Playwright's browser.",
   );
+}
+
+/**
+ * Capture the canvas.
+ *
+ * A viewport screenshot rather than an element screenshot: the page is sized to
+ * exactly the canvas, so the two are the same pixels, and the viewport path
+ * skips the bounding-box and scroll-into-view work that element capture does.
+ */
+function capture(page) {
+  return page.screenshot({ type: "png" });
 }
 
 /**
@@ -423,10 +454,8 @@ async function main() {
     ].join("\n"),
   );
 
-  // Clear stale frames — a shorter sequence must not leave the tail of a
-  // longer one behind for the loader to find.
-  await rm(OUT_DIR, { recursive: true, force: true });
-  await mkdir(OUT_DIR, { recursive: true });
+  await rm(STAGING_DIR, { recursive: true, force: true });
+  await mkdir(STAGING_DIR, { recursive: true });
 
   const { server, origin } = await startServer({ width, height, modelPath });
   const browser = await launchBrowser();
@@ -455,15 +484,13 @@ async function main() {
     const pageError = await page.evaluate(() => window.__heroError ?? null);
     if (pageError) throw new Error(`Scene failed to build:\n${pageError}`);
 
-    const canvas = page.locator("#stage");
-
     // SwiftShader takes a second or two to come up, and until it has, the
     // canvas composites as an empty rectangle. Screenshots taken during that
     // window produce blank frames that still "succeed" — the first version of
     // this script shipped twelve of them. Wait for two consecutive captures of
     // the SAME pose to come back byte-identical: that only happens once the
     // rasteriser is warm and drawing steadily.
-    await warmUpRenderer(page, canvas);
+    await warmUpRenderer(page);
 
     const started = Date.now();
 
@@ -473,11 +500,11 @@ async function main() {
       await page.evaluate((t) => window.__setProgress(t), progress);
       await settle(page);
 
-      const png = await canvas.screenshot({ type: "png" });
+      const png = await capture(page);
       const webp = await sharp(png).webp({ quality, effort: 5 }).toBuffer();
 
       const name = `frame-${String(index + 1).padStart(4, "0")}.webp`;
-      await writeFile(join(OUT_DIR, name), webp);
+      await writeFile(join(STAGING_DIR, name), webp);
       totalBytes += webp.length;
       frameSizes.push(webp.length);
 
@@ -488,12 +515,19 @@ async function main() {
     }
 
     // Fail loudly rather than committing a hero that fades in from nothing.
+    // Nothing has touched the live frames yet, so a failure here leaves the
+    // existing sequence intact.
     assertNoBlankFrames(frameSizes);
+
+    // Swap staging into place. Clearing first matters: a shorter sequence must
+    // not leave the tail of a longer one behind for the loader to find.
+    await rm(OUT_DIR, { recursive: true, force: true });
+    await rename(STAGING_DIR, OUT_DIR);
 
     // Poster, from the same scene and the same camera path.
     await page.evaluate((t) => window.__setProgress(t), posterAt);
     await settle(page);
-    const posterPng = await canvas.screenshot({ type: "png" });
+    const posterPng = await capture(page);
     const posterWebp = await sharp(posterPng)
       .webp({ quality: posterQuality, effort: 6 })
       .toBuffer();
@@ -517,6 +551,7 @@ async function main() {
   } finally {
     await browser.close();
     await new Promise((resolve) => server.close(resolve));
+    await rm(STAGING_DIR, { recursive: true, force: true });
   }
 }
 
