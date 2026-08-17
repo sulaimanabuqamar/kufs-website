@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Playwright's browsers are only needed by the `hero` job, which installs
+  # them explicitly. Keep them out of every other install.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
+
+jobs:
+  quality:
+    name: Lint, typecheck, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Prettier
+        run: pnpm format:check
+
+      - name: ESLint
+        run: pnpm lint
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # Also the content gate: every file under /content is parsed through its
+      # Zod schema during the build, so a malformed sponsor or milestone fails
+      # here rather than in production.
+      - name: Build
+        run: pnpm build
+
+      # Fails if the home page crosses its gzipped JS budget, or if a
+      # server-only dependency (Zod, gray-matter) or three.js has leaked into
+      # the client bundle.
+      - name: Check JS budget
+        run: pnpm check:bundle
+
+      - name: Upload build output
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-build
+          path: .next
+          retention-days: 3
+
+  hero:
+    name: Hero behaviour (mobile / reduced-motion / desktop)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Build
+        run: pnpm build
+
+      # Asserts the three hero paths against a real production server:
+      # phones and reduced-motion visitors must download zero frames and get
+      # no pinning; desktop must get the sequence. See scripts/check-hero.mjs.
+      - name: Start server and verify hero
+        run: |
+          pnpm start --port 3000 &
+          npx --yes wait-on http://127.0.0.1:3000 --timeout 60000
+          pnpm check:hero
