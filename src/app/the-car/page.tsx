@@ -2,20 +2,18 @@ import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/ui/PageHeader";
 
+const TITLE = "The Car";
+const DESCRIPTION =
+  "A technical breakdown of the KUFS Formula Student car: chassis, powertrain, aerodynamics, suspension and electronics.";
+
 export const metadata: Metadata = {
-  title: "The Car",
-  description:
-    "A technical breakdown of our Formula Student car: chassis, powertrain, aero, suspension and electronics.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/the-car" },
-  openGraph: {
-    title: "The Car",
-    description:
-      "A technical breakdown of our Formula Student car: chassis, powertrain, aero, suspension and electronics.",
-    url: "/the-car",
-  },
+  openGraph: { title: TITLE, description: DESCRIPTION, url: "/the-car" },
 };
 
-/** Routed stub. Built out in a later milestone — see README. */
+/** Routed, metadata-complete, and not yet built out. See README. */
 export default function Page() {
   return (
     <PageHeader
@@ -24,8 +22,8 @@ export default function Page() {
       lead={
         "Monocoque, powertrain, aerodynamics, suspension and electronics — the design decisions, the numbers behind them, and the ones we would take back."
       }
-      stubNote={
-        "This page is routed and will be built out in the next milestone. Until then, the fastest route in is a direct message or an email — we answer both."
+      comingSoon={
+        "A full technical breakdown of the 2027 car: target mass and how we got there, the laminate schedule, the aero package and its measured downforce, suspension kinematics, and the electronics architecture. It goes live once the car is through shakedown and we have real numbers rather than predicted ones."
       }
     />
   );

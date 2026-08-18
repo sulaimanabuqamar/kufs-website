@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { Button, type ButtonSize, type ButtonVariant } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { StatusPill } from "@/components/ui/StatusPill";
+import { SpeedStripe } from "@/components/brand/SpeedStripe";
+import { KufsLogo } from "@/components/brand/KufsLogo";
 import { MILESTONE_STATUSES } from "@/lib/schemas";
 
 /**
@@ -26,23 +28,53 @@ export const metadata: Metadata = {
 
 const COLOR_TOKENS = [
   { name: "--color-bg", note: "page ground", contrast: "—" },
-  { name: "--color-surface", note: "cards, panels", contrast: "—" },
+  { name: "--color-surface", note: "KUFS Navy · cards, header, footer", contrast: "—" },
   { name: "--color-surface-raised", note: "hover, nested panels", contrast: "—" },
-  { name: "--color-text", note: "body + headings", contrast: "17.87:1 on bg" },
-  { name: "--color-text-muted", note: "captions, metadata", contrast: "9:1 on bg" },
-  { name: "--color-accent", note: "brand accent", contrast: "5.94:1 on bg" },
+  { name: "--color-text", note: "body + headings", contrast: "17.51:1 on bg" },
+  { name: "--color-text-muted", note: "captions, metadata", contrast: "8.96:1 on bg" },
+  { name: "--color-accent", note: "Performance Orange · CTA", contrast: "8.93:1 on bg" },
+  {
+    name: "--color-accent-hover",
+    note: "Desert Copper · hover",
+    contrast: "7.18:1 on bg",
+  },
   {
     name: "--color-accent-contrast",
-    note: "text on accent",
-    contrast: "5.94:1 on accent",
+    note: "navy label on orange",
+    contrast: "7.29:1 on accent",
   },
-  { name: "--color-accent-hover", note: "accent hover", contrast: "8.18:1 on bg" },
-  { name: "--color-border", note: "decorative hairlines", contrast: "1.48:1 on bg" },
-  { name: "--color-border-strong", note: "control edges", contrast: "4.07:1 on bg" },
-  { name: "--color-focus", note: "focus ring", contrast: "5.94:1 on bg" },
-  { name: "--color-status-done", note: "milestone complete", contrast: "10.5:1 on bg" },
-  { name: "--color-status-active", note: "milestone active", contrast: "5.94:1 on bg" },
-  { name: "--color-status-upcoming", note: "milestone upcoming", contrast: "9:1 on bg" },
+  { name: "--color-focus", note: "focus ring", contrast: "8.93:1 on bg" },
+  { name: "--color-border", note: "decorative hairlines only", contrast: "2.26:1 on bg" },
+  { name: "--color-border-strong", note: "control edges", contrast: "6.43:1 on bg" },
+  {
+    name: "--color-stripe-red",
+    note: "Racing Red · DECORATIVE ONLY",
+    contrast: "2.12:1 on navy — fails",
+  },
+  { name: "--color-status-done", note: "milestone complete", contrast: "9.72:1 on bg" },
+  { name: "--color-status-active", note: "milestone active", contrast: "8.93:1 on bg" },
+  {
+    name: "--color-status-upcoming",
+    note: "milestone upcoming",
+    contrast: "8.96:1 on bg",
+  },
+];
+
+const LIGHT_TOKENS = [
+  { name: "--color-bg-light", note: "light section ground", contrast: "—" },
+  { name: "--color-surface-light", note: "cards in light sections", contrast: "—" },
+  {
+    name: "--color-text-on-light",
+    note: "KUFS Navy text",
+    contrast: "13.29:1 on bg-light",
+  },
+  { name: "--color-muted-on-light", note: "muted text", contrast: "6.79:1 on bg-light" },
+  {
+    name: "--color-accent-on-light",
+    note: "Racing Red — usable here",
+    contrast: "6.27:1 on bg-light",
+  },
+  { name: "--color-border-light", note: "dividers", contrast: "—" },
 ];
 
 const TYPE_SCALE = [
@@ -75,6 +107,7 @@ const SPACING = [
 ];
 
 const VARIANTS: ButtonVariant[] = ["primary", "secondary", "ghost"];
+const LIGHT_VARIANTS: ButtonVariant[] = ["onLight", "onLightSecondary"];
 const SIZES: ButtonSize[] = ["sm", "md", "lg"];
 
 export default function StyleguidePage() {
@@ -86,7 +119,8 @@ export default function StyleguidePage() {
     <div className="page-container flex flex-col gap-16 py-16">
       <header className="flex max-w-[62ch] flex-col gap-4">
         <p className="text-eyebrow uppercase text-accent">Development only</p>
-        <h1 className="text-h1 text-text">Design system</h1>
+        <h1 className="text-h1 text-text">KUFS design system</h1>
+        <SpeedStripe variant="accent" />
         <p className="text-lead text-text-muted">
           Every token defined in{" "}
           <code className="font-mono text-small text-text">src/styles/tokens.css</code>,
@@ -121,7 +155,95 @@ export default function StyleguidePage() {
         </ul>
       </Block>
 
-      <Block title="Type scale" note="Fluid where it matters; clamped at both ends.">
+      <Block
+        title="Light sections"
+        note="Sponsor logo walls and the tier table. The only place Racing Red carries meaning."
+      >
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {LIGHT_TOKENS.map((token) => (
+            <li
+              key={token.name}
+              className="flex items-center gap-4 rounded-md border border-border bg-surface p-3"
+            >
+              <span
+                className="size-12 shrink-0 rounded-sm border border-border-strong"
+                style={{ backgroundColor: `var(${token.name})` }}
+              />
+              <span className="flex min-w-0 flex-col">
+                <code className="truncate font-mono text-caption text-text">
+                  {token.name}
+                </code>
+                <span className="text-caption text-text-muted">{token.note}</span>
+                <span className="tabular text-caption text-text-muted">
+                  {token.contrast}
+                </span>
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6 rounded-lg bg-bg-light p-8">
+          <p className="text-eyebrow uppercase text-accent-on-light">On light</p>
+          <h3 className="mt-2 text-h3 text-text-on-light">This is a light section</h3>
+          <SpeedStripe variant="underline" className="mt-2" />
+          <p className="mt-3 max-w-[52ch] text-small text-muted-on-light">
+            Racing Red measures 6.27:1 here, so it is a legitimate accent — the only
+            context on the site where that is true.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-3">
+            {LIGHT_VARIANTS.map((variant) => (
+              <Button key={variant} variant={variant}>
+                Become a Sponsor
+              </Button>
+            ))}
+          </div>
+        </div>
+      </Block>
+
+      <Block
+        title="Speed stripe"
+        note="The signature motif. Decorative and aria-hidden — the only place Racing Red appears on dark."
+      >
+        <div className="flex flex-col gap-8">
+          {(["underline", "accent", "divider"] as const).map((variant) => (
+            <div key={variant} className="flex flex-col gap-2">
+              <code className="font-mono text-caption text-text-muted">{variant}</code>
+              <SpeedStripe variant={variant} />
+            </div>
+          ))}
+        </div>
+      </Block>
+
+      <Block
+        title="Logo"
+        note="Pick the variant by background. Never the light artwork on navy."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-6">
+            <code className="font-mono text-caption text-text-muted">
+              on=&quot;dark&quot;
+            </code>
+            <KufsLogo on="dark" width={240} />
+          </div>
+          <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-6">
+            <code className="font-mono text-caption text-text-muted">
+              on=&quot;dark&quot; withTagline
+            </code>
+            <KufsLogo on="dark" withTagline width={240} />
+          </div>
+          <div className="flex flex-col gap-3 rounded-lg border border-border-light bg-bg-light p-6 sm:col-span-2">
+            <code className="font-mono text-caption text-muted-on-light">
+              on=&quot;light&quot;
+            </code>
+            <KufsLogo on="light" width={280} />
+          </div>
+        </div>
+      </Block>
+
+      <Block
+        title="Type scale"
+        note="Fluid where it matters; clamped at both ends. h1-h3 use the display face; h4 and below use Barlow."
+      >
         <ul className="flex flex-col gap-6">
           {TYPE_SCALE.map((entry) => (
             <li

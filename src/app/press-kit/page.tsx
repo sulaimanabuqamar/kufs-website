@@ -2,30 +2,28 @@ import type { Metadata } from "next";
 
 import { PageHeader } from "@/components/ui/PageHeader";
 
+const TITLE = "Press Kit";
+const DESCRIPTION =
+  "Downloadable logos, photography and team information for press and media enquiries.";
+
 export const metadata: Metadata = {
-  title: "Press Kit",
-  description:
-    "Downloadable logos, photography and team information for press and media enquiries.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: "/press-kit" },
-  openGraph: {
-    title: "Press Kit",
-    description:
-      "Downloadable logos, photography and team information for press and media enquiries.",
-    url: "/press-kit",
-  },
+  openGraph: { title: TITLE, description: DESCRIPTION, url: "/press-kit" },
 };
 
-/** Routed stub. Built out in a later milestone — see README. */
+/** Routed, metadata-complete, and not yet built out. See README. */
 export default function Page() {
   return (
     <PageHeader
       eyebrow={"Media"}
       title={"Logos, imagery and team facts"}
       lead={
-        "High-resolution car photography, the team logo in every format, a one-page fact sheet and our media contact."
+        "High-resolution car photography, the KUFS logo in every format, a one-page fact sheet and our media contact."
       }
-      stubNote={
-        "This page is routed and will be built out in the next milestone. Until then, the fastest route in is a direct message or an email — we answer both."
+      comingSoon={
+        "Downloadable brand assets, approved photography, and a fact sheet covering the team, the car and our competition history. Until it is here, email us and we will send whatever you need directly."
       }
     />
   );
