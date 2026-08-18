@@ -21,14 +21,14 @@
  * from the forbidden list.
  */
 
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { gzipSync } from "node:zlib";
 
 const ROOT = process.cwd();
-const HTML = join(ROOT, ".next", "server", "app", "index.html");
+const APP_DIR = join(ROOT, ".next", "server", "app");
 
-/** Total gzipped JS the home page may load, in KB. */
+/** Total gzipped JS any single route may load, in KB. */
 const BUDGET_KB = 150;
 
 /**
@@ -39,7 +39,7 @@ const FORBIDDEN = [
   {
     marker: "$ZodRealError",
     name: "zod",
-    why: "content validation is build-time only; a client component is importing content/site.ts or src/lib/schemas.ts as a value",
+    why: "content validation is build-time only. A client component is importing content/site.ts or src/lib/schemas.ts as a VALUE — import types only, or move the constant into a zod-free module such as src/lib/tiers.ts",
   },
   {
     marker: "WebGLRenderer",
@@ -57,26 +57,32 @@ function kb(bytes) {
   return (bytes / 1024).toFixed(1);
 }
 
-async function main() {
-  let html;
-  try {
-    html = await readFile(HTML, "utf8");
-  } catch {
-    console.error(
-      `Could not read ${HTML}\nRun \`pnpm build\` before \`pnpm check:bundle\`.`,
-    );
-    process.exit(1);
-  }
+/** Every prerendered route, as `route -> html path`. */
+async function findRoutes() {
+  const routes = [];
+  const walk = async (dir, prefix) => {
+    for (const entry of await readdir(dir, { withFileTypes: true })) {
+      const full = join(dir, entry.name);
+      if (entry.isDirectory()) {
+        await walk(full, `${prefix}/${entry.name}`);
+      } else if (entry.name.endsWith(".html")) {
+        const base = entry.name.replace(/\.html$/, "");
+        const route =
+          base === "index" ? prefix || "/" : `${prefix}/${base}`.replace(/^$/, "/");
+        routes.push({ route, file: full });
+      }
+    }
+  };
+  await walk(APP_DIR, "");
+  return routes.sort((a, b) => a.route.localeCompare(b.route));
+}
 
-  // Scripts the document loads. `nomodule` bundles are excluded: they are only
-  // fetched by browsers that predate ES modules, which is not the audience we
-  // are budgeting for.
-  const scriptTags = [...html.matchAll(/<script\b[^>]*>/g)].map((m) => m[0]);
+/** Scripts a document actually loads, split into modern and legacy. */
+async function scriptsFor(html) {
   const sources = new Set();
-
   let legacyBytes = 0;
 
-  for (const tag of scriptTags) {
+  for (const tag of [...html.matchAll(/<script\b[^>]*>/g)].map((m) => m[0])) {
     const src = tag.match(/\bsrc="(\/_next\/static\/[^"]+\.js)"/);
     if (!src) continue;
 
@@ -89,86 +95,73 @@ async function main() {
       ).length;
       continue;
     }
-
     sources.add(src[1]);
   }
 
-  // Preloaded chunks count too — they are fetched on load either way.
   for (const match of html.matchAll(
     /<link\b[^>]*\brel="preload"[^>]*\bhref="(\/_next\/static\/[^"]+\.js)"/g,
   )) {
     sources.add(match[1]);
   }
 
-  if (sources.size === 0) {
-    console.error(
-      "No client scripts found in the prerendered HTML — is the build stale?",
-    );
+  return { sources: [...sources].sort(), legacyBytes };
+}
+
+async function main() {
+  const routes = await findRoutes();
+  if (routes.length === 0) {
+    console.error("No prerendered HTML found. Run `pnpm build` first.");
     process.exit(1);
   }
 
-  let totalRaw = 0;
-  let totalGz = 0;
-  const rows = [];
-  const violations = [];
+  console.log(
+    `JavaScript per route (budget ${BUDGET_KB} KB gzipped, nomodule polyfills excluded)\n`,
+  );
 
-  for (const src of [...sources].sort()) {
-    const file = join(ROOT, ".next", src.replace("/_next/", ""));
-    const buffer = await readFile(file);
-    const gz = gzipSync(buffer).length;
+  let failed = 0;
 
-    totalRaw += buffer.length;
-    totalGz += gz;
-    rows.push({ name: src.split("/").pop(), raw: buffer.length, gz });
+  for (const { route, file } of routes) {
+    const html = await readFile(file, "utf8");
+    const { sources, legacyBytes } = await scriptsFor(html);
+    if (sources.length === 0) continue;
 
-    const text = buffer.toString("utf8");
-    for (const rule of FORBIDDEN) {
-      if (text.includes(rule.marker)) {
-        violations.push({ ...rule, chunk: src.split("/").pop(), gz });
+    let totalGz = 0;
+    const violations = [];
+
+    for (const src of sources) {
+      const buffer = await readFile(join(ROOT, ".next", src.replace("/_next/", "")));
+      totalGz += gzipSync(buffer).length;
+      const text = buffer.toString("utf8");
+      for (const rule of FORBIDDEN) {
+        if (text.includes(rule.marker)) {
+          violations.push({ ...rule, chunk: src.split("/").pop() });
+        }
       }
     }
-  }
 
-  rows.sort((a, b) => b.gz - a.gz);
+    const over = totalGz / 1024 > BUDGET_KB;
+    const bad = over || violations.length > 0;
+    if (bad) failed += 1;
 
-  console.log("Home page JavaScript\n");
-  for (const row of rows) {
     console.log(
-      `  ${kb(row.gz).padStart(7)} KB gz  ${kb(row.raw).padStart(8)} KB raw  ${row.name}`,
+      `  ${bad ? "!!" : "ok"}  ${route.padEnd(20)} ${kb(totalGz).padStart(7)} KB gz` +
+        `  (${sources.length} files${legacyBytes ? `, +${kb(legacyBytes)} KB legacy skipped` : ""})`,
     );
-  }
-  console.log(
-    `\n  ${kb(totalGz).padStart(7)} KB gz  ${kb(totalRaw).padStart(8)} KB raw  TOTAL (${rows.length} files)`,
-  );
-  console.log(`  budget: ${BUDGET_KB} KB gz`);
-  if (legacyBytes > 0) {
-    console.log(
-      `  (excluded: ${kb(legacyBytes)} KB gz of nomodule polyfills, not fetched by modern browsers)`,
-    );
-  }
-  console.log();
 
-  let failed = false;
-
-  if (violations.length > 0) {
-    failed = true;
-    console.error("Forbidden modules in the client bundle:\n");
     for (const v of violations) {
-      console.error(`  ✖ ${v.name} found in ${v.chunk} (${kb(v.gz)} KB gz)`);
-      console.error(`    ${v.why}\n`);
+      console.error(`        ✖ ${v.name} in ${v.chunk}\n          ${v.why}`);
+    }
+    if (over) {
+      console.error(`        ✖ over budget by ${kb(totalGz - BUDGET_KB * 1024)} KB`);
     }
   }
 
-  if (totalGz / 1024 > BUDGET_KB) {
-    failed = true;
-    console.error(
-      `Over budget: ${kb(totalGz)} KB gz exceeds the ${BUDGET_KB} KB limit ` +
-        `by ${kb(totalGz - BUDGET_KB * 1024)} KB.\n`,
-    );
-  }
-
+  console.log(
+    failed === 0
+      ? `\nAll ${routes.length} routes within budget.\n`
+      : `\n${failed} route(s) with problems.\n`,
+  );
   if (failed) process.exit(1);
-  console.log("Within budget.\n");
 }
 
 main().catch((error) => {

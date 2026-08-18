@@ -73,12 +73,16 @@ async function probe(browser, { width, height, reducedMotion, settleMs = 2500 })
       hasCanvas: Boolean(canvas),
       posterVisible: Boolean(poster) && poster.getBoundingClientRect().width > 0,
       headline: document.querySelector("#hero-heading")?.textContent?.trim() ?? null,
-      // Copy must be present and readable on every path, not just the fancy one.
+      // Copy must be present and readable on every path, not just the fancy
+      // one. Deliberately matched on shape rather than on an exact phrase —
+      // the first version of this check hard-coded a sentence and started
+      // failing the moment the real brand copy landed, which is a false alarm
+      // rather than a finding.
       positioningVisible: (() => {
         const paragraphs = [...document.querySelectorAll(".hero-pane p")];
         return paragraphs.some(
           (p) =>
-            p.textContent.includes("student engineering team") &&
+            p.textContent.trim().length > 80 &&
             Number(getComputedStyle(p).opacity) > 0.9,
         );
       })(),
