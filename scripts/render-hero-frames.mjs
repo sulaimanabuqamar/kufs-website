@@ -176,7 +176,9 @@ function renderPageHtml({ width, height, modelPath }) {
 <meta charset="utf-8">
 <title>hero frame renderer</title>
 <style>
-  html, body { margin: 0; padding: 0; background: #0a0b0d; overflow: hidden; }
+  /* Must match --color-bg in src/styles/tokens.css; it is only ever seen if
+     the canvas fails to paint, but a black flash on a navy site is obvious. */
+  html, body { margin: 0; padding: 0; background: #16143c; overflow: hidden; }
   canvas { display: block; }
 </style>
 <script type="importmap">

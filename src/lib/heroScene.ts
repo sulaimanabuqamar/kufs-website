@@ -54,7 +54,7 @@ export function createHeroScene({
   width,
   height,
   dpr = 1,
-  background = "#0a0b0d",
+  background = "#16143c",
   model = null,
 }: CreateHeroSceneOptions): HeroSceneHandle {
   const renderer = new THREE.WebGLRenderer({
@@ -94,7 +94,7 @@ export function createHeroScene({
   applyViewOffset(width, height);
 
   // --- Lighting: a three-point studio rig ---------------------------------
-  scene.add(new THREE.HemisphereLight(0xbfd0e6, 0x0a0b0d, 0.55));
+  scene.add(new THREE.HemisphereLight(0xbfd0e6, 0x16143c, 0.55));
 
   const key = new THREE.DirectionalLight(0xffffff, 2.6);
   key.position.set(4.5, 6.5, 3.5);
@@ -110,7 +110,7 @@ export function createHeroScene({
   scene.add(key);
 
   // Warm rim from behind, picking out the wing and roll hoop silhouette.
-  const rimWarm = new THREE.DirectionalLight(0xff8552, 1.5);
+  const rimWarm = new THREE.DirectionalLight(0xedad55, 1.7);
   rimWarm.position.set(-5, 2.4, -3.2);
   scene.add(rimWarm);
 
@@ -123,7 +123,7 @@ export function createHeroScene({
   const ground = new THREE.Mesh(
     new THREE.CircleGeometry(11, 48),
     new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#111318"),
+      color: new THREE.Color("#1d1a4a"),
       roughness: 0.72,
       metalness: 0.15,
     }),

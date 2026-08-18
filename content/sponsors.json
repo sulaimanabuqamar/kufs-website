@@ -8,8 +8,8 @@
     "contribution": "Carbon fibre monocoque and aerodynamic surfaces, plus laminate design mentoring.",
     "logo": {
       "src": "/sponsors/apex-composites.webp",
-      "width": 480,
-      "height": 160,
+      "width": 360,
+      "height": 112,
       "alt": "Apex Composites"
     }
   },
@@ -18,12 +18,12 @@
     "tier": "gold",
     "url": "https://example.com/meridian-motorsport",
     "since": 2024,
-    "blurb": "Meridian supply the damper package and give us two days a season on their seven-post rig — the single biggest step change in our vehicle dynamics programme.",
+    "blurb": "Meridian supply the damper package and give us two days a season on their seven-post rig \u2014 the single biggest step change in our vehicle dynamics programme.",
     "contribution": "Adjustable dampers, seven-post rig time and suspension setup support.",
     "logo": {
       "src": "/sponsors/meridian-motorsport.webp",
-      "width": 480,
-      "height": 160,
+      "width": 360,
+      "height": 112,
       "alt": "Meridian Motorsport"
     }
   },
@@ -36,8 +36,8 @@
     "contribution": "Five-axis CNC machining of suspension and steering components.",
     "logo": {
       "src": "/sponsors/northgate-precision.webp",
-      "width": 480,
-      "height": 160,
+      "width": 360,
+      "height": 112,
       "alt": "Northgate Precision"
     }
   },
@@ -50,8 +50,8 @@
     "contribution": "Telemetry hardware budget and an annual data engineering workshop.",
     "logo": {
       "src": "/sponsors/halden-analytics.webp",
-      "width": 480,
-      "height": 160,
+      "width": 360,
+      "height": 112,
       "alt": "Halden Analytics"
     }
   },
@@ -64,8 +64,8 @@
     "contribution": "Welding, fabrication and weld inspection sign-off.",
     "logo": {
       "src": "/sponsors/cartwright-fabrication.webp",
-      "width": 480,
-      "height": 160,
+      "width": 360,
+      "height": 112,
       "alt": "Cartwright Fabrication"
     }
   }

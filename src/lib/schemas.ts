@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { SPONSOR_TIERS } from "@/lib/tiers";
+
 /**
  * Schemas for everything under /content.
  *
@@ -45,8 +47,9 @@ export type ImageRef = z.infer<typeof imageRef>;
    site.ts
    ------------------------------------------------------------------------- */
 
-export const SPONSOR_TIERS = ["title", "gold", "silver", "bronze", "inkind"] as const;
-export type SponsorTier = (typeof SPONSOR_TIERS)[number];
+// Re-exported from a zod-free module so client components can use them
+// without pulling this file — and Zod — across the boundary.
+export { SPONSOR_TIERS, type SponsorTier } from "@/lib/tiers";
 
 /** Which hero implementation renders. See src/components/hero/ScrollCarHero.tsx.
  *  - "sequence": production. Scroll-driven pre-rendered WebP frames on canvas.
@@ -102,6 +105,51 @@ export const siteSchema = z.object({
       }),
     )
     .length(3),
+  /** The four brand values. Verbatim from the brand sheet — do not reword. */
+  values: z
+    .array(
+      z.object({
+        title: z.string().min(1),
+        description: z.string().min(1),
+      }),
+    )
+    .length(4),
+
+  /** Supporting straplines from the brand sheet, used across sections. */
+  straplines: z.array(z.string().min(1)).min(3),
+
+  sponsorship: z.object({
+    /** Path under /public. May not exist yet — the UI handles that. */
+    prospectusPath: publicPath,
+    /** Set false until the PDF is actually committed; the button then
+     *  explains itself instead of serving a 404. */
+    prospectusAvailable: z.boolean(),
+    /** Where sponsorship enquiries go until a real form endpoint exists. */
+    enquiryEmail: z.string().email(),
+    /** Reasons to sponsor, each with an optional supporting figure.
+     *  `value: null` renders as "TBC" rather than an invented statistic. */
+    reasons: z
+      .array(
+        z.object({
+          title: z.string().min(1),
+          body: z.string().min(1),
+          stat: z.object({
+            value: z.string().min(1).nullable(),
+            label: z.string().min(1),
+          }),
+        }),
+      )
+      .min(3),
+  }),
+
+  facultyAdvisor: z
+    .object({
+      name: z.string().min(1),
+      role: z.string().min(1),
+      department: z.string().min(1),
+    })
+    .nullable(),
+
   hero: z.object({
     mode: z.enum(HERO_MODES),
     /** Number of frames in /public/hero/frames. Must match what
@@ -141,14 +189,21 @@ export type Sponsor = z.infer<typeof sponsorSchema>;
    team.json
    ------------------------------------------------------------------------- */
 
+/**
+ * Roster groups on /team, in display order.
+ *
+ * These are the six technical/business groups named in the brand brief, plus
+ * Management — the Team Principal and Chief Engineer sit across all subteams
+ * and need a home that is not "Business & Operations".
+ */
 export const SUBTEAMS = [
   "Management",
+  "Aerodynamics",
   "Chassis",
   "Powertrain",
-  "Aerodynamics",
-  "Vehicle Dynamics",
   "Electronics",
-  "Business",
+  "Suspension",
+  "Business & Operations",
 ] as const;
 export type Subteam = (typeof SUBTEAMS)[number];
 
@@ -188,6 +243,82 @@ export const milestonesSchema = z
   );
 
 export type Milestone = z.infer<typeof milestoneSchema>;
+
+/* -------------------------------------------------------------------------
+   tiers.json — the sponsorship package
+   ------------------------------------------------------------------------- */
+
+/**
+ * The benefit rows in the tier comparison table, in display order.
+ *
+ * Fixed keys rather than free-form rows so every tier is compared on exactly
+ * the same seven things. A sponsor deciding between Gold and Silver should be
+ * able to read across a row, not hunt for whether a benefit was simply omitted.
+ */
+export const BENEFIT_ROWS = [
+  { key: "livery", label: "Logo on car livery" },
+  { key: "kit", label: "Logo on team kit" },
+  { key: "website", label: "Logo placement on this site" },
+  { key: "social", label: "Social media features per season" },
+  { key: "launchEvent", label: "Presence at the launch event" },
+  { key: "cvBook", label: "Access to the CV book" },
+  { key: "factoryVisit", label: "Workshop visit" },
+] as const;
+
+export type BenefitKey = (typeof BENEFIT_ROWS)[number]["key"];
+
+const benefitValue = z.union([
+  z.string().min(1),
+  /** false = not included in this tier. Renders as an em dash, not a blank. */
+  z.literal(false),
+]);
+
+export const tierSchema = z.object({
+  tier: z.enum(SPONSOR_TIERS),
+  name: z.string().min(1),
+  /** Headline price. null until the team sets it — renders as "TBC". */
+  amount: z.string().min(1).nullable(),
+  /** One line on what this tier is for. */
+  summary: z.string().min(1),
+  /** How many partners we will take at this level. null = unlimited. */
+  slots: z.number().int().positive().nullable(),
+  benefits: z.object({
+    livery: benefitValue,
+    kit: benefitValue,
+    website: benefitValue,
+    social: benefitValue,
+    launchEvent: benefitValue,
+    cvBook: benefitValue,
+    factoryVisit: benefitValue,
+  }),
+});
+
+export const tiersSchema = z
+  .array(tierSchema)
+  .min(1)
+  .refine(
+    (list) => new Set(list.map((t) => t.tier)).size === list.length,
+    "each tier may appear only once",
+  );
+
+export type SponsorshipTier = z.infer<typeof tierSchema>;
+
+/* -------------------------------------------------------------------------
+   roles.json — open recruitment positions
+   ------------------------------------------------------------------------- */
+
+export const roleSchema = z.object({
+  title: z.string().min(1),
+  subteam: z.enum(SUBTEAMS),
+  description: z.string().min(1),
+  /** What we actually want to see. Kept honest — no "rockstar" language. */
+  lookingFor: z.array(z.string().min(1)).min(1),
+  /** null = we will take as many good applicants as apply. */
+  openings: z.number().int().positive().nullable(),
+});
+
+export const rolesSchema = z.array(roleSchema).min(1);
+export type Role = z.infer<typeof roleSchema>;
 
 /* -------------------------------------------------------------------------
    news/*.mdx frontmatter

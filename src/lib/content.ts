@@ -7,6 +7,8 @@ import matter from "gray-matter";
 import site from "@/content/site";
 import {
   milestonesSchema,
+  rolesSchema,
+  tiersSchema,
   newsFrontmatterSchema,
   parseOrThrow,
   sponsorsSchema,
@@ -15,6 +17,10 @@ import {
   type NewsPost,
   type Sponsor,
   type SponsorTier,
+  SUBTEAMS,
+  type Role,
+  type SponsorshipTier,
+  type Subteam,
   type TeamMember,
 } from "@/lib/schemas";
 
@@ -55,13 +61,10 @@ export const TIER_ORDER: readonly SponsorTier[] = [
   "inkind",
 ];
 
-export const TIER_LABEL: Record<SponsorTier, string> = {
-  title: "Title partner",
-  gold: "Gold",
-  silver: "Silver",
-  bronze: "Bronze",
-  inkind: "In-kind",
-};
+/** Re-exported so server components have one import for content concerns.
+ *  The definition lives in src/lib/tierLabels.ts because client components
+ *  need it too and this module is server-only. */
+export { TIER_LABEL } from "@/lib/tiers";
 
 export const getSponsors = once((): Sponsor[] => {
   const sponsors = parseOrThrow(
@@ -148,4 +151,51 @@ export const getNewsPosts = once((): NewsPost[] => {
 
 export function getLatestNews(count = 3): NewsPost[] {
   return getNewsPosts().slice(0, count);
+}
+
+/* -------------------------------------------------------------------------
+   Sponsorship tiers
+   ------------------------------------------------------------------------- */
+
+export const getTiers = once((): SponsorshipTier[] => {
+  const tiers = parseOrThrow(tiersSchema, readJson("tiers.json"), "content/tiers.json");
+  return [...tiers].sort(
+    (a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier),
+  );
+});
+
+/* -------------------------------------------------------------------------
+   Recruitment roles
+   ------------------------------------------------------------------------- */
+
+export const getRoles = once((): Role[] =>
+  parseOrThrow(rolesSchema, readJson("roles.json"), "content/roles.json"),
+);
+
+/** Roles grouped by subteam, in SUBTEAMS order, skipping empty groups. */
+export function getRolesBySubteam(): { subteam: Subteam; roles: Role[] }[] {
+  const roles = getRoles();
+  return SUBTEAMS.map((subteam) => ({
+    subteam,
+    roles: roles.filter((r) => r.subteam === subteam),
+  })).filter((group) => group.roles.length > 0);
+}
+
+/* -------------------------------------------------------------------------
+   Team, grouped
+   ------------------------------------------------------------------------- */
+
+/**
+ * Roster grouped by subteam, in SUBTEAMS order, skipping empty groups.
+ *
+ * A yearly roster swap is one edit to content/team.json — add, remove or move
+ * people between subteams and this regroups automatically. No component knows
+ * how many members or groups there are.
+ */
+export function getTeamBySubteam(): { subteam: Subteam; members: TeamMember[] }[] {
+  const team = getTeam();
+  return SUBTEAMS.map((subteam) => ({
+    subteam,
+    members: team.filter((m) => m.subteam === subteam),
+  })).filter((group) => group.members.length > 0);
 }

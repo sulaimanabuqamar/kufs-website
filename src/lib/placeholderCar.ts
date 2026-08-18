@@ -38,8 +38,12 @@ export type PlaceholderCarOptions = {
 };
 
 const DEFAULTS = {
-  bodyColor: "#ff4d1c",
-  trimColor: "#15171a",
+  // Racing Red bodywork with KUFS Navy trim — the livery the real car will
+  // carry. Red is fine here: this is a lit three-dimensional object, not flat
+  // UI colour on a flat surface, so the 2.12:1 flat-contrast problem does not
+  // apply. Nothing in this scene carries text or meaning.
+  bodyColor: "#ac2a26",
+  trimColor: "#16143c",
 } as const;
 
 /**
@@ -66,6 +70,12 @@ export function buildPlaceholderCar(
     color: new THREE.Color(trimColor),
     metalness: 0.35,
     roughness: 0.55,
+  });
+
+  const accentMaterial = new THREE.MeshStandardMaterial({
+    color: new THREE.Color("#edad55"),
+    metalness: 0.3,
+    roughness: 0.45,
   });
 
   const tyreMaterial = new THREE.MeshStandardMaterial({
@@ -187,7 +197,7 @@ export function buildPlaceholderCar(
   for (const z of [-0.55, 0.55]) {
     const endplate = new THREE.Mesh(
       new THREE.BoxGeometry(0.44, 0.42, 0.025),
-      bodyMaterial,
+      accentMaterial,
     );
     add(endplate, -1.42, 0.88, z);
   }

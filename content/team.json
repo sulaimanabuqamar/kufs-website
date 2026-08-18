@@ -1,28 +1,50 @@
 [
   {
-    "name": "Priya Raghunathan",
+    "name": "Aisha Al Mansoori",
     "role": "Team Principal",
     "subteam": "Management",
     "year": 4,
-    "linkedin": "https://www.linkedin.com/in/example-priya-raghunathan",
     "photo": {
-      "src": "/team/priya-raghunathan.webp",
+      "src": "/team/aisha-al-mansoori.webp",
       "width": 600,
       "height": 750,
-      "alt": "Priya Raghunathan, Team Principal"
+      "alt": "Aisha Al Mansoori, Team Principal"
+    }
+  },
+  {
+    "name": "Rohan Menon",
+    "role": "Chief Engineer",
+    "subteam": "Management",
+    "year": 4,
+    "photo": {
+      "src": "/team/rohan-menon.webp",
+      "width": 600,
+      "height": 750,
+      "alt": "Rohan Menon, Chief Engineer"
+    }
+  },
+  {
+    "name": "Layla Haddad",
+    "role": "Aerodynamics Lead",
+    "subteam": "Aerodynamics",
+    "year": 3,
+    "photo": {
+      "src": "/team/layla-haddad.webp",
+      "width": 600,
+      "height": 750,
+      "alt": "Layla Haddad, Aerodynamics Lead"
     }
   },
   {
     "name": "Tomas Ilves",
-    "role": "Chief Engineer",
+    "role": "Chassis Lead",
     "subteam": "Chassis",
-    "year": 4,
-    "linkedin": "https://www.linkedin.com/in/example-tomas-ilves",
+    "year": 3,
     "photo": {
       "src": "/team/tomas-ilves.webp",
       "width": 600,
       "height": 750,
-      "alt": "Tomas Ilves, Chief Engineer"
+      "alt": "Tomas Ilves, Chassis Lead"
     }
   },
   {
@@ -30,7 +52,6 @@
     "role": "Powertrain Lead",
     "subteam": "Powertrain",
     "year": 3,
-    "linkedin": "https://www.linkedin.com/in/example-amara-okonkwo",
     "photo": {
       "src": "/team/amara-okonkwo.webp",
       "width": 600,
@@ -39,41 +60,51 @@
     }
   },
   {
-    "name": "Ewan Blackwood",
-    "role": "Aerodynamics Lead",
-    "subteam": "Aerodynamics",
-    "year": 3,
+    "name": "Yusuf Rahman",
+    "role": "Electronics Lead",
+    "subteam": "Electronics",
+    "year": 2,
     "photo": {
-      "src": "/team/ewan-blackwood.webp",
+      "src": "/team/yusuf-rahman.webp",
       "width": 600,
       "height": 750,
-      "alt": "Ewan Blackwood, Aerodynamics Lead"
+      "alt": "Yusuf Rahman, Electronics Lead"
     }
   },
   {
     "name": "Sofia Marchetti",
-    "role": "Vehicle Dynamics Lead",
-    "subteam": "Vehicle Dynamics",
+    "role": "Suspension & Vehicle Dynamics Lead",
+    "subteam": "Suspension",
     "year": "PhD",
-    "linkedin": "https://www.linkedin.com/in/example-sofia-marchetti",
     "photo": {
       "src": "/team/sofia-marchetti.webp",
       "width": 600,
       "height": 750,
-      "alt": "Sofia Marchetti, Vehicle Dynamics Lead"
+      "alt": "Sofia Marchetti, Suspension and Vehicle Dynamics Lead"
     }
   },
   {
     "name": "Daniel Osei",
     "role": "Head of Partnerships",
-    "subteam": "Business",
+    "subteam": "Business & Operations",
     "year": 2,
-    "linkedin": "https://www.linkedin.com/in/example-daniel-osei",
     "photo": {
       "src": "/team/daniel-osei.webp",
       "width": 600,
       "height": 750,
       "alt": "Daniel Osei, Head of Partnerships"
+    }
+  },
+  {
+    "name": "Fatima Al Zaabi",
+    "role": "Marketing & Media Lead",
+    "subteam": "Business & Operations",
+    "year": 2,
+    "photo": {
+      "src": "/team/fatima-al-zaabi.webp",
+      "width": 600,
+      "height": 750,
+      "alt": "Fatima Al Zaabi, Marketing and Media Lead"
     }
   }
 ]

@@ -1,0 +1,90 @@
+[
+  {
+    "title": "CFD Engineer",
+    "subteam": "Aerodynamics",
+    "description": "Run and interpret CFD on the wings, floor and sidepod inlets, and turn the results into geometry the manufacturing team can actually build.",
+    "lookingFor": [
+      "Willingness to learn a solver from scratch — we will teach you",
+      "Patience with meshes that will not converge",
+      "Any exposure to fluid mechanics coursework"
+    ],
+    "openings": 3
+  },
+  {
+    "title": "Composites Manufacturing",
+    "subteam": "Chassis",
+    "description": "Layup, cure and finish the monocoque and bodywork. This is hands-on workshop work with real hours in the composites lab.",
+    "lookingFor": [
+      "Comfortable working with your hands and with PPE",
+      "Reliable attendance — layup cannot be paused",
+      "No prior composites experience required"
+    ],
+    "openings": 4
+  },
+  {
+    "title": "Powertrain Calibration",
+    "subteam": "Powertrain",
+    "description": "Work on the engine map, cooling package and fuel system, and take the car through dyno testing.",
+    "lookingFor": [
+      "Interest in control systems or thermodynamics",
+      "Methodical about recording test data",
+      "Willing to be in the workshop on dyno days"
+    ],
+    "openings": 2
+  },
+  {
+    "title": "Embedded Software Engineer",
+    "subteam": "Electronics",
+    "description": "Build the telemetry stack, the dashboard and the wiring loom logic. Everything from CAN bus to the driver display.",
+    "lookingFor": [
+      "Any C, C++ or Python — we do not expect embedded experience",
+      "Interest in real-time systems",
+      "Happy to debug hardware, not just code"
+    ],
+    "openings": 2
+  },
+  {
+    "title": "Suspension Design Engineer",
+    "subteam": "Suspension",
+    "description": "Own the kinematics, the uprights and the damper package, and validate the model against what the car actually does on track.",
+    "lookingFor": [
+      "CAD ability, or the willingness to get there quickly",
+      "Interest in vehicle dynamics",
+      "Comfortable defending a design decision with data"
+    ],
+    "openings": 2
+  },
+  {
+    "title": "Sponsorship & Partnerships",
+    "subteam": "Business & Operations",
+    "description": "Find partners, write the proposals, and keep the relationships alive across the season. You will be the reason the car gets built.",
+    "lookingFor": [
+      "Comfortable writing to people you have never met",
+      "Organised enough to track a pipeline",
+      "Any degree — business, engineering, sciences, all welcome"
+    ],
+    "openings": 3
+  },
+  {
+    "title": "Marketing & Media",
+    "subteam": "Business & Operations",
+    "description": "Run our social channels, shoot and edit content in the workshop and at competition, and build the story sponsors are buying into.",
+    "lookingFor": [
+      "Photography, video or design skill — show us anything you have made",
+      "An eye for what is worth filming",
+      "No engineering background needed"
+    ],
+    "openings": 2
+  },
+  {
+    "title": "Cost & Operations Analyst",
+    "subteam": "Business & Operations",
+    "description": "Own the Cost Report — one of the three static events scored at Silverstone — and keep the season budget honest.",
+    "lookingFor": [
+      "Comfortable in a spreadsheet",
+      "Precise about detail; the cost event is judged on it",
+      "Finance, economics or business students especially welcome"
+    ],
+    "openings": 2
+  }
+]

@@ -22,13 +22,15 @@ export const contentType = "image/png";
 
 // Mirrors src/styles/tokens.css. Satori cannot read CSS custom properties.
 const COLOR = {
-  bg: "#0a0b0d",
-  surface: "#14161a",
-  text: "#f2f4f7",
-  textMuted: "#a8b0bc",
-  accent: "#ff4d1c",
-  accentContrast: "#0a0b0d",
-  border: "#2b3038",
+  bg: "#16143c",
+  surface: "#25225e",
+  text: "#ffffff",
+  textMuted: "#b9b6d8",
+  accent: "#edad55",
+  accentContrast: "#25225e",
+  border: "#4b47a0",
+  red: "#ac2a26",
+  copper: "#df964e",
 };
 
 export default function OpenGraphImage() {
@@ -41,7 +43,7 @@ export default function OpenGraphImage() {
         flexDirection: "column",
         justifyContent: "space-between",
         backgroundColor: COLOR.bg,
-        backgroundImage: `radial-gradient(900px 500px at 78% 12%, ${COLOR.accent}26, transparent 60%)`,
+        backgroundImage: `radial-gradient(900px 520px at 80% 15%, ${COLOR.accent}2E, transparent 62%)`,
         padding: 72,
         fontFamily: "sans-serif",
       }}
@@ -61,7 +63,7 @@ export default function OpenGraphImage() {
             fontWeight: 800,
           }}
         >
-          ›
+          K
         </div>
         <div
           style={{ display: "flex", color: COLOR.text, fontSize: 34, fontWeight: 800 }}
@@ -87,15 +89,39 @@ export default function OpenGraphImage() {
           style={{
             display: "flex",
             color: COLOR.text,
-            fontSize: 76,
+            fontSize: 72,
             fontWeight: 800,
             lineHeight: 1.05,
             letterSpacing: -2,
             maxWidth: 900,
           }}
         >
-          Built by students. Raced against the world.
+          Engineered to race. Driven to lead.
         </div>
+      </div>
+
+      {/* Speed stripe, echoing the logo. Decorative — an OG card has no
+          accessibility tree, and the tagline carries the meaning. */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <div
+          style={{ display: "flex", height: 8, width: 520, backgroundColor: COLOR.red }}
+        />
+        <div
+          style={{
+            display: "flex",
+            height: 8,
+            width: 470,
+            backgroundColor: COLOR.copper,
+          }}
+        />
+        <div
+          style={{
+            display: "flex",
+            height: 8,
+            width: 420,
+            backgroundColor: COLOR.accent,
+          }}
+        />
       </div>
 
       <div

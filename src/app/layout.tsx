@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@/components/Analytics";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
+import { fontVariables } from "@/lib/fonts";
 import site from "@/content/site";
 
 import "./globals.css";
@@ -10,10 +11,10 @@ import "./globals.css";
 /**
  * Root layout.
  *
- * No next/font call here yet — the placeholder type scale uses the system
- * stack (see src/styles/tokens.css), which costs zero requests and cannot
- * shift layout. When the real team faces arrive, add the next/font import
- * here and point --font-display / --font-body at the generated variables.
+ * Fonts are declared in src/lib/fonts.ts and only applied here — this file
+ * never names a typeface. next/font self-hosts both faces at build time, so
+ * there is no request to a third-party origin in the critical path and no
+ * layout shift on swap.
  */
 
 export const metadata: Metadata = {
@@ -57,7 +58,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0a0b0d",
+  themeColor: "#16143c",
   colorScheme: "dark",
 };
 
@@ -68,7 +69,7 @@ export const viewport: Viewport = {
  */
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-GB" className="h-full">
+    <html lang="en-GB" className={`${fontVariables} h-full`}>
       <body className="flex min-h-full flex-col">
         {/* First tab stop on every page. Visually hidden until focused. */}
         <a

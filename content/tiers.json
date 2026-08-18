@@ -1,0 +1,82 @@
+[
+  {
+    "tier": "title",
+    "name": "Title Partner",
+    "amount": null,
+    "summary": "Our lead partner. Your name sits alongside ours for the whole season, on the car and everywhere the car appears.",
+    "slots": 1,
+    "benefits": {
+      "livery": "Largest placement — nose, both sidepods and rear wing",
+      "kit": "Front of race suits, team kit and pit apparel",
+      "website": "Full-size logo on the home page, /sponsors and every page footer",
+      "social": "6 dedicated features, plus named in every competition post",
+      "launchEvent": "Named partner, speaking slot and branded backdrop",
+      "cvBook": "Full access, two weeks before any other partner",
+      "factoryVisit": "Two workshop visits per season, plus design review attendance"
+    }
+  },
+  {
+    "tier": "gold",
+    "name": "Gold Partner",
+    "amount": null,
+    "summary": "Prominent placement on the car and strong recruitment access, without the exclusivity of title.",
+    "slots": 3,
+    "benefits": {
+      "livery": "Large placement on the sidepods or rear wing",
+      "kit": "Sleeve or back of team kit",
+      "website": "Full-size logo on the home page and /sponsors",
+      "social": "4 dedicated features per season",
+      "launchEvent": "Invited, with branded presence",
+      "cvBook": "Full access",
+      "factoryVisit": "One workshop visit per season"
+    }
+  },
+  {
+    "tier": "silver",
+    "name": "Silver Partner",
+    "amount": null,
+    "summary": "A visible place on the car and on this site, for organisations backing us at a departmental level.",
+    "slots": null,
+    "benefits": {
+      "livery": "Medium placement on the sidepods",
+      "kit": "Logo on team kit",
+      "website": "Medium logo on /sponsors and the site footer",
+      "social": "2 dedicated features per season",
+      "launchEvent": "Invited",
+      "cvBook": "Access on request",
+      "factoryVisit": false
+    }
+  },
+  {
+    "tier": "bronze",
+    "name": "Bronze Partner",
+    "amount": null,
+    "summary": "Entry-level support. The tier most of our first-year partners start at, and most of them move up.",
+    "slots": null,
+    "benefits": {
+      "livery": "Logo on the rear wing endplate",
+      "kit": false,
+      "website": "Logo on /sponsors and the site footer",
+      "social": "1 dedicated feature per season",
+      "launchEvent": "Invited",
+      "cvBook": false,
+      "factoryVisit": false
+    }
+  },
+  {
+    "tier": "inkind",
+    "name": "In-Kind Partner",
+    "amount": null,
+    "summary": "Parts, materials, machining, software or logistics instead of cash. Valued at market rate and placed at the equivalent tier.",
+    "slots": null,
+    "benefits": {
+      "livery": "Placed at the tier your contribution is valued at",
+      "kit": "Placed at the tier your contribution is valued at",
+      "website": "Logo on /sponsors, listed with what you supply",
+      "social": "1 feature per season, plus credit whenever we use the part",
+      "launchEvent": "Invited",
+      "cvBook": "Access on request",
+      "factoryVisit": "By arrangement"
+    }
+  }
+]

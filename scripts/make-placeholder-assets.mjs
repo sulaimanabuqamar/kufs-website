@@ -27,13 +27,13 @@ const PUBLIC = join(ROOT, "public");
 
 // Mirrors src/styles/tokens.css.
 const C = {
-  bg: "#0a0b0d",
-  surface: "#14161a",
-  raised: "#1c1f24",
-  text: "#f2f4f7",
-  muted: "#a8b0bc",
-  accent: "#ff4d1c",
-  border: "#2b3038",
+  bg: "#16143c",
+  surface: "#25225e",
+  raised: "#2e2b70",
+  text: "#ffffff",
+  muted: "#b9b6d8",
+  accent: "#edad55",
+  border: "#4b47a0",
 };
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -59,31 +59,37 @@ async function write(relPath, svg, { width, height }) {
    --------------------------------------------------------------------------- */
 
 const SPONSORS = [
-  { file: "apex-composites", label: "APEX", sub: "COMPOSITES", hue: "#ff4d1c" },
-  { file: "meridian-motorsport", label: "MERIDIAN", sub: "MOTORSPORT", hue: "#4da3ff" },
-  { file: "northgate-precision", label: "NORTHGATE", sub: "PRECISION", hue: "#3dd68c" },
-  { file: "halden-analytics", label: "HALDEN", sub: "ANALYTICS", hue: "#c08cff" },
+  { file: "apex-composites", label: "APEX", sub: "COMPOSITES", hue: "#ac2a26" },
+  { file: "meridian-motorsport", label: "MERIDIAN", sub: "MOTORSPORT", hue: "#1f6fb8" },
+  { file: "northgate-precision", label: "NORTHGATE", sub: "PRECISION", hue: "#137a58" },
+  { file: "halden-analytics", label: "HALDEN", sub: "ANALYTICS", hue: "#6b4bb5" },
   {
     file: "cartwright-fabrication",
     label: "CARTWRIGHT",
     sub: "FABRICATION",
-    hue: "#ffc53d",
+    hue: "#b1730d",
   },
 ];
 
 function sponsorSvg({ label, sub, hue }) {
-  const W = 480;
-  const H = 160;
+  // Sized tight to the artwork. A logo file padded with transparent space
+  // renders as a small mark in a large box wherever it is placed, because the
+  // box is what gets scaled — the commonest way placeholder logos look broken.
+  const W = 360;
+  const H = 112;
+  // NO background rect: real sponsor logos arrive with transparency, and this
+  // site places them on both light (/sponsors, the tier table) and dark (the
+  // footer bar, on white chips) grounds. Baking a background in would make one
+  // of those two look broken.
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  <rect width="${W}" height="${H}" fill="${C.bg}"/>
-  <g transform="translate(28 ${H / 2})">
-    <rect x="0" y="-26" width="10" height="52" rx="2" fill="${hue}"/>
-    <rect x="16" y="-26" width="4" height="52" rx="2" fill="${hue}" opacity="0.5"/>
+  <g transform="translate(6 ${H / 2})">
+    <rect x="0" y="-30" width="11" height="60" rx="2" fill="${hue}"/>
+    <rect x="17" y="-30" width="5" height="60" rx="2" fill="${hue}" opacity="0.5"/>
   </g>
-  <text x="42" y="${H / 2 - 4}" font-family="${FONT}" font-size="34" font-weight="800"
-        letter-spacing="1.5" fill="${C.text}">${esc(label)}</text>
-  <text x="44" y="${H / 2 + 26}" font-family="${FONT}" font-size="17" font-weight="600"
-        letter-spacing="5" fill="${hue}">${esc(sub)}</text>
+  <text x="34" y="${H / 2 - 6}" font-family="${FONT}" font-size="34" font-weight="800"
+        letter-spacing="0.5" fill="#25225E">${esc(label)}</text>
+  <text x="36" y="${H / 2 + 26}" font-family="${FONT}" font-size="16" font-weight="600"
+        letter-spacing="3.4" fill="${hue}">${esc(sub)}</text>
 </svg>`;
 }
 
@@ -92,12 +98,19 @@ function sponsorSvg({ label, sub, hue }) {
    --------------------------------------------------------------------------- */
 
 const TEAM = [
-  { file: "priya-raghunathan", name: "Priya Raghunathan", role: "Team Principal" },
-  { file: "tomas-ilves", name: "Tomas Ilves", role: "Chief Engineer" },
+  { file: "aisha-al-mansoori", name: "Aisha Al Mansoori", role: "Team Principal" },
+  { file: "rohan-menon", name: "Rohan Menon", role: "Chief Engineer" },
+  { file: "layla-haddad", name: "Layla Haddad", role: "Aerodynamics Lead" },
+  { file: "tomas-ilves", name: "Tomas Ilves", role: "Chassis Lead" },
   { file: "amara-okonkwo", name: "Amara Okonkwo", role: "Powertrain Lead" },
-  { file: "ewan-blackwood", name: "Ewan Blackwood", role: "Aerodynamics Lead" },
-  { file: "sofia-marchetti", name: "Sofia Marchetti", role: "Vehicle Dynamics Lead" },
+  { file: "yusuf-rahman", name: "Yusuf Rahman", role: "Electronics Lead" },
+  {
+    file: "sofia-marchetti",
+    name: "Sofia Marchetti",
+    role: "Suspension & Vehicle Dynamics Lead",
+  },
   { file: "daniel-osei", name: "Daniel Osei", role: "Head of Partnerships" },
+  { file: "fatima-al-zaabi", name: "Fatima Al Zaabi", role: "Marketing & Media Lead" },
 ];
 
 function initials(name) {
@@ -138,7 +151,7 @@ function portraitSvg({ name, role }) {
 
 const NEWS = [
   { file: "monocoque-layup-begins", label: "Composites", title: "Monocoque layup" },
-  { file: "fsuk-2026-review", label: "Competition", title: "Silverstone 2026" },
+  { file: "season-2027-campaign-opens", label: "Season", title: "2027 campaign" },
 ];
 
 function coverSvg({ label, title }) {
@@ -168,11 +181,11 @@ function coverSvg({ label, title }) {
 /* ------------------------------------------------------------------------- */
 
 async function main() {
-  console.log("Sponsor logos (480×160)");
+  console.log("Sponsor logos (360×112)");
   for (const sponsor of SPONSORS) {
     await write(`sponsors/${sponsor.file}.webp`, sponsorSvg(sponsor), {
-      width: 480,
-      height: 160,
+      width: 360,
+      height: 112,
     });
   }
 

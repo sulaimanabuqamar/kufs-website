@@ -4,32 +4,33 @@ import { parseOrThrow, siteSchema, type SiteConfig } from "@/lib/schemas";
  * Sitewide configuration. Editable by anyone on the team; validated at build
  * time by siteSchema, so a typo here fails `pnpm build` rather than shipping.
  *
- * TODO(brand): `name`, `longName` and `university` are placeholders — I
- * expanded the "KUFS" acronym as a guess. Replace with the registered team
- * and university names before this goes anywhere near a sponsor.
+ * The identity, tagline, positioning line, values and straplines below are
+ * taken verbatim from the official KUFS brand sheet. Do not reword them.
  */
 const site: SiteConfig = parseOrThrow(
   siteSchema,
   {
     name: "KUFS",
-    longName: "Kingsbury University Formula Student",
-    university: "Kingsbury University",
+    longName: "Khalifa University Formula Student",
+    university: "Khalifa University",
 
-    tagline: "Designed, built and driven by students. Every part, every season.",
+    tagline: "ENGINEERED TO RACE. DRIVEN TO LEAD.",
     positioning:
-      "We are a student engineering team that designs, manufactures and races a " +
-      "single-seat race car against the best universities in the world — and we " +
-      "graduate engineers who have already shipped hardware under a deadline.",
+      "KUFS is the official Formula Student team of Khalifa University. We design, " +
+      "build, and compete with passion, precision, and purpose.",
     description:
-      "Kingsbury University Formula Student designs, builds and races a student-engineered single-seater at Formula Student UK, Silverstone.",
+      "KUFS is the official Formula Student team of Khalifa University, Abu Dhabi. We design, build and race a student-engineered single-seater at Formula Student UK, Silverstone.",
 
     // TODO(deploy): point at the real domain before launch. Drives canonical
     // URLs, the sitemap, robots.txt and every Open Graph tag.
-    url: "https://kufs.example.ac.uk",
+    url: "https://kufs.ku.ac.ae",
 
-    contactEmail: "hello@kufs.example.ac.uk",
-    sponsorshipEmail: "partnerships@kufs.example.ac.uk",
+    // TODO(contact): confirm these are the addresses the team actually monitors.
+    contactEmail: "kufs@ku.ac.ae",
+    sponsorshipEmail: "partnerships.kufs@ku.ac.ae",
 
+    // TODO(social): confirm handles before launch — these are the expected
+    // formats, not verified accounts.
     socials: [
       {
         label: "Instagram",
@@ -38,8 +39,8 @@ const site: SiteConfig = parseOrThrow(
       },
       {
         label: "LinkedIn",
-        href: "https://www.linkedin.com/company/kufs-racing",
-        handle: "KUFS Racing",
+        href: "https://www.linkedin.com/company/khalifa-university-formula-student",
+        handle: "Khalifa University Formula Student",
       },
       {
         label: "YouTube",
@@ -62,6 +63,31 @@ const site: SiteConfig = parseOrThrow(
       startsAt: "2027-07-14T08:00:00+01:00",
     },
 
+    // Verbatim from the brand sheet.
+    values: [
+      {
+        title: "ENGINEERED",
+        description: "We apply knowledge and creativity to solve real-world challenges.",
+      },
+      { title: "DRIVEN", description: "We push limits, on and off the track." },
+      {
+        title: "UNITED",
+        description: "We are a team of diverse talents working as one.",
+      },
+      {
+        title: "COMPETITIVE",
+        description: "We strive for excellence in every competition.",
+      },
+    ],
+
+    // Verbatim from the brand sheet. Used as section straplines; do not invent
+    // new ones — the brand sheet defines the full set.
+    straplines: [
+      "From classroom concepts to circuit performance.",
+      "Representing Khalifa University on the Formula Student stage.",
+      "Innovate. Engineer. Compete.",
+    ],
+
     stats: [
       {
         value: "100+",
@@ -75,11 +101,62 @@ const site: SiteConfig = parseOrThrow(
           "Static events judge design, cost and business case. Dynamic events judge the car.",
       },
       {
-        value: "P24",
+        // TODO: confirm with team — this is KUFS's actual best FSUK result and
+        // must not be published until someone confirms the placing and year.
+        value: "TBC",
         label: "Our best finish",
-        detail: "Overall, Formula Student UK 2025 — up 31 places on our 2024 result.",
+        detail: "Overall at Formula Student UK. Awaiting confirmation from the team.",
       },
     ],
+
+    sponsorship: {
+      prospectusPath: "/downloads/kufs-sponsorship-prospectus.pdf",
+      // The PDF has not been supplied. Flip to true the moment it is committed
+      // at the path above; the button changes from "request it" to "download".
+      prospectusAvailable: false,
+      enquiryEmail: "partnerships.kufs@ku.ac.ae",
+      reasons: [
+        {
+          title: "Engineering visibility, not just a logo",
+          body:
+            "Your mark travels on a car that is photographed, filmed and scrutineered in " +
+            "front of the largest gathering of student engineers in Europe — and on the " +
+            "kit worn by the students who built it.",
+          // TODO: confirm with team — FSUK publishes attendance figures, but we
+          // should cite the number for the year we are actually attending.
+          stat: { value: null, label: "Spectators and industry visitors at FSUK" },
+        },
+        {
+          title: "A recruitment pipeline that has already been tested",
+          body:
+            "Formula Student students arrive in industry having shipped hardware against " +
+            "a fixed deadline and defended their design to practising engineers. Partners " +
+            "get early access to that cohort.",
+          // TODO: confirm with team — headcount for the current season.
+          stat: { value: null, label: "Students on the team this season" },
+        },
+        {
+          title: "Reach into a region investing heavily in mobility",
+          body:
+            "Khalifa University sits at the centre of the UAE's advanced-mobility and " +
+            "clean-energy programmes. Backing KUFS puts your name in front of that " +
+            "audience, in Abu Dhabi and at Silverstone.",
+          // TODO: confirm with team — count of disciplines actually represented.
+          stat: { value: null, label: "Engineering disciplines represented" },
+        },
+        {
+          title: "Reporting you can put in front of your own board",
+          body:
+            "We report back at the end of every season: where your logo appeared, what it " +
+            "was fitted to, click-throughs from this site, and what the car achieved.",
+          stat: { value: "1", label: "Written season report, every year" },
+        },
+      ],
+    },
+
+    // TODO(team): confirm the faculty advisor's name and department, or set
+    // this to null to hide the section entirely.
+    facultyAdvisor: null,
 
     hero: {
       // "sequence" is the production hero. Switch to "model" locally to preview

@@ -22,11 +22,14 @@ export const HERO_CHECKPOINTS = {
 export type HeroCheckpoint = keyof typeof HERO_CHECKPOINTS;
 
 export const heroCopy = {
-  headline: ["Built by students.", "Raced against the world."],
+  // The brand tagline, split so the second line can take the accent.
+  headline: ["Engineered to race.", "Driven to lead."],
   /** Revealed last, as the payoff for scrolling the hero. */
   spec: [
-    { label: "Target mass", value: "182 kg" },
-    { label: "Downforce at 60 km/h", value: "410 N" },
-    { label: "Students on the team", value: "64" },
+    // TODO: confirm with team. These are the shape of the figures we want to
+    // show, not measured values — do not publish until someone signs them off.
+    { label: "Target mass", value: "TBC" },
+    { label: "Downforce at 60 km/h", value: "TBC" },
+    { label: "Students on the team", value: "TBC" },
   ],
 } as const;
