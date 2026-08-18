@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
-import { Wordmark } from "@/components/layout/Wordmark";
+import { KufsLogo } from "@/components/brand/KufsLogo";
 import { CTA, PRIMARY_NAV, SECONDARY_NAV } from "@/lib/nav";
 import { useFocusTrap, useScrollLock } from "@/lib/useFocusTrap";
 
@@ -20,7 +20,7 @@ import { useFocusTrap, useScrollLock } from "@/lib/useFocusTrap";
  * The panel is always in the DOM but `hidden` when closed, so the browser's
  * find-in-page and the accessibility tree both stay honest.
  */
-export function MobileNav({ teamName }: { teamName: string }) {
+export function MobileNav() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -91,7 +91,8 @@ export function MobileNav({ teamName }: { teamName: string }) {
         className="fixed inset-y-0 right-0 z-50 flex w-[min(21rem,88vw)] flex-col border-l border-border bg-surface shadow-[var(--shadow-raised)]"
       >
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-5">
-          <Wordmark name={teamName} />
+          {/* Drawer panel is --color-surface (navy): dark artwork. */}
+          <KufsLogo on="dark" width={132} />
           <button
             type="button"
             onClick={close}

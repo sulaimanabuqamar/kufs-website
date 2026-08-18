@@ -11,7 +11,8 @@ import type { ComponentPropsWithoutRef, ReactNode } from "react";
  * notes in src/styles/tokens.css.
  */
 
-export type ButtonVariant = "primary" | "secondary" | "ghost";
+export type ButtonVariant =
+  "primary" | "secondary" | "ghost" | "onLight" | "onLightSecondary";
 export type ButtonSize = "sm" | "md" | "lg";
 
 const BASE =
@@ -20,14 +21,23 @@ const BASE =
   "ease-out-quart disabled:pointer-events-none disabled:opacity-50";
 
 const VARIANTS: Record<ButtonVariant, string> = {
-  // Solid accent. accent-contrast on accent = 5.94:1.
+  // Performance Orange with KUFS Navy label. 7.29:1 on the label, 8.93:1 for
+  // the button against --color-bg — this is the primary CTA on every dark
+  // surface. Deliberately NOT Racing Red, which measures 2.12:1 on navy and
+  // would be close to invisible.
   primary: "bg-accent text-accent-contrast hover:bg-accent-hover",
-  // Outlined. Border meets the 3:1 non-text minimum on bg and surface.
+  // 2px accent border and accent label, per the brand spec.
   secondary:
-    "border border-border-strong bg-transparent text-text hover:bg-surface-raised hover:border-text-muted",
-  // Text-only. Underline on hover so it is not colour-alone.
+    "border-2 border-accent bg-transparent text-accent hover:bg-accent hover:text-accent-contrast",
+  // Text-only. Underline on hover so the affordance is not colour-alone.
   ghost:
     "bg-transparent text-text-muted hover:text-text hover:underline underline-offset-4",
+  // For light sections only (sponsor walls, the tier table). Racing Red is
+  // legitimate here: white on #AC2A26 measures 6.75:1.
+  onLight: "bg-accent-on-light text-white hover:bg-[#8f221f]",
+  // Outlined equivalent for light sections. Navy label at 13.29:1.
+  onLightSecondary:
+    "border-2 border-accent-on-light bg-transparent text-accent-on-light hover:bg-accent-on-light hover:text-white",
 };
 
 const SIZES: Record<ButtonSize, string> = {

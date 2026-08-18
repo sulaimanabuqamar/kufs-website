@@ -6,13 +6,14 @@ import { TIER_LABEL } from "@/lib/content";
 /**
  * Sitewide sponsor logo bar, rendered into the footer on every page.
  *
- * Greyscale by default, full colour on hover/focus. This is the one piece of
- * the site a sponsor will check on their own phone, so it links out to each
- * sponsor and names their tier for assistive tech.
+ * Each logo sits on a white chip. Sponsor marks are supplied with transparency
+ * and drawn for light grounds — dropping a navy wordmark straight onto the
+ * navy footer would make half of them vanish, and recolouring a partner's mark
+ * is not ours to do. The chip is the honest fix.
  *
- * The greyscale treatment is a `filter`, not a second set of desaturated
- * image files — one asset per sponsor, and colour returns on focus for
- * keyboard users, not just on hover.
+ * Greyscale by default, full colour on hover AND on keyboard focus. This is
+ * the one piece of the site a sponsor will check on their own phone, so it
+ * links out to each sponsor and names their tier for assistive tech.
  */
 export function SponsorBar() {
   const sponsors = getSponsors();
@@ -31,7 +32,7 @@ export function SponsorBar() {
                 href={sponsor.url}
                 target="_blank"
                 rel="noreferrer noopener sponsored"
-                className="group inline-flex rounded-sm"
+                className="group inline-flex rounded-md bg-white px-4 py-3 transition-colors duration-[var(--duration-base)] hover:bg-white focus-visible:bg-white"
               >
                 <Image
                   src={sponsor.logo.src}
@@ -39,7 +40,7 @@ export function SponsorBar() {
                   width={sponsor.logo.width}
                   height={sponsor.logo.height}
                   sizes="(min-width: 768px) 160px, 128px"
-                  className="h-8 w-auto opacity-70 grayscale transition duration-[var(--duration-base)] ease-out-quart group-hover:opacity-100 group-hover:grayscale-0 group-focus-visible:opacity-100 group-focus-visible:grayscale-0 sm:h-9"
+                  className="h-7 w-auto opacity-75 grayscale transition duration-[var(--duration-base)] ease-out-quart group-hover:opacity-100 group-hover:grayscale-0 group-focus-visible:opacity-100 group-focus-visible:grayscale-0 sm:h-8"
                 />
               </a>
             </li>

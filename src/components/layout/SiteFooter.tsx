@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { SponsorBar } from "@/components/layout/SponsorBar";
-import { Wordmark } from "@/components/layout/Wordmark";
+import { KufsLogo } from "@/components/brand/KufsLogo";
 import site from "@/content/site";
 import { PRIMARY_NAV, SECONDARY_NAV } from "@/lib/nav";
 
@@ -14,7 +14,8 @@ export function SiteFooter() {
 
       <div className="page-container grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
         <div className="flex flex-col gap-4">
-          <Wordmark name={site.name} />
+          {/* Footer is --color-surface (KUFS Navy): dark artwork, with tagline. */}
+          <KufsLogo on="dark" withTagline width={240} />
           <p className="max-w-[38ch] text-small text-text-muted">{site.tagline}</p>
           <ul className="flex flex-wrap gap-x-4 gap-y-2">
             {site.socials.map((social) => (

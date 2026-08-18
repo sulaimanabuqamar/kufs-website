@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/Button";
+import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { heroCopy, type HERO_CHECKPOINTS } from "@/components/hero/heroContent";
 import { CTA } from "@/lib/nav";
 import { cn } from "@/lib/cn";
@@ -73,6 +74,10 @@ export function HeroCopy({
             </span>
           ))}
         </h1>
+
+        {/* The logo's speed stripe, carried into the hero. Decorative and
+            aria-hidden — and the only place Racing Red appears on navy. */}
+        <SpeedStripe variant="accent" className="mt-7" />
 
         <p
           className={cn(

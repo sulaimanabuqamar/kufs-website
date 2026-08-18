@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { MobileNav } from "@/components/layout/MobileNav";
 import { NavLink } from "@/components/layout/NavLink";
-import { Wordmark } from "@/components/layout/Wordmark";
+import { KufsLogo } from "@/components/brand/KufsLogo";
 import { Button } from "@/components/ui/Button";
 import { CTA, PRIMARY_NAV } from "@/lib/nav";
 import site from "@/content/site";
@@ -21,7 +21,8 @@ export function SiteHeader() {
     <header className="sticky top-0 z-30 border-b border-border/80 bg-bg/80 backdrop-blur-md">
       <div className="page-container flex h-16 items-center justify-between gap-4">
         <Link href="/" className="rounded-sm" aria-label={`${site.name} — home`}>
-          <Wordmark name={site.name} />
+          {/* Dark-background artwork: the header sits on --color-bg. */}
+          <KufsLogo on="dark" width={180} priority />
         </Link>
 
         <nav aria-label="Primary" className="hidden md:block">
@@ -41,7 +42,7 @@ export function SiteHeader() {
           <Button href={CTA.join.href} size="sm" className="hidden sm:inline-flex">
             {CTA.join.label}
           </Button>
-          <MobileNav teamName={site.name} />
+          <MobileNav />
         </div>
       </div>
     </header>
