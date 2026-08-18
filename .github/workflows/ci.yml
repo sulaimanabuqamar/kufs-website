@@ -41,6 +41,12 @@ jobs:
       - name: Typecheck
         run: pnpm typecheck
 
+      # Re-measures every contrast ratio claimed in src/styles/tokens.css and
+      # enforces that Racing Red stays below 3:1 on dark. The comments in the
+      # token file are the site's accessibility contract; this keeps them true.
+      - name: Check contrast claims
+        run: pnpm check:contrast
+
       # Also the content gate: every file under /content is parsed through its
       # Zod schema during the build, so a malformed sponsor or milestone fails
       # here rather than in production.
@@ -61,8 +67,8 @@ jobs:
           path: .next
           retention-days: 3
 
-  hero:
-    name: Hero behaviour (mobile / reduced-motion / desktop)
+  runtime:
+    name: Hero behaviour and brand rules
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -86,8 +92,9 @@ jobs:
       # Asserts the three hero paths against a real production server:
       # phones and reduced-motion visitors must download zero frames and get
       # no pinning; desktop must get the sequence. See scripts/check-hero.mjs.
-      - name: Start server and verify hero
+      - name: Start server and verify hero + brand rules
         run: |
           pnpm start --port 3000 &
           npx --yes wait-on http://127.0.0.1:3000 --timeout 60000
           pnpm check:hero
+          pnpm check:brand

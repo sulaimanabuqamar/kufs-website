@@ -82,8 +82,7 @@ async function probe(browser, { width, height, reducedMotion, settleMs = 2500 })
         const paragraphs = [...document.querySelectorAll(".hero-pane p")];
         return paragraphs.some(
           (p) =>
-            p.textContent.trim().length > 80 &&
-            Number(getComputedStyle(p).opacity) > 0.9,
+            p.textContent.trim().length > 80 && Number(getComputedStyle(p).opacity) > 0.9,
         );
       })(),
       ctas: [...document.querySelectorAll(".hero-pane a")]
