@@ -28,13 +28,26 @@
     text-rendering: optimizeLegibility;
   }
 
+  /* The headline face is uppercase italic by design — that rake is the
+     brand's signature and it is applied here rather than per-component so a
+     heading cannot accidentally opt out. h1-h3 only: h4 and below are small
+     enough that a heavy display italic costs more legibility than it buys, so
+     they run on Barlow. */
   h1,
   h2,
-  h3,
+  h3 {
+    font-family: var(--font-display);
+    font-style: italic;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
   h4,
   h5,
   h6 {
-    font-family: var(--font-display);
+    font-family: var(--font-body);
+    font-weight: 600;
     text-wrap: balance;
   }
 

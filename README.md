@@ -1,7 +1,10 @@
-# KUFS — Formula Student team website
+# KUFS — Khalifa University Formula Student
 
-Public website for the KUFS Formula Student team, competing in **Formula Student UK
-(FS Class)** at Silverstone, organised by the IMechE.
+Public website for **KUFS, the official Formula Student team of Khalifa University**,
+Abu Dhabi — competing in **Formula Student UK (FS Class)** at Silverstone, organised by
+the IMechE.
+
+> **ENGINEERED TO RACE. DRIVEN TO LEAD.**
 
 It serves three audiences, in this order of priority:
 
@@ -53,6 +56,64 @@ Environment variables (all optional):
 
 `robots.ts` reads `VERCEL_ENV`, which Vercel sets automatically: preview deploys are
 `Disallow: /` so a preview URL cannot outrank the real site.
+
+---
+
+## Licensing
+
+**A4 Speed font.** A4 Speed is distributed on the public font sites as _free for personal
+use_. This site carries sponsor logos, so its use here may fall outside that grant.
+Action for the team: check the author credit on the dafont listing and email them for
+written permission for web and team use — for a student motorsport team this is very
+often granted for free, and it takes one email. Until that is confirmed, the risk is
+accepted knowingly. The headline face is isolated behind the `--font-display` token and
+`src/lib/fonts.ts`; swapping to Barlow Condensed Bold Italic is a one-file change.
+
+**Status right now:** the A4 Speed font file was **not supplied with this milestone**, so
+the site currently ships the fallback — Barlow Condensed Bold Italic — as the live
+headline face. Everything else is in place: the token, the loader, the commented
+`localFont` block, and `pnpm font:subset`. See "Typography" below.
+
+**Barlow** (body) is licensed under the SIL Open Font License and is loaded through
+`next/font/google`, which downloads and self-hosts it at build time. No runtime request
+to Google, no third-party origin in the critical path.
+
+**Logos.** The files in `public/brand/` were extracted from the brand PDF at ~900px wide.
+Request the original SVG/AI vector logo from the team's design lead and replace them —
+drop-in same filenames.
+
+---
+
+## Typography
+
+|                              | Face                                     | Loaded by          | Used for                         |
+| ---------------------------- | ---------------------------------------- | ------------------ | -------------------------------- |
+| Headlines                    | **A4 Speed** _(pending — see Licensing)_ | `next/font/local`  | `h1`–`h3` and stat numerals only |
+| Headlines _(shipping today)_ | Barlow Condensed Bold Italic             | `next/font/google` | as above                         |
+| Body                         | **Barlow** 400/500/600                   | `next/font/google` | everything else                  |
+
+Headlines are uppercase, italic, `letter-spacing: -0.01em`, tight leading — applied in
+`globals.css` on `h1`–`h3` so a heading cannot accidentally opt out. `h4` and below run
+on Barlow: the display face is a heavy italic and it costs more legibility than it buys
+below ~20px. Nav links, buttons, table cells and form labels are all Barlow.
+
+### Enabling A4 Speed
+
+```bash
+# 1. drop the source file in
+cp ~/Downloads/A4Speed-Bold.ttf src/assets/fonts/
+
+# 2. convert + subset to Latin, digits and punctuation, and report the size
+pnpm font:subset src/assets/fonts/A4Speed-Bold.ttf
+
+# 3. in src/lib/fonts.ts: comment out the Barlow_Condensed block,
+#    uncomment the localFont block. Nothing else changes.
+```
+
+`pnpm font:subset` uses the wasm build of harfbuzz — no Python, no fontTools, no native
+toolchain. The pipeline is tested: run against a comparable display face (Impact, 135.2
+KB TTF) it produced a **14.2 KB** subset WOFF2, an 89.5% reduction, comfortably inside
+the 30 KB budget. A4 Speed should land in the same range; the script warns if it does not.
 
 ---
 
@@ -153,6 +214,29 @@ four wheels — proportioned like a Formula Student car rather than an F1 car.
 there is no licence to verify, nothing to attribute, and nothing to remove later.
 Replacing it is a one-line config change (`hero.modelPath`), not a rewrite.
 
+### Logo usage
+
+Pick the variant **by background**, always — `src/components/brand/KufsLogo.tsx` enforces
+this by taking an `on="dark" | "light"` prop rather than a filename.
+
+| Context                               | File                                    | Component call                       |
+| ------------------------------------- | --------------------------------------- | ------------------------------------ |
+| Header, footer, anything on navy/dark | `kufs-logo-color--dark-bg.png`          | `<KufsLogo on="dark" />`             |
+| Dark background, needs the tagline    | `kufs-logo-simple-tagline--dark-bg.png` | `<KufsLogo on="dark" withTagline />` |
+| White / off-white sections            | `kufs-logo-color-tagline--light-bg.png` | `<KufsLogo on="light" />`            |
+
+The light-background artwork has a **navy "KU"**. On a navy surface the KU disappears and
+you are left with a floating red "F" — which is why the light file is not reachable
+without explicitly asking for `on="light"`, and why `pnpm check:brand` fails the build if
+a `light-bg` image ever renders on a dark ancestor.
+
+Clear space: keep at least the height of the "K" free on all sides (`clearSpace` prop).
+The header instance renders at 180px and is `priority`.
+
+**Not supplied:** a mono white/red-streak variant. The brand PDF contains no such lockup
+and synthesising one would be inventing a brand asset. Small dark-background uses fall
+back to `on="dark"` without the tagline. Ask the design lead for the mono lockup.
+
 ---
 
 ## Design system
@@ -176,17 +260,17 @@ production, is excluded from the sitemap, and is disallowed in `robots.txt`.
 
 ## Swapping in real brand assets
 
-| What                | Files to edit                                                                                                                                                                                   |
-| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Colours**         | `src/styles/tokens.css` — only this file. Re-measure the contrast ratios in the comments, then check `/styleguide`.                                                                             |
-| **Fonts**           | `src/styles/tokens.css` (`--font-display`, `--font-body`) **and** `src/app/layout.tsx` if you use `next/font`: add the loader there, point the tokens at the generated CSS variable. Two files. |
-| **Logo**            | `src/components/layout/Wordmark.tsx` (the inline SVG) and `src/app/icon.svg` (favicon). Keep both in sync.                                                                                      |
-| **Sponsor logos**   | Drop files in `public/sponsors/`, update `logo.src/width/height/alt` in `content/sponsors.json`. Delete the generated placeholders.                                                             |
-| **Team photos**     | `public/team/` + `photo.*` in `content/team.json`.                                                                                                                                              |
-| **News covers**     | `public/news/` + `cover.*` in the post's frontmatter.                                                                                                                                           |
-| **Car renders**     | `public/models/*.glb` + `hero.modelPath` in `content/site.ts`, then `pnpm render:frames`. Frames and poster are regenerated for you.                                                            |
-| **Team/site facts** | `content/site.ts` — name, tagline, socials, contact addresses, competition date, headline stats.                                                                                                |
-| **OG card**         | `src/app/opengraph-image.tsx`. Note: Satori cannot read CSS variables, so the palette is repeated there as literals — update it alongside `tokens.css`.                                         |
+| What                | Files to edit                                                                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Colours**         | `src/styles/tokens.css` — only this file. Re-measure the contrast ratios in the comments, then check `/styleguide`.                                     |
+| **Fonts**           | `src/lib/fonts.ts` — that is the only file that names a typeface. `src/styles/tokens.css` holds the stacks.                                             |
+| **Logo**            | `src/components/layout/Wordmark.tsx` (the inline SVG) and `src/app/icon.svg` (favicon). Keep both in sync.                                              |
+| **Sponsor logos**   | Drop files in `public/sponsors/`, update `logo.src/width/height/alt` in `content/sponsors.json`. Delete the generated placeholders.                     |
+| **Team photos**     | `public/team/` + `photo.*` in `content/team.json`.                                                                                                      |
+| **News covers**     | `public/news/` + `cover.*` in the post's frontmatter.                                                                                                   |
+| **Car renders**     | `public/models/*.glb` + `hero.modelPath` in `content/site.ts`, then `pnpm render:frames`. Frames and poster are regenerated for you.                    |
+| **Team/site facts** | `content/site.ts` — name, tagline, socials, contact addresses, competition date, headline stats.                                                        |
+| **OG card**         | `src/app/opengraph-image.tsx`. Note: Satori cannot read CSS variables, so the palette is repeated there as literals — update it alongside `tokens.css`. |
 
 Placeholder imagery under `public/sponsors`, `public/team` and `public/news` is
 generated by `pnpm assets:placeholders`. It is all our own output — no stock
