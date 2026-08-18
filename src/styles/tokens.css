@@ -12,86 +12,145 @@
         (`--color-accent` -> `bg-accent` / `text-accent` / `border-accent`).
 
    CONTRAST
-   Every colour pairing that carries text meets WCAG 2.1 AA
-   (4.5:1 body, 3:1 large text / non-text UI). Measured ratios are noted
-   against each token. When you swap in the real brand palette you MUST
-   re-measure — the comments are a contract, not decoration.
-   Re-measure with any WCAG contrast checker, or `node scripts/check-contrast.mjs`.
+   Every colour pairing that carries text meets WCAG 2.1 AA (4.5:1 body,
+   3:1 large text / non-text UI); most clear AAA. Measured ratios are noted
+   against each token and are re-verified by `pnpm check:contrast`, which CI
+   runs. The comments are a contract, not decoration.
+
+   THE ONE RULE YOU MUST NOT BREAK
+   Racing Red (#AC2A26) measures 2.12:1 on KUFS Navy. That fails WCAG at every
+   level, including the 3:1 non-text minimum. It is a decorative colour only —
+   the speed stripe and the logo lockup. It is NEVER text, a button, a border,
+   an icon or a focus ring on any dark surface. On dark, the call-to-action
+   colour is Performance Orange. Racing Red is only allowed to carry meaning on
+   white / off-white, where it measures 6.75:1.
    ========================================================================== */
 
 @theme {
   /* ---------------------------------------------------------------------
      COLOUR — semantic roles only. Never name a token after the colour it
      currently happens to be; name it after the job it does.
-     PLACEHOLDER PALETTE: dark motorsport. Near-black ground, off-white text,
-     one saturated accent. Awaiting real team hex codes.
+
+     KUFS brand palette (official brand sheet):
+       KUFS Navy #25225E · Racing Red #AC2A26 · Desert Copper #DF964E
+       Performance Orange #EDAD55 · White #FFFFFF
      --------------------------------------------------------------------- */
 
-  /* Page ground. The darkest surface; everything else sits on top. */
-  --color-bg: #0a0b0d;
+  /* Page ground. A deepened navy so KUFS Navy can sit on top as a surface. */
+  --color-bg: #16143c;
 
-  /* Raised panels: cards, the header when stuck, form fields. */
-  --color-surface: #14161a;
+  /* KUFS Navy. Cards, header, footer — the brand's primary surface. */
+  --color-surface: #25225e;
 
   /* Second elevation: hover states, nested panels, table stripes. */
-  --color-surface-raised: #1c1f24;
+  --color-surface-raised: #2e2b70;
 
-  /* Primary body and heading text.
-     17.87:1 on --color-bg · 16.44:1 on --color-surface · 15:1 on --color-surface-raised */
-  --color-text: #f2f4f7;
-
-  /* Secondary text: captions, metadata, supporting copy. Still AA for body.
-     9:1 on --color-bg · 8.28:1 on --color-surface · 7.56:1 on --color-surface-raised */
-  --color-text-muted: #a8b0bc;
-
-  /* The one saturated brand accent. Safe as body-size text on every surface.
-     5.94:1 on --color-bg · 5.46:1 on --color-surface · 4.98:1 on --color-surface-raised */
-  --color-accent: #ff4d1c;
-
-  /* Text/icons placed ON --color-accent (e.g. primary button label).
-     5.94:1 on --color-accent */
-  --color-accent-contrast: #0a0b0d;
-
-  /* Accent hover/active. Lighter, so it still reads on the dark ground.
-     8.18:1 on --color-bg · 8.18:1 against --color-accent-contrast */
-  --color-accent-hover: #ff8552;
-
-  /* Hairlines and decorative dividers. Non-essential boundaries only —
-     WCAG 1.4.11 does not apply to purely decorative separators.
-     1.48:1 on --color-bg · 1.36:1 on --color-surface */
-  --color-border: #2b3038;
+  /* Hairlines and decorative dividers ONLY. 2.26:1 on --color-bg — well under
+     the 3:1 non-text minimum, so it must never be the only thing marking the
+     edge of a control. Use --color-border-strong for that. */
+  --color-border: #4b47a0;
 
   /* Boundaries that carry meaning: input outlines, control edges, chips.
-     Meets the 3:1 non-text minimum on every surface.
-     4.07:1 on --color-bg · 3.75:1 on --color-surface · 3.42:1 on --color-surface-raised */
-  --color-border-strong: #6b7280;
+     6.43:1 on --color-bg · 5.25:1 on --color-surface · 4.55:1 on --color-surface-raised */
+  --color-border-strong: #9a96d6;
 
-  /* Focus ring. Must clear 3:1 against BOTH the component and its background.
-     5.94:1 on --color-bg — same value as the accent, kept separate so the
-     ring can be re-tuned without moving the brand colour. */
-  --color-focus: #ff4d1c;
+  /* Primary body and heading text.
+     17.51:1 on --color-bg · 14.29:1 on --color-surface · 12.38:1 on --color-surface-raised */
+  --color-text: #ffffff;
 
-  /* Status — used by milestone pills and the countdown.
-     done     10.5:1 on --color-bg ·  9.66:1 on --color-surface
-     active   5.94:1 on --color-bg ·  5.46:1 on --color-surface
-     upcoming    9:1 on --color-bg ·  8.28:1 on --color-surface */
-  --color-status-done: #3dd68c;
-  --color-status-active: #ff4d1c;
-  --color-status-upcoming: #a8b0bc;
+  /* Secondary text: captions, metadata, supporting copy. AAA on bg and surface.
+     8.96:1 on --color-bg · 7.31:1 on --color-surface · 6.34:1 on --color-surface-raised */
+  --color-text-muted: #b9b6d8;
+
+  /* Performance Orange. THE call-to-action colour on dark, and the focus ring.
+     8.93:1 on --color-bg · 7.29:1 on --color-surface · 6.32:1 on --color-surface-raised */
+  --color-accent: #edad55;
+
+  /* Desert Copper. Accent hover/active.
+     7.18:1 on --color-bg · 5.86:1 on --color-surface */
+  --color-accent-hover: #df964e;
+
+  /* KUFS Navy as the label colour ON Performance Orange (primary buttons).
+     7.29:1 on --color-accent — AAA */
+  --color-accent-contrast: #25225e;
+
+  /* Focus ring. Same value as the accent, kept separate so the ring can be
+     re-tuned without moving the brand colour.
+     8.93:1 on --color-bg · 7.29:1 on --color-surface */
+  --color-focus: #edad55;
+
+  /* Racing Red. DECORATIVE ONLY on dark — speed stripe and logo lockup.
+     2.60:1 on --color-bg · 2.12:1 on --color-surface · 1.84:1 on --color-surface-raised.
+     All three fail WCAG. Never text, button, border, icon or focus ring here. */
+  --color-stripe-red: #ac2a26;
+
+  /* Desert Copper and Performance Orange as named stripe stops, so the speed
+     stripe motif reads from tokens rather than repeating hexes. */
+  --color-stripe-copper: #df964e;
+  --color-stripe-orange: #edad55;
+
+  /* ---------------------------------------------------------------------
+     LIGHT SECTIONS
+     Sponsor logo walls and the sponsorship tier table run on a light ground:
+     sponsor logos are designed for white, and a tier comparison table is far
+     easier to read on light. On these sections — and ONLY on these — Racing
+     Red becomes a legitimate accent.
+     --------------------------------------------------------------------- */
+  --color-bg-light: #f7f6fb;
+
+  /* KUFS Navy as text on light.
+     13.29:1 on --color-bg-light · 14.29:1 on pure white — AAA */
+  --color-text-on-light: #25225e;
+
+  /* Muted text on light.
+     6.79:1 on --color-bg-light · 7.31:1 on pure white — AA (AAA on white) */
+  --color-muted-on-light: #55527a;
+
+  /* Racing Red, finally usable as an accent because the ground is light.
+     6.27:1 on --color-bg-light · 6.75:1 on pure white — AA.
+     White on this red measures 6.75:1, which is the light-section button. */
+  --color-accent-on-light: #ac2a26;
+
+  /* Card ground inside light sections — pure white, so sponsor logos with
+     white-matted artwork do not show a seam. */
+  --color-surface-light: #ffffff;
+
+  /* Divider on light sections. Decorative. */
+  --color-border-light: #dedbec;
+
+  /* Status — milestone pills and the recruitment timeline. Each is paired with
+     a text label, never colour alone. Deliberately NOT Racing Red for the
+     "active" state, which is the obvious motorsport instinct and would be
+     unreadable on navy; Performance Orange carries it instead.
+
+     9.72:1 on --color-bg · 7.93:1 on --color-surface */
+  --color-status-done: #4ed8a0;
+
+  /* 8.93:1 on --color-bg · 7.29:1 on --color-surface */
+  --color-status-active: #edad55;
+
+  /* 8.96:1 on --color-bg · 7.31:1 on --color-surface */
+  --color-status-upcoming: #b9b6d8;
 
   /* ---------------------------------------------------------------------
      TYPOGRAPHY
-     Placeholder stacks are system fonts: zero network cost, zero layout
-     shift, and a genuinely fast LCP. To swap in the real team faces, see
-     the "Swapping in real brand assets" table in README.md — it is a
-     two-file change (this file + src/app/layout.tsx for next/font).
+     The faces are loaded by src/lib/fonts.ts (next/font, self-hosted at build
+     time) and injected as --font-*-face on <html>. The stacks below are the
+     contract; the loader is the plumbing. Change a face in fonts.ts, change
+     the stack here — nothing else in the codebase names a font.
+
+     --font-display is the headline face: uppercase, italic, tight. It is used
+     ONLY for h1-h3 and stat numerals. It is a heavy display italic and it hurts
+     legibility below about 20px, so nav links, buttons, body copy, table cells
+     and form labels all use --font-body. Enforced by review, not by CSS —
+     if you find yourself reaching for font-display on a small element, don't.
      --------------------------------------------------------------------- */
   --font-display:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    sans-serif;
+    var(--font-display-face), "Barlow Condensed", "Arial Narrow", ui-sans-serif,
+    system-ui, sans-serif;
   --font-body:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
-    sans-serif;
+    var(--font-body-face), Barlow, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
   --font-mono:
     ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
@@ -100,17 +159,17 @@
      Utilities: text-display, text-h1 ... text-eyebrow */
   --text-display: clamp(2.75rem, 1.4rem + 6vw, 6rem);
   --text-display--line-height: 0.95;
-  --text-display--letter-spacing: -0.03em;
+  --text-display--letter-spacing: -0.01em;
   --text-display--font-weight: 800;
 
   --text-h1: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
   --text-h1--line-height: 1.05;
-  --text-h1--letter-spacing: -0.025em;
+  --text-h1--letter-spacing: -0.01em;
   --text-h1--font-weight: 800;
 
   --text-h2: clamp(1.75rem, 1.25rem + 2.1vw, 2.75rem);
   --text-h2--line-height: 1.12;
-  --text-h2--letter-spacing: -0.02em;
+  --text-h2--letter-spacing: -0.01em;
   --text-h2--font-weight: 700;
 
   --text-h3: clamp(1.25rem, 1.05rem + 0.85vw, 1.625rem);
