@@ -63,8 +63,7 @@ export default function TeamPage() {
 
           <aside className="flex flex-col gap-4 self-start rounded-lg border border-border bg-surface p-7">
             <h2 className="text-h4 text-text">The team at a glance</h2>
-            <SpeedStripe variant="underline" />
-            <dl className="mt-2 flex flex-col gap-4">
+            <dl className="mt-2 flex flex-col gap-4 border-t border-border pt-4">
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
                   Students listed here
@@ -108,7 +107,6 @@ export default function TeamPage() {
             >
               {/* Verbatim from the brand sheet — do not reword. */}
               <h3 className="text-h4 tracking-widest text-accent">{value.title}</h3>
-              <SpeedStripe variant="underline" className="w-16" />
               <p className="text-small text-text-muted">{value.description}</p>
             </li>
           ))}
@@ -127,10 +125,9 @@ export default function TeamPage() {
         <div className="mt-12 flex flex-col gap-14">
           {groups.map((group) => (
             <div key={group.subteam}>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-h3 text-text">{group.subteam}</h3>
-                <SpeedStripe variant="underline" />
-              </div>
+              <h3 className="border-b border-border pb-3 text-h3 text-text">
+                {group.subteam}
+              </h3>
               <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                 {group.members.map((member) => (
                   <MemberCard key={member.name} member={member} />
@@ -145,7 +142,6 @@ export default function TeamPage() {
         {site.facultyAdvisor ? (
           <div className="mt-16 rounded-lg border border-border bg-surface p-7">
             <h3 className="text-h4 text-text">Faculty advisor</h3>
-            <SpeedStripe variant="underline" className="mt-2" />
             <p className="mt-4 text-body text-text">{site.facultyAdvisor.name}</p>
             <p className="text-small text-text-muted">
               {site.facultyAdvisor.role} · {site.facultyAdvisor.department}
@@ -159,7 +155,6 @@ export default function TeamPage() {
         <div className="flex flex-col items-start gap-6 rounded-lg border border-border bg-surface p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10">
           <div className="flex flex-col gap-3">
             <h2 className="text-h3 text-text">There is a seat for you here</h2>
-            <SpeedStripe variant="underline" />
             <p className="max-w-[56ch] text-body text-text-muted">
               We recruit across every subteam each October — engineering and business
               alike. Most of the people above joined knowing nothing about race cars.

@@ -79,25 +79,58 @@ export default function JoinPage() {
     <>
       {/* ---------- Hero ---------- */}
       <Section className="border-b border-border">
-        <div className="flex max-w-[62ch] flex-col gap-6">
-          <p className="text-eyebrow uppercase text-accent">Recruitment</p>
-          <h1 className="text-h1 text-text">
-            You do not need experience. You need to turn up.
-          </h1>
-          <SpeedStripe variant="accent" />
-          <p className="text-lead text-text-muted">
-            We recruit across every subteam each October, from first years to PhDs. Around{" "}
-            {totalOpenings} places this season, and the majority of the people running the
-            team now joined knowing nothing about race cars.
-          </p>
-          <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-            <Button href="#roles" size="lg">
-              See open roles
-            </Button>
-            <Button href="/team" variant="secondary" size="lg">
-              Meet the team
-            </Button>
+        <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+          <div className="flex max-w-[58ch] flex-col gap-6">
+            <p className="text-eyebrow uppercase text-accent">Recruitment</p>
+            <h1 className="text-h1 text-text">
+              You do not need experience. You need to turn up.
+            </h1>
+            <SpeedStripe variant="accent" />
+            <p className="text-lead text-text-muted">
+              We recruit across every subteam each October, from first years to PhDs.
+              Around {totalOpenings} places this season, and the majority of the people
+              running the team now joined knowing nothing about race cars.
+            </p>
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+              <Button href="#roles" size="lg">
+                See open roles
+              </Button>
+              <Button href="/team" variant="secondary" size="lg">
+                Meet the team
+              </Button>
+            </div>
           </div>
+
+          {/* Right column carries the facts a student actually decides on. */}
+          <aside className="flex flex-col gap-4 self-start rounded-lg border border-border bg-surface p-7">
+            <h2 className="text-h4 text-text">Recruitment at a glance</h2>
+            <dl className="flex flex-col gap-4 border-t border-border pt-5">
+              <div>
+                <dt className="text-caption uppercase tracking-wider text-text-muted">
+                  Places this season
+                </dt>
+                <dd className="tabular text-h3 text-accent">{totalOpenings}</dd>
+              </div>
+              <div>
+                <dt className="text-caption uppercase tracking-wider text-text-muted">
+                  Subteams recruiting
+                </dt>
+                <dd className="tabular text-h3 text-accent">{roleGroups.length}</dd>
+              </div>
+              <div>
+                <dt className="text-caption uppercase tracking-wider text-text-muted">
+                  Applications open
+                </dt>
+                <dd className="text-h4 text-text">Start of autumn term</dd>
+              </div>
+              <div>
+                <dt className="text-caption uppercase tracking-wider text-text-muted">
+                  Experience required
+                </dt>
+                <dd className="text-h4 text-text">None</dd>
+              </div>
+            </dl>
+          </aside>
         </div>
       </Section>
 
@@ -151,10 +184,9 @@ export default function JoinPage() {
         <div className="mt-12 flex flex-col gap-12">
           {roleGroups.map((group) => (
             <div key={group.subteam}>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-h3 text-text">{group.subteam}</h3>
-                <SpeedStripe variant="underline" />
-              </div>
+              <h3 className="border-b border-border pb-3 text-h3 text-text">
+                {group.subteam}
+              </h3>
               <ul className="mt-6 grid gap-5 lg:grid-cols-2">
                 {group.roles.map((role) => (
                   <li
