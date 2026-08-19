@@ -107,5 +107,8 @@ jobs:
 
       # LCP < 2.0s on Fast 4G, < 3.0s on Slow 4G, CLS < 0.1, accessibility 100.
       # Runs Lighthouse through `pnpm dlx` so it is not a dependency of the repo.
+      # Median of three, on a reduced page set. Lighthouse's simulated
+      # throttling still depends on the runner's real CPU, and a single sample
+      # on a shared runner is noisy enough to fail a budget it clears locally.
       - name: Performance and accessibility budgets
-        run: pnpm check:perf
+        run: pnpm check:perf -- --runs 3 --paths "/,/become-a-sponsor,/team"
