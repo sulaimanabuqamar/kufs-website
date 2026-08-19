@@ -58,8 +58,8 @@ You need three things installed. Do this once.
 
 3. **The code itself.**
    ```bash
-   git clone <the repository URL from GitHub>
-   cd "KUFS Website"
+   git clone https://github.com/sulaimanabuqamar/kufs-website.git
+   cd kufs-website
    pnpm install
    ```
 
@@ -319,7 +319,9 @@ the site already does everywhere. The automated check will stop you either way.
 
 For the outgoing committee, at the end of your term.
 
-- [ ] Add the incoming web lead to the GitHub organisation, with write access.
+- [ ] Add the incoming web lead to the GitHub repository, with write access.
+- [ ] Raise the required approval count on `main` to 1 once two people have write access
+      (it is 0 today so a solo maintainer is not locked out).
 - [ ] Add them to the Vercel project.
 - [ ] Add them to the Formspree account (this receives sponsorship enquiries — losing
       access to it means losing enquiries).

@@ -69,6 +69,10 @@ Follow these in order. Someone who has never deployed anything can do this.
 4. **Add environment variables** in Vercel → Settings → Environment Variables, per the
    table above. `NEXT_PUBLIC_SITE_URL` goes in the **Production** scope only.
 
+   Leave `NEXT_PUBLIC_FORMSPREE_ENDPOINT` unset until you have a Formspree form. Both
+   enquiry forms fall back to opening the visitor's mail client, which works — it just
+   converts worse than a real form.
+
 5. **Deploy.** Vercel builds `main` and gives you a `*.vercel.app` URL. Every pull
    request from then on gets its own preview URL automatically.
 
