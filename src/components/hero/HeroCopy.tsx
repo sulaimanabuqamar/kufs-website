@@ -42,12 +42,15 @@ const REVEAL_CLASSES: Record<keyof typeof HERO_CHECKPOINTS, string> = {
 export function HeroCopy({
   eyebrow,
   positioning,
+  spec,
   revealed = false,
 }: {
   /** Passed in from the server: these come from content/site.ts, which must
    *  not be imported across the client boundary. */
   eyebrow: string;
   positioning: string;
+  /** Label/value pairs revealed at the last checkpoint. */
+  spec: readonly { label: string; value: string }[];
   revealed?: boolean;
 }) {
   // When `revealed`, the hidden state is never applied at all.
@@ -108,7 +111,7 @@ export function HeroCopy({
             hidden("spec"),
           )}
         >
-          {heroCopy.spec.map((item) => (
+          {spec.map((item) => (
             <div key={item.label} className="flex flex-col">
               <dt className="text-caption uppercase tracking-wider text-text-muted">
                 {item.label}

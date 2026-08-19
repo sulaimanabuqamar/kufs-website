@@ -93,7 +93,7 @@ git checkout -b add-northgate-sponsor
 
 # 4. Save your work
 git add .
-git commit -m "Add Northgate Precision as a silver sponsor"
+git commit -m "Add Example Partner Ltd as a silver sponsor"
 git push -u origin add-northgate-sponsor
 ```
 
@@ -120,29 +120,30 @@ live site updates within about a minute.
 **File:** `content/sponsors.json`
 
 1. Put the sponsor's logo in `public/sponsors/`. Name it lowercase with hyphens, e.g.
-   `northgate-precision.webp`.
+   `example-partner.webp`.
    - Ask them for a **transparent PNG or SVG**. Logos here sit on both white and navy.
    - Note its width and height in pixels (right-click → Get Info on Mac).
 2. Add a block to `content/sponsors.json`, copying an existing one:
 
 ```json
 {
-  "name": "Northgate Precision",
-  "tier": "silver",
-  "url": "https://northgate-precision.example.com",
+  "name": "Example Partner Ltd",
+  "tier": "tier3",
+  "url": "https://example-partner.com",
   "since": 2027,
   "blurb": "One or two sentences on what they actually do for us.",
   "contribution": "Five-axis CNC machining of suspension components.",
   "logo": {
-    "src": "/sponsors/northgate-precision.webp",
+    "src": "/sponsors/example-partner.webp",
     "width": 360,
     "height": 112,
-    "alt": "Northgate Precision"
+    "alt": "Example Partner Ltd"
   }
 }
 ```
 
-- `tier` must be one of: `title`, `gold`, `silver`, `bronze`, `inkind`.
+- `tier` must be one of: `tier1`, `tier2`, `tier3`, `inkind`. Amounts and what each
+  tier includes live in `content/tiers.json`.
 - `alt` is what a blind visitor hears. The sponsor's name is correct — do not write
   "logo" or "image".
 - `blurb` and `contribution` are optional but strongly worth writing.
@@ -160,48 +161,55 @@ No code changes, ever.
 
 ```json
 {
-  "name": "Aisha Al Mansoori",
-  "role": "Team Principal",
-  "subteam": "Management",
-  "year": 4,
-  "linkedin": "https://www.linkedin.com/in/example",
-  "photo": {
-    "src": "/team/aisha-al-mansoori.webp",
-    "width": 600,
-    "height": 750,
-    "alt": "Aisha Al Mansoori, Team Principal"
-  }
+  "name": "Full Name",
+  "year": "Junior",
+  "major": "Mechanical Engineering",
+  "roles": [{ "division": "Engineering", "title": "Suspension" }],
+  "photo": null
 }
 ```
 
-- `subteam` must be one of: `Management`, `Aerodynamics`, `Chassis`, `Powertrain`,
-  `Electronics`, `Suspension`, `Business & Operations`.
-- `year` is a number 1–8, or `"PhD"`, or `"Alumni"`.
-- `linkedin` is optional. Leave it out entirely if they do not have one.
-- Photos go in `public/team/`. Portrait orientation, ideally 600×750. They are cropped
-  to a 4:5 box, so keep faces centred.
+- `year` is one of `Freshman`, `Sophomore`, `Junior`, `Senior`, `Graduate`.
+- `roles` is a list, because people hold more than one. Each entry is either
+  `{ "division": "Operations", "title": ... }` — President, Vice President, Secretary,
+  CTO Mechanical, CTO Electrical, Marketing / Media / Outreach, Sponsorship & Finance —
+  or `{ "division": "Engineering", "title": ... }` — Aerodynamics, Chassis & Driver
+  Ergonomics, Steering, Suspension, Throttle & Braking Systems, Powertrain & Drivetrain,
+  High Voltage, Low Voltage & Controls.
+- **One entry per person.** If someone does two jobs, give them two roles, not two
+  cards. The build will reject duplicate names.
+- An Operations role with nobody in it is treated as a **vacancy** and shown as one on
+  `/team` and `/join`. That is how CTO Electrical currently appears — you do not
+  maintain a separate list of openings.
+- `photo` is `null` until a headshot exists; the card shows a branded monogram instead.
+  When you have photos, put them in `public/team/` at 600×750 and fill in the object.
 
-> **No photo yet?** Still add the person. Take the photo later and drop it in at the
-> path you wrote.
+> ### Privacy — read this before editing the roster
+>
+> The team's internal roster spreadsheet contains **student ID numbers and personal
+> mobile numbers**. Those must **never** go into this repository — not in `team.json`,
+> not in a comment, not in a commit message. The only per-person fields this site
+> publishes are **name, role, subteam, year of study and major**, and the schema has no
+> field that could hold anything else. Do not copy the spreadsheet into the repo.
 
 ### Add a news post
 
 **Folder:** `content/news/`
 
 Create a file ending in `.mdx`, named after the story:
-`content/news/first-shakedown.mdx`
+`content/news/first-drive.mdx`
 
 ```mdx
 ---
-title: "First shakedown at Yas Marina"
+title: "First drive"
 date: "2027-05-14"
-author: "Aisha Al Mansoori"
+author: "Your Name"
 excerpt: "One sentence that makes someone want to read the rest. Under 280 characters."
 cover:
-  src: "/news/first-shakedown.webp"
+  src: "/news/first-drive.webp"
   width: 1200
   height: 675
-  alt: "The car on track during its first shakedown run."
+  alt: "The car running for the first time."
 ---
 
 Write the post here. Blank lines separate paragraphs.
@@ -226,7 +234,7 @@ The three most recent posts appear on the home page automatically.
 
 ```json
 {
-  "title": "Shakedown at Yas Marina",
+  "title": "Integrated Vehicle & First Drive",
   "date": "2027-05-14",
   "status": "upcoming",
   "description": "First running of the complete car. Two days of systems validation."

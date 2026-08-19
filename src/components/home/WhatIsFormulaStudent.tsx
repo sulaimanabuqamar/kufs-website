@@ -1,5 +1,6 @@
 import { Section, SectionHeading } from "@/components/ui/Section";
 import site from "@/content/site";
+import { getTeamStats } from "@/lib/content";
 
 /**
  * The explainer.
@@ -11,6 +12,7 @@ import site from "@/content/site";
  */
 export function WhatIsFormulaStudent() {
   const { competition, stats } = site;
+  const team = getTeamStats();
 
   return (
     <Section labelledBy="fs-heading">
@@ -38,6 +40,39 @@ export function WhatIsFormulaStudent() {
               fixed deadline, a real budget, a scrutineer who does not care how hard the
               term was, and a car that either finishes or does not.
             </p>
+
+            {/* Season-one line. Stated plainly — being new is a fact, not an
+                apology, and a founding season is a real thing to offer. */}
+            <p className="rounded-lg border-l-2 border-l-accent bg-surface px-6 py-5 text-text">
+              {site.programme.seasonOneLine} {team.headcount} students across{" "}
+              {team.disciplines} disciplines, building a{" "}
+              {site.vehicle.architecture.toLowerCase()} single-seater with a{" "}
+              {site.vehicle.targetMass} target mass.
+            </p>
+
+            {/* The team's own reference set — genuinely useful to a sponsor or a
+                prospective member who has never heard of any of this. */}
+            <ul className="flex flex-wrap gap-x-6 gap-y-2">
+              {[
+                {
+                  href: site.links.whatIsFormulaStudentVideo,
+                  label: "What is Formula Student? (video)",
+                },
+                { href: site.links.officialFsuk, label: "Official Formula Student UK" },
+                { href: site.links.fsResults, label: "Results and statistics" },
+              ].map((link) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-small font-semibold text-accent underline-offset-4 hover:underline"
+                  >
+                    {link.label} <span aria-hidden>↗</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
 
@@ -47,7 +82,16 @@ export function WhatIsFormulaStudent() {
               key={stat.label}
               className="flex flex-col gap-1 rounded-lg border border-border bg-surface p-6"
             >
-              <p className="tabular text-h1 leading-none text-accent">{stat.value}</p>
+              <p className="tabular text-h1 leading-none text-accent">
+                {stat.value ?? (
+                  <abbr
+                    title="To be confirmed — not published for the 2027 event yet"
+                    className="no-underline"
+                  >
+                    TBC
+                  </abbr>
+                )}
+              </p>
               <p className="mt-2 text-h4 text-text">{stat.label}</p>
               <p className="text-small text-text-muted">{stat.detail}</p>
             </li>

@@ -71,6 +71,7 @@ export function HeroStage({
   modelPath,
   eyebrow,
   positioning,
+  spec,
 }: {
   mode: HeroMode;
   frameCount: number;
@@ -78,6 +79,7 @@ export function HeroStage({
   modelPath: string | null;
   eyebrow: string;
   positioning: string;
+  spec: readonly { label: string; value: string }[];
 }) {
   const trackRef = useRef<HTMLElement>(null);
   const [reveal, setReveal] = useState("");
@@ -157,7 +159,12 @@ export function HeroStage({
         ) : null}
 
         <div className="relative z-10 h-full">
-          <HeroCopy eyebrow={eyebrow} positioning={positioning} revealed={!enhanced} />
+          <HeroCopy
+            eyebrow={eyebrow}
+            positioning={positioning}
+            spec={spec}
+            revealed={!enhanced}
+          />
         </div>
 
         {enhanced ? <ScrollCue /> : null}

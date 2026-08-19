@@ -1,5 +1,7 @@
 import { HeroStage } from "@/components/hero/HeroStage";
 import site from "@/content/site";
+import { getTeamStats } from "@/lib/content";
+import { heroCopy } from "@/components/hero/heroContent";
 
 /**
  * The hero, as the page sees it.
@@ -16,6 +18,15 @@ import site from "@/content/site";
 export function ScrollCarHero() {
   const { mode, frameCount, poster, modelPath } = site.hero;
   const { name, year, venue } = site.competition;
+  const stats = getTeamStats();
+
+  // Every figure comes from site.ts or the roster — nothing is written twice,
+  // and the headcount cannot drift from content/team.json.
+  const spec = [
+    { label: heroCopy.specLabels.architecture, value: site.vehicle.architecture },
+    { label: heroCopy.specLabels.targetMass, value: site.vehicle.targetMass },
+    { label: heroCopy.specLabels.headcount, value: String(stats.headcount) },
+  ];
 
   return (
     <HeroStage
@@ -25,6 +36,7 @@ export function ScrollCarHero() {
       modelPath={modelPath}
       eyebrow={`${name} ${year} · ${venue}`}
       positioning={site.positioning}
+      spec={spec}
     />
   );
 }
