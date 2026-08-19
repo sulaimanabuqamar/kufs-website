@@ -1,55 +1,100 @@
 [
   {
-    "title": "Season concept freeze",
-    "date": "2026-05-29",
-    "status": "done",
-    "description": "Target mass, wheelbase, aero philosophy and powertrain architecture locked for the 2027 car. Nothing structural moves after this date without a change request.",
+    "title": "Team Setup & Research",
+    "date": "2026-08-24",
+    "status": "upcoming",
+    "description": "Finalise team structure, review rules, research, and estimate budget.",
     "phase": "Design",
-    "update": "Target mass, wheelbase and aero philosophy signed off on schedule. The powertrain architecture decision ran a week late but did not move anything downstream.",
+    "update": null,
     "photo": null
   },
   {
-    "title": "Chassis design review",
-    "date": "2026-07-18",
-    "status": "done",
-    "description": "Monocoque laminate schedule and impact structure signed off against the IMechE structural equivalency requirements, with two external reviewers from Apex Composites.",
+    "title": "Architecture Down-select",
+    "date": "2026-09-30",
+    "status": "upcoming",
+    "description": "Select the vehicle architecture and subsystem concept. Initial packaging with justification and calculations.",
     "phase": "Design",
-    "update": "Cleared with two external reviewers from our composites partner. Two actions raised on the front bulkhead insert layout, both closed before tooling was cut.",
+    "update": null,
     "photo": null
   },
   {
-    "title": "Monocoque layup",
-    "date": "2026-08-11",
-    "status": "active",
-    "description": "Tooling is cut and the first plies are down. Layup and autoclave cure run through September, with bonded inserts and suspension pickups following.",
+    "title": "Rules Review & Concept Freeze",
+    "date": "2026-10-30",
+    "status": "upcoming",
+    "description": "Review FSUK 2027 rules, finalise the concept, freeze major decisions and subsystem targets. Release master CAD and perform laptime simulations.",
+    "phase": "Design",
+    "update": null,
+    "photo": null
+  },
+  {
+    "title": "DCS & Funding Internal Approval",
+    "date": "2026-11-25",
+    "status": "upcoming",
+    "description": "Complete the DCS with the HLPP, review funding applications, and hold internal reviews ahead of registration.",
+    "phase": "Design",
+    "update": null,
+    "photo": null
+  },
+  {
+    "title": "FSUK Registration",
+    "date": "2026-12-04",
+    "status": "upcoming",
+    "description": "Submit the DCS and complete team registration.",
+    "phase": "Design",
+    "update": null,
+    "photo": null
+  },
+  {
+    "title": "Safety-Critical Release & SES/ESA/ESO",
+    "date": "2027-01-25",
+    "status": "upcoming",
+    "description": "Release the safety-critical design, complete the SES and ESA/ESO, and submit by the official deadlines.",
     "phase": "Manufacture",
     "update": null,
     "photo": null
   },
   {
-    "title": "Powertrain dyno sign-off",
-    "date": "2026-11-06",
+    "title": "ESF Submission Gate",
+    "date": "2027-03-10",
     "status": "upcoming",
-    "description": "Full-power dyno pulls with the season's cooling package and final calibration, targeting a repeatable endurance-duty map rather than a peak headline figure.",
-    "phase": "Testing",
+    "description": "Complete the electrical design and validation, and submit the ESF before the official deadline.",
+    "phase": "Manufacture",
     "update": null,
     "photo": null
   },
   {
-    "title": "Rolling chassis complete",
-    "date": "2027-03-05",
+    "title": "Integrated Vehicle & First Drive",
+    "date": "2027-03-31",
     "status": "upcoming",
-    "description": "Suspension, uprights, steering and brakes assembled onto the cured tub. First corner-weighting and full geometry measurement on the setup pads.",
+    "description": "Complete subsystem manufacturing, integrate the vehicle, conduct bench testing, and achieve the first drive.",
     "phase": "Assembly",
     "update": null,
     "photo": null
   },
   {
-    "title": "Shakedown at Yas Marina",
-    "date": "2027-05-14",
+    "title": "EDR, DSS & IAD Submission Gate",
+    "date": "2027-05-03",
     "status": "upcoming",
-    "description": "First running of the complete car. Two days of systems validation and driver seat time before the summer test programme and scrutineering preparation.",
+    "description": "Finalise and submit the EDR, DSS and IAD. Conduct scrutineering and all vehicle dynamic tests. Prepare spares.",
     "phase": "Testing",
+    "update": null,
+    "photo": null
+  },
+  {
+    "title": "Development & Reliability Review",
+    "date": "2027-05-15",
+    "status": "upcoming",
+    "description": "Complete the first endurance-equivalent test, conduct reliability validation, and close all major issues. Prepare the vehicle for shipment.",
+    "phase": "Testing",
+    "update": null,
+    "photo": null
+  },
+  {
+    "title": "Competition Readiness Gate",
+    "date": "2027-06-30",
+    "status": "upcoming",
+    "description": "Complete full mock scrutineering, finalise presentations, and arrange spares, logistics and supporting documents for competition.",
+    "phase": "Competition",
     "update": null,
     "photo": null
   }
