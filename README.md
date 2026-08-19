@@ -112,18 +112,33 @@ never outrank the real site.
 
 ## Licensing
 
-**A4 Speed font.** A4 Speed is distributed on the public font sites as _free for personal
-use_. This site carries sponsor logos, so its use here may fall outside that grant.
-Action for the team: check the author credit on the dafont listing and email them for
-written permission for web and team use — for a student motorsport team this is very
-often granted for free, and it takes one email. Until that is confirmed, the risk is
-accepted knowingly. The headline face is isolated behind the `--font-display` token and
-`src/lib/fonts.ts`; swapping to Barlow Condensed Bold Italic is a one-file change.
+**A4 Speed font.** A4 Speed is licensed for personal use only in its free form. This
+site carries sponsor logos, so KUFS requires the USD 12 commercial licence from the
+author (Coki Fernández, A4 grafica). Purchase at
+[paypal.me/a4grafica](https://www.paypal.me/a4grafica), then request the certificate from
+coki@outlook.com or Instagram [@a4speedfont](https://instagram.com/a4speedfont), and store
+the certificate in the team drive under **Media & Marketing**. Do not deploy this font to
+production until that certificate exists. Until then, revert `--font-display` to Barlow
+Condensed Bold Italic — a one-line change in `src/lib/fonts.ts`.
 
-**Status right now:** the A4 Speed font file was **not supplied with this milestone**, so
-the site currently ships the fallback — Barlow Condensed Bold Italic — as the live
-headline face. Everything else is in place: the token, the loader, the commented
-`localFont` block, and `pnpm font:subset`. See "Typography" below.
+**Status right now: A4 Speed is NOT deployed, and cannot be by accident.** The reversion
+above is automatic rather than manual, because a manual step is a step someone forgets.
+The licence gate is the font file itself:
+
+- `public/fonts/a4-speed.woff2` and the source TTF are **gitignored**. This repository is
+  public, so committing a personal-use-only binary would be redistribution in its own
+  right — separate from whether the site serves it. Not having the file prevents both.
+- The `@font-face` rule in `src/styles/tokens.css` names `"A4 Speed"` first in the
+  `--font-display` stack and Barlow Condensed Bold Italic immediately after. With no file
+  deployed, the `src` 404s and the browser falls straight through to Barlow. No build
+  failure, no visual break.
+- `pnpm check:font-licence` fails if any font binary is tracked in git without
+  `src/assets/fonts/LICENCE-A4SPEED.txt` beside it.
+
+**To enable it once the certificate is in hand:** commit the certificate to
+`src/assets/fonts/LICENCE-A4SPEED.txt`, remove the font lines from `.gitignore`, run
+`pnpm font:subset src/assets/fonts/A4SPEED-Bold.ttf`, and commit
+`public/fonts/a4-speed.woff2` (3.4 KB). Nothing else changes.
 
 **Barlow** (body) is licensed under the SIL Open Font License and is loaded through
 `next/font/google`, which downloads and self-hosts it at build time. No runtime request
@@ -137,34 +152,50 @@ drop-in same filenames.
 
 ## Typography
 
-|                              | Face                                     | Loaded by          | Used for                         |
-| ---------------------------- | ---------------------------------------- | ------------------ | -------------------------------- |
-| Headlines                    | **A4 Speed** _(pending — see Licensing)_ | `next/font/local`  | `h1`–`h3` and stat numerals only |
-| Headlines _(shipping today)_ | Barlow Condensed Bold Italic             | `next/font/google` | as above                         |
-| Body                         | **Barlow** 400/500/600                   | `next/font/google` | everything else                  |
+|                              | Face                                                 | Loaded by          | Used for                         |
+| ---------------------------- | ---------------------------------------------------- | ------------------ | -------------------------------- |
+| Headlines                    | **A4 Speed** _(gated — see [Licensing](#licensing))_ | `@font-face`       | `h1`–`h3` and stat numerals only |
+| Headlines _(shipping today)_ | Barlow Condensed Bold Italic                         | `next/font/google` | as above                         |
+| Body                         | **Barlow** 400/500/600                               | `next/font/google` | everything else                  |
 
-Headlines are uppercase, italic, `letter-spacing: -0.01em`, tight leading — applied in
+Headlines are uppercase, `letter-spacing: -0.01em`, tight leading — applied in
 `globals.css` on `h1`–`h3` so a heading cannot accidentally opt out. `h4` and below run
-on Barlow: the display face is a heavy italic and it costs more legibility than it buys
-below ~20px. Nav links, buttons, table cells and form labels are all Barlow.
+on Barlow: the display face is heavy and it costs more legibility than it buys below
+~20px. Nav links, buttons, table cells and form labels are all Barlow.
 
-### Enabling A4 Speed
+**No `font-style: italic` and no `font-weight: bold` anywhere on the display face.** Both
+faces in the stack are already slanted — A4 Speed is _drawn_ on a slant while reporting
+`italicAngle: 0`, and Barlow Condensed is selected as a real italic — so asking CSS for
+italic makes the browser synthesise an oblique on top and produces a visible double slant.
+Same for weight: A4 Speed reports `usWeightClass: 500` while calling itself Bold, and only
+one weight exists, so `--text-display--font-weight` and `--text-h1--font-weight` are 700
+rather than 800.
 
-```bash
-# 1. drop the source file in
-cp ~/Downloads/A4Speed-Bold.ttf src/assets/fonts/
+### Glyph coverage — `pnpm check:glyphs`
 
-# 2. convert + subset to Latin, digits and punctuation, and report the size
-pnpm font:subset src/assets/fonts/A4Speed-Bold.ttf
+A4 Speed maps **95 characters, exactly U+0020–U+007E**. No en dash, em dash, curly
+quotes, curly apostrophe, middle dot or degree sign. Any of those in a heading falls
+through to a different typeface mid-word, which reads as a rendering bug.
 
-# 3. in src/lib/fonts.ts: comment out the Barlow_Condensed block,
-#    uncomment the localFont block. Nothing else changes.
-```
+`pnpm check:glyphs` walks the rendered DOM of every route, collects every text node whose
+resolved `font-family` names the display face, and fails on any unmapped character —
+naming the character, the route and the element. It runs in CI and it runs whether or not
+the licensed binary ships, so the strings are safe on the day the licence lands rather
+than fixed afterwards.
 
-`pnpm font:subset` uses the wasm build of harfbuzz — no Python, no fontTools, no native
-toolchain. The pipeline is tested: run against a comparable display face (Impact, 135.2
-KB TTF) it produced a **14.2 KB** subset WOFF2, an 89.5% reduction, comfortably inside
-the 30 KB budget. A4 Speed should land in the same range; the script warns if it does not.
+Coverage comes from `src/assets/fonts/A4SPEED-Bold.ttf` when present, and otherwise from
+`scripts/data/a4-speed-coverage.json` — the same cmap extracted to a range list, which is
+metadata rather than the font, so CI works without the binary. Regenerate it with
+`node scripts/check-glyphs.mjs --regenerate`.
+
+### `pnpm font:subset`
+
+Uses the wasm build of harfbuzz — no Python, no fontTools, no native toolchain. It
+**refuses to subset a face under 256 glyphs** and converts it whole instead: A4 Speed has
+98 glyphs in 7,968 bytes, so stripping any of them would trade a broken character set for
+a few hundred bytes. Converted whole it is **3.4 KB WOFF2** (56.5% smaller than the TTF),
+against a 30 KB budget. The subsetting path is retained for future faces; run against
+Impact (135.2 KB TTF) it produced a 14.2 KB subset, an 89.5% reduction.
 
 ---
 
@@ -433,9 +464,11 @@ Read this before the next milestone.
    and their own routes behind a visible banner, and that one flag keeps them out of the
    sitemap, out of the RSS feed, off the home page, and marked `noindex`. As a result the
    home page currently shows no news section at all — correct, since nothing is published.
-2. **A4 Speed is not the live headline face.** The font file has not been supplied, so
-   Barlow Condensed Bold Italic — the declared fallback — is running. See
-   [Licensing](#licensing). Enabling it is a one-file change plus `pnpm font:subset`.
+2. **A4 Speed is not the live headline face.** The font file is on the design lead's
+   machine and wired up, but it is deliberately not deployed: the free licence covers
+   personal use only, and this site carries sponsor logos. Barlow Condensed Bold Italic —
+   the declared fallback — is running. Buying the USD 12 commercial licence unblocks it;
+   see [Licensing](#licensing).
 3. **The hero car is a stand-in.** It is proportioned and liveried correctly, but it is
    code, not the real car. See [The placeholder car](#the-placeholder-car).
 4. **No mono light-background logo.** The brand assets include two mono lockups, both
@@ -470,7 +503,7 @@ remains is genuinely unknown — nothing below is guessed at anywhere on the sit
 | **News posts**                                          | `content/news/`                                        | Marketing / Media / Outreach. The folder is empty — the placeholder posts were removed.                                                                       |
 | **Campus / workshop address**                           | `src/app/contact/page.tsx`                             | Secretary.                                                                                                                                                    |
 | **Vector logo originals (SVG/AI)**                      | `public/brand/`                                        | Design lead. Current files are high-resolution PNG slices of the team's exports.                                                                              |
-| **A4 Speed font file, with written permission**         | `src/assets/fonts/`                                    | Marketing / Media / Outreach — see [Licensing](#licensing).                                                                                                   |
+| **A4 Speed commercial licence certificate (USD 12)**    | `src/assets/fonts/LICENCE-A4SPEED.txt`                 | Marketing / Media / Outreach. The font is wired up and gated; the certificate is the only thing missing — see [Licensing](#licensing).                        |
 | **The car's CAD export**                                | `public/models/`, then `pnpm render:frames`            | CTO Mechanical, after concept freeze.                                                                                                                         |
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to make each of these changes.

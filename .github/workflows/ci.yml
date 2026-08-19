@@ -47,6 +47,13 @@ jobs:
       - name: Check contrast claims
         run: pnpm check:contrast
 
+      # A4 Speed is free for personal use only, and this repository is public,
+      # so committing the binary is redistribution regardless of what the site
+      # serves. Fails if any font binary is tracked without a licence
+      # certificate beside it. See the Licensing section of README.md.
+      - name: Check font licence
+        run: pnpm check:font-licence
+
       # Also the content gate: every file under /content is parsed through its
       # Zod schema during the build, so a malformed sponsor or milestone fails
       # here rather than in production.
@@ -89,6 +96,12 @@ jobs:
       - name: Build
         run: pnpm build
 
+      # check:glyphs walks every display-face string in the rendered DOM and
+      # fails on any character A4 Speed does not map — it covers U+0020-U+007E
+      # only, so an em dash or a curly apostrophe in a heading falls through to
+      # a different typeface mid-word. Coverage comes from the committed cmap
+      # manifest here, since the font binary is gitignored.
+      #
       # Asserts the three hero paths against a real production server:
       # phones and reduced-motion visitors must download zero frames and get
       # no pinning; desktop must get the sequence. See scripts/check-hero.mjs.
@@ -98,6 +111,7 @@ jobs:
           npx --yes wait-on http://127.0.0.1:3000 --timeout 60000
           pnpm check:hero
           pnpm check:brand
+          pnpm check:glyphs
 
       # Regression cover for the Next 16 scroll-behaviour bug: pages opening
       # partway down after a client-side navigation. Invisible to build,

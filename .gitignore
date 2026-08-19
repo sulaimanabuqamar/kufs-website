@@ -44,3 +44,14 @@ yarn-error.log*
 next-env.d.ts
 .screenshots/
 public/hero/frames.staging/
+
+# A4 Speed is licensed for personal use only in its free form. This repository
+# is public, so committing the binary would be redistribution — regardless of
+# whether the site serves it. It stays out until KUFS holds the commercial
+# licence; see the Licensing section of README.md.
+# The site falls back to Barlow Condensed Bold Italic when these are absent.
+src/assets/fonts/*.ttf
+src/assets/fonts/*.otf
+src/assets/fonts/*.woff2
+public/fonts/*.woff2
+public/fonts/*.ttf

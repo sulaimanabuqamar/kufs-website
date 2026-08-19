@@ -21,7 +21,9 @@
     "screens": "node scripts/capture-screens.mjs",
     "check:perf": "node scripts/check-perf.mjs",
     "check:scroll": "node scripts/check-scroll.mjs",
-    "brand:slice": "node scripts/slice-brand-logos.mjs"
+    "brand:slice": "node scripts/slice-brand-logos.mjs",
+    "check:font-licence": "node scripts/check-font-licence.mjs",
+    "check:glyphs": "node scripts/check-glyphs.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

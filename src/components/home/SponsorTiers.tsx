@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { getSponsorsByTier, TIER_LABEL } from "@/lib/content";
+import { getSponsorsByTier, getTiers, TIER_LABEL } from "@/lib/content";
 import { CTA } from "@/lib/nav";
 import type { Sponsor, SponsorTier } from "@/lib/schemas";
 
@@ -21,6 +21,12 @@ const FEATURED: readonly SponsorTier[] = ["tier1", "tier2"];
 
 export function SponsorTiers() {
   const groups = getSponsorsByTier();
+  // Entry point read from content/tiers.json rather than typed here, so the
+  // figure cannot drift from the tier table on /become-a-sponsor. The lowest
+  // tier is the in-kind one, so this takes the cheapest tier that names a cash
+  // amount — the last entry whose amount starts with a currency.
+  const cashTiers = getTiers().filter((tier) => tier.amount && /^AED/.test(tier.amount));
+  const entryAmount = cashTiers.at(-1)?.amount ?? null;
   const featured = groups.filter((group) => FEATURED.includes(group.tier));
   const supporting = groups.filter((group) => !FEATURED.includes(group.tier));
   const hasSponsors = groups.length > 0;
@@ -86,10 +92,15 @@ export function SponsorTiers() {
 
       <div className="mt-12 flex flex-col items-start gap-4 rounded-lg border border-border bg-surface p-8 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-col gap-1">
-          <p className="text-h4 text-text">Backing us starts at £500.</p>
+          <p className="text-h4 text-text">
+            {entryAmount
+              ? `Backing us starts at ${entryAmount}.`
+              : "There is a tier that fits your budget."}
+          </p>
           <p className="max-w-[52ch] text-small text-text-muted">
-            Cash, materials, machining time or expertise — we will tell you exactly what
-            each tier gets you and send a written report at the end of the season.
+            Cash, materials, machining time or expertise — in-kind support counts at its
+            value. We will tell you exactly what each tier gets you and report back in
+            writing at the end of the season.
           </p>
         </div>
         <Button href={CTA.sponsor.href} size="md" className="shrink-0">

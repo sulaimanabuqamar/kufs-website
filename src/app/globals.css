@@ -36,16 +36,23 @@
     text-rendering: optimizeLegibility;
   }
 
-  /* The headline face is uppercase italic by design — that rake is the
-     brand's signature and it is applied here rather than per-component so a
-     heading cannot accidentally opt out. h1-h3 only: h4 and below are small
-     enough that a heavy display italic costs more legibility than it buys, so
-     they run on Barlow. */
+  /* The headline face is uppercase and slanted by design — that rake is the
+     brand's signature, applied here rather than per-component so a heading
+     cannot accidentally opt out. h1-h3 only: h4 and below are small enough
+     that a heavy display face costs more legibility than it buys, so they run
+     on Barlow.
+
+     NO `font-style: italic` HERE, deliberately. Both faces in the
+     --font-display stack are already slanted: A4 Speed is drawn on a slant
+     (while reporting italicAngle 0), and Barlow Condensed is selected as a
+     real italic in src/lib/fonts.ts. Asking CSS for italic on top makes the
+     browser synthesise an oblique over an already-slanted face — a visible
+     double slant. Same reasoning for font-weight: the face is already heavy
+     and is declared at 700, so nothing here asks for bold. */
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-style: italic;
     text-transform: uppercase;
     letter-spacing: -0.01em;
     text-wrap: balance;
