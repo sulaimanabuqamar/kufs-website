@@ -22,6 +22,11 @@ import { cn } from "@/lib/cn";
  *
  * Intrinsic dimensions below are the real pixel sizes of the files in
  * public/brand/, so next/image can reserve the box and CLS stays at zero.
+ *
+ * The artwork is sliced from the team's own high-resolution exports
+ * (~8,300px wide, several lockups stacked per file) by
+ * `pnpm brand:slice`. It supersedes the earlier extractions taken from the
+ * brand PDF. A true vector original is still outstanding.
  */
 
 type LogoVariant = {
@@ -35,33 +40,31 @@ const VARIANTS = {
   "dark-plain": {
     src: "/brand/kufs-logo-color--dark-bg.png",
     width: 1400,
-    height: 380,
+    height: 385,
   },
   /** Wordmark plus "Khalifa University Formula Student", white KU. */
   "dark-tagline": {
     src: "/brand/kufs-logo-simple-tagline--dark-bg.png",
     width: 1400,
-    height: 434,
+    height: 430,
   },
   /** Wordmark plus tagline, NAVY KU. Light sections only. */
   "light-tagline": {
     src: "/brand/kufs-logo-color-tagline--light-bg.png",
     width: 1400,
-    height: 467,
+    height: 421,
   },
-  /** Single-colour: all-white wordmark with the Racing Red speed streak.
-   *  For small sizes and anywhere the full-colour lockup would muddy. */
-  "mono-red": {
-    src: "/brand/kufs-logo-mono-white-red-streak--dark-bg.png",
-    width: 821,
-    height: 251,
+  /** Single-colour white wordmark. Small sizes, one-colour printing. */
+  "mono-plain": {
+    src: "/brand/kufs-logo-mono-white--dark-bg.png",
+    width: 1400,
+    height: 385,
   },
-  /** As above with a navy streak — for use over lighter navy surfaces where
-   *  the red streak sits too close to the ground colour. */
-  "mono-navy": {
-    src: "/brand/kufs-logo-mono-white-navy-streak--dark-bg.png",
-    width: 920,
-    height: 280,
+  /** Single-colour white wordmark with the tagline. */
+  "mono-tagline": {
+    src: "/brand/kufs-logo-mono-white-tagline--dark-bg.png",
+    width: 1400,
+    height: 422,
   },
 } satisfies Record<string, LogoVariant>;
 
@@ -96,8 +99,8 @@ export function KufsLogo({
       ? "light-tagline"
       : variant === "mono"
         ? withTagline
-          ? "mono-navy"
-          : "mono-red"
+          ? "mono-tagline"
+          : "mono-plain"
         : withTagline
           ? "dark-tagline"
           : "dark-plain";
