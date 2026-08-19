@@ -22,6 +22,13 @@
  * pulls in a very large tree for something only CI and the occasional local
  * check need, and nobody should have to download it to fix a typo in a sponsor
  * blurb.
+ *
+ * `--runs N` takes the MEDIAN of N measurements. Lighthouse's simulated
+ * throttling still depends on the host's real CPU, and a shared CI runner is a
+ * noisy neighbour: the same commit measured 2.68s locally and 3.02s on one
+ * Actions run while passing on another. Taking a median is the honest fix for
+ * that. Raising the budget to make a flaky measurement pass would just move the
+ * problem somewhere it is harder to see.
  */
 
 import { readFile, rm } from "node:fs/promises";
@@ -40,11 +47,14 @@ const { values: argv } = parseArgs({
       type: "string",
       default: "/,/become-a-sponsor,/sponsors,/team,/join,/contact",
     },
+    /** Runs per profile. The median is used — see the note below. */
+    runs: { type: "string", default: "1" },
   },
 });
 
 const BASE = argv.url.replace(/\/$/, "");
 const PATHS = argv.paths.split(",");
+const RUNS = Math.max(1, Number(argv.runs));
 
 const BUDGETS = {
   slow: { lcpMs: 3000, cls: 0.1 },
@@ -59,8 +69,11 @@ const FAST_4G = [
   "--throttling.cpuSlowdownMultiplier=1",
 ];
 
-async function lighthouse(url, extraFlags) {
-  const out = join(tmpdir(), `lh-${Math.abs(hash(url + extraFlags.join()))}.json`);
+async function lighthouse(url, extraFlags, attempt = 0) {
+  const out = join(
+    tmpdir(),
+    `lh-${Math.abs(hash(url + extraFlags.join()))}-${attempt}.json`,
+  );
   await run(
     "pnpm",
     [
@@ -104,18 +117,40 @@ async function main() {
     console.log(path);
 
     // Slow 4G is Lighthouse's default mobile preset.
-    const slow = await lighthouse(url, []);
-    const fast = await lighthouse(url, ["--preset=desktop", ...FAST_4G]);
+    const slowRuns = [];
+    const fastRuns = [];
+    for (let i = 0; i < RUNS; i += 1) {
+      slowRuns.push(await lighthouse(url, [], i));
+      fastRuns.push(await lighthouse(url, ["--preset=desktop", ...FAST_4G], i));
+    }
 
-    const lcpSlow = slow.audits["largest-contentful-paint"].numericValue;
-    const lcpFast = fast.audits["largest-contentful-paint"].numericValue;
-    const clsSlow = slow.audits["cumulative-layout-shift"].numericValue;
-    const a11y = Math.round(slow.categories.accessibility.score * 100);
+    const median = (values) => {
+      const sorted = [...values].sort((a, b) => a - b);
+      return sorted[Math.floor(sorted.length / 2)];
+    };
+    const pick = (reports, fn) => median(reports.map(fn));
+
+    const lcpSlow = pick(
+      slowRuns,
+      (r) => r.audits["largest-contentful-paint"].numericValue,
+    );
+    const lcpFast = pick(
+      fastRuns,
+      (r) => r.audits["largest-contentful-paint"].numericValue,
+    );
+    const clsSlow = pick(
+      slowRuns,
+      (r) => r.audits["cumulative-layout-shift"].numericValue,
+    );
+    // Accessibility is deterministic; the worst run is the honest one.
+    const a11y = Math.min(
+      ...slowRuns.map((r) => Math.round(r.categories.accessibility.score * 100)),
+    );
 
     record(
       "LCP on Slow 4G",
       lcpSlow < BUDGETS.slow.lcpMs,
-      `${Math.round(lcpSlow)}ms (budget ${BUDGETS.slow.lcpMs}ms)`,
+      `${Math.round(lcpSlow)}ms (budget ${BUDGETS.slow.lcpMs}ms${RUNS > 1 ? `, median of ${RUNS}` : ""})`,
     );
     record(
       "LCP on Fast 4G",
