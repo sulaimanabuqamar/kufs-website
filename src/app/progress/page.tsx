@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
+import { Glossary } from "@/components/progress/Glossary";
 import { DaysUntil } from "@/components/home/DaysUntil";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -113,8 +114,41 @@ export default function ProgressPage() {
           id="timeline-heading"
           eyebrow="Timeline"
           title="Design to Silverstone"
-          lead="Five phases. Each milestone carries a written update once there is something to report."
+          lead="Five phases, from team setup to competition readiness. Each milestone carries a written update once there is something to report."
         />
+
+        {/* Carried verbatim from the team's project timeline. The dates below
+            are the team's own plan, not IMechE's published schedule. */}
+        <p
+          role="note"
+          className="mt-8 max-w-[72ch] rounded-lg border-l-2 border-l-accent bg-surface px-6 py-5 text-small text-text-muted"
+        >
+          Please note: this timeline is preliminary and may be updated once the official
+          FSUK 2027 key dates and competition schedule are released by IMechE, expected in
+          early October.
+        </p>
+
+        {/* The manufacturing window is a span, not a point — it runs from the
+            concept freeze through to first drive and overlaps most of the
+            milestones below, so it is rendered as a band rather than an item. */}
+        <div className="mt-8 overflow-hidden rounded-lg border border-border">
+          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 bg-surface-raised px-6 py-4">
+            <p className="text-h4 text-text">Manufacturing &amp; Procurement Window</p>
+            <p className="tabular text-caption uppercase tracking-wider text-text-muted">
+              Concept freeze → first drive
+            </p>
+          </div>
+          <div aria-hidden className="flex h-2">
+            <span className="w-[18%] bg-border" />
+            <span className="flex-1 bg-accent" />
+            <span className="w-[22%] bg-border" />
+          </div>
+          <p className="px-6 py-4 text-small text-text-muted">
+            Ordering, machining and fabrication run continuously across this span rather
+            than at a single date — roughly from the concept freeze on 30 October to first
+            drive on 31 March.
+          </p>
+        </div>
 
         <div className="mt-12 flex flex-col gap-14">
           {groups.map((group) => (
@@ -203,6 +237,19 @@ export default function ProgressPage() {
               </ol>
             </section>
           ))}
+        </div>
+      </Section>
+
+      {/* ---------- Glossary ---------- */}
+      <Section labelledBy="glossary-heading" className="border-t border-border">
+        <SectionHeading
+          id="glossary-heading"
+          eyebrow="Reference"
+          title="What the acronyms mean"
+          lead="Formula Student runs on documents, and the milestones above are named after them. Here is what each one is."
+        />
+        <div className="mt-12">
+          <Glossary />
         </div>
       </Section>
 
