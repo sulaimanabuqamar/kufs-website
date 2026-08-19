@@ -201,21 +201,38 @@ Impact (135.2 KB TTF) it produced a 14.2 KB subset, an 89.5% reduction.
 
 ## Editing content
 
-Nothing here needs a developer, and nothing needs a CMS. Everything lives in
-`/content` and is read at build time, validated against a Zod schema in
-`src/lib/schemas.ts`. **A malformed file fails `pnpm build` with a message naming the
-file and the field** rather than shipping a broken sponsor strip.
+Everything lives in `/content`, is read at build time, and is validated against a Zod
+schema in `src/lib/schemas.ts`. **A malformed file fails `pnpm build` with a message
+naming the file and the field** rather than shipping a broken sponsor strip.
+
+There are two ways to edit it and they are the same thing: the files directly, or the
+[admin panel](#the-admin-panel) at `/admin`, which is a front end for the same files
+and commits to this repository when you press Save. No database, either way.
 
 ```
 content/
-├── site.ts          team name, tagline, socials, competition date, hero config
-├── sponsors.json    { name, tier, logo, url, blurb?, contribution?, since? }
-├── team.json        { name, role, subteam, photo, linkedin?, year }
-├── milestones.json  { title, date, status: done|active|upcoming, description }
+├── site.json        team name, tagline, socials, competition date, hero config
+├── site.ts          loader — reads site.json and validates it. No values here.
+├── sponsors.json    { sponsors: [ { name, tier, logo, url, blurb?, ... } ] }
+├── team.json        { team: [ { name, year, major, roles[], photo?, linkedin? } ] }
+├── tiers.json       { tiers: [ { tier, name, amount, summary, slots, benefits } ] }
+├── milestones.json  { milestones: [ { title, date, status, description, ... } ] }
+├── roles.json       { roles: [ { title, subteam, description, lookingFor[] } ] }
+├── cars/<year>.json the season's car: spec table, subsystems, gallery
 └── news/*.mdx       frontmatter: title, date, author, excerpt, cover
 ```
 
 Notes:
+
+- **The list files are wrapped in an object** — `{ "sponsors": [ ... ] }`, not a bare
+  `[ ... ]`. TinaCMS writes JSON documents as objects and cannot produce a top-level
+  array; rather than reshape the Zod schemas around that, `readList()` in
+  `src/lib/content.ts` unwraps them in the one place that reads them, and the schemas
+  still validate a plain array.
+- **Nullable images are absent rather than `null`.** Tina refuses to start if it is
+  asked to seed a `null` where an object belongs, so `photo` and `image` keys are left
+  out until a picture exists. The schemas use `.nullish().default(null)`, so every
+  reader still receives `null` and nothing downstream changed.
 
 - Sponsor tiers: `tier1 | tier2 | tier3 | inkind`, matching the team's sponsorship
   pack (AED 100,000 / 60,000 / 25,000 / value-based). Tier 1 and Tier 2 render at size;
@@ -232,7 +249,7 @@ Notes:
 
 ## The hero
 
-`<ScrollCarHero />` has two modes, selected by `hero.mode` in `content/site.ts`.
+`<ScrollCarHero />` has two modes, selected by `hero.mode` in `content/site.json`.
 
 **Mode A — `sequence` (production).** Pre-rendered WebP frames painted to a `<canvas>`
 as scroll progress advances through a pinned section. Frames live in
@@ -424,6 +441,56 @@ the Plausible dashboard to get conversion reporting.
 
 ---
 
+## The admin panel
+
+`/admin` is a TinaCMS panel for everything under `/content`, including image upload.
+Git-based: every save is a commit to this repository, so content stays as files, the
+Zod schemas still validate it, and there is no database anywhere in the system.
+[CONTRIBUTING.md](CONTRIBUTING.md#the-admin-panel) documents it for editors; this is
+the architecture.
+
+**Zod is the single source of truth, structurally.** The Tina fields are not written
+anywhere — `tina/zod-to-tina.ts` compiles them from `src/lib/schemas.ts` through Zod
+4's `z.toJSONSchema()`, so there is no second schema to keep in sync and no way for
+one to drift from the other. The compiler **throws rather than guesses**: a Zod
+construct it has not been taught fails the build with the field path named, instead of
+silently producing a field an editor can no longer edit.
+
+The only hand-written part is `tina/overlays.ts` — labels and help text, keyed by
+dotted field path. It is additive: it cannot add, remove or rename a field.
+`pnpm check:tina` fails if an overlay key stops resolving, and it diffs the generated
+field tree against a committed snapshot, so a schema change shows up in review as a
+change to _what editors will see_.
+
+Tina cannot express cross-field rules — "each tier appears once", "at most one active
+milestone", "this must be a real URL". Those stay where they were: `parseOrThrow`
+during `pnpm build`. A bad edit through the panel therefore fails CI and never reaches
+production, and the live site keeps serving the last good version. Verified: an edit
+written through Tina's API with `url: "definitely-not-a-url"` and `since: 1742` failed
+the build with `• 0.url: Invalid URL` and `• 0.since: Too small`.
+
+**It degrades to nothing.** `tinacms build` writes the admin SPA to `public/admin/`,
+which is gitignored, and `scripts/build-admin.mjs` only runs it when
+`NEXT_PUBLIC_TINA_CLIENT_ID` and `TINA_TOKEN` are both set. With no credentials the
+directory does not exist, the `/admin` rewrite points at nothing, and Next returns 404
+— the same file-presence gate used for the licensed display font, and for the same
+reason: a flag is something you have to remember. A committee that lets the Tina
+account lapse gets a site that builds, deploys and serves exactly as before, with all
+of its content still editable in git.
+
+**No public route can load the editor.** The admin is a separate single-page app, not
+a Next route, so there is no import path from the app to Tina at all. First-party JS
+on `/` is 149.9 KB gzipped, unchanged to the decimal from before Tina was added.
+
+`/admin` is disallowed in `robots.ts`, absent from `sitemap.ts`, and served with
+`X-Robots-Tag: noindex, nofollow` — the header rather than a meta tag because the page
+is a static file Tina generates.
+
+`tina/tina-lock.json` is generated and committed, as Tina requires for cloud indexing.
+Do not hand-edit it; `tinacms build` rewrites it.
+
+---
+
 ## Dependencies
 
 Every dependency, with its justification.
@@ -439,15 +506,17 @@ Every dependency, with its justification.
 
 **Development**
 
-| Package                                                  | Why                                                                  |
-| -------------------------------------------------------- | -------------------------------------------------------------------- |
-| `typescript`, `@types/*`                                 | Strict-mode TypeScript.                                              |
-| `tailwindcss`, `@tailwindcss/postcss`                    | Styling; `@theme` is what wires `tokens.css` into the utility layer. |
-| `eslint`, `eslint-config-next`, `eslint-config-prettier` | Linting, with stylistic rules delegated to Prettier.                 |
-| `prettier`                                               | Formatting. Checked in CI.                                           |
-| `three`, `@types/three`                                  | Hero Mode B and the frame renderer. Never in the production bundle.  |
-| `playwright`                                             | Drives headless Chromium for `render:frames` and `check:hero`.       |
-| `sharp`                                                  | Encodes WebP for the hero frames and the placeholder assets.         |
+| Package                                                  | Why                                                                                                                                              |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `typescript`, `@types/*`                                 | Strict-mode TypeScript.                                                                                                                          |
+| `tailwindcss`, `@tailwindcss/postcss`                    | Styling; `@theme` is what wires `tokens.css` into the utility layer.                                                                             |
+| `eslint`, `eslint-config-next`, `eslint-config-prettier` | Linting, with stylistic rules delegated to Prettier.                                                                                             |
+| `prettier`                                               | Formatting. Checked in CI.                                                                                                                       |
+| `three`, `@types/three`                                  | Hero Mode B and the frame renderer. Never in the production bundle.                                                                              |
+| `playwright`                                             | Drives headless Chromium for `render:frames` and `check:hero`.                                                                                   |
+| `sharp`                                                  | Encodes WebP for the hero frames and the placeholder assets.                                                                                     |
+| `tinacms`, `@tinacms/cli`                                | The `/admin` content panel. Builds a standalone SPA into `public/admin/`; no public route can import it.                                         |
+| `jiti`                                                   | Lets `check:tina` import the TypeScript Zod schemas from a plain `.mjs` script. Already present transitively; declared so it is not an accident. |
 
 Deliberately **not** added: `clsx`/`tailwind-merge` (a six-line `cn()` covers our
 usage), `framer-motion` (the scroll hook is ~60 lines and avoids ~40 KB), any dialog

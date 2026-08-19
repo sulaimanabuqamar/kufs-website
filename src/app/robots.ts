@@ -23,7 +23,12 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
         // Development-only surface; see src/app/styleguide.
-        disallow: ["/styleguide"],
+        // /admin is the TinaCMS panel. It 404s unless the Tina credentials are
+        // set on the deployment, but it is disallowed unconditionally: a
+        // committee that switches the CMS on later should not have to remember
+        // to come back and edit this file. It is also absent from sitemap.ts,
+        // which is generated from ALL_ROUTES and never contained it.
+        disallow: ["/styleguide", "/admin"],
       },
     ],
     sitemap: `${origin}/sitemap.xml`,

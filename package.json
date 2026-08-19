@@ -5,7 +5,7 @@
   "description": "Public website for the KUFS Formula Student team.",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/build-admin.mjs && next build",
     "start": "next start",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
@@ -23,7 +23,9 @@
     "check:scroll": "node scripts/check-scroll.mjs",
     "brand:slice": "node scripts/slice-brand-logos.mjs",
     "check:font-licence": "node scripts/check-font-licence.mjs",
-    "check:glyphs": "node scripts/check-glyphs.mjs"
+    "check:glyphs": "node scripts/check-glyphs.mjs",
+    "dev:cms": "tinacms dev -c \"next dev\"",
+    "check:tina": "node scripts/check-tina-schema.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
+    "@tinacms/cli": "^2.6.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
@@ -43,12 +46,14 @@
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
     "eslint-config-prettier": "^10.1.8",
+    "jiti": "^2.7.0",
     "playwright": "^1.62.1",
     "prettier": "^3.9.6",
     "sharp": "^0.35.3",
     "subset-font": "^2.5.0",
     "tailwindcss": "^4.3.3",
     "three": "^0.185.1",
+    "tinacms": "^3.12.0",
     "typescript": "^5"
   },
   "packageManager": "pnpm@11.22.0",

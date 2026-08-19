@@ -54,6 +54,16 @@ jobs:
       - name: Check font licence
         run: pnpm check:font-licence
 
+      # The /admin panel's fields are compiled from the Zod schemas rather than
+      # written by hand, so they cannot drift. This checks the two things that
+      # still can: that the compiler handles every schema (it throws rather
+      # than guessing), and that the hand-written labels in tina/overlays.ts
+      # still point at fields that exist. It also diffs the generated field
+      # tree against a committed snapshot, so a schema change shows up in
+      # review as a change to what editors will see.
+      - name: Check admin panel matches the content schemas
+        run: pnpm check:tina
+
       # Also the content gate: every file under /content is parsed through its
       # Zod schema during the build, so a malformed sponsor or milestone fails
       # here rather than in production.

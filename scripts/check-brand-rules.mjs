@@ -178,7 +178,14 @@ const STRIPES = () => {
       if (c && c.a >= 0.9) return c;
       node = node.parentElement;
     }
-    return parse(getComputedStyle(document.body).backgroundColor) ?? { r: 22, g: 20, b: 60, a: 1 };
+    return (
+      parse(getComputedStyle(document.body).backgroundColor) ?? {
+        r: 22,
+        g: 20,
+        b: 60,
+        a: 1,
+      }
+    );
   };
 
   const near = (c, target, tolerance = 24) =>
@@ -195,7 +202,9 @@ const STRIPES = () => {
     const style = getComputedStyle(stripe);
     if (style.display === "none" || style.visibility === "hidden") continue;
 
-    const bars = [...stripe.children].map((bar) => parse(getComputedStyle(bar).backgroundColor));
+    const bars = [...stripe.children].map((bar) =>
+      parse(getComputedStyle(bar).backgroundColor),
+    );
     const first = bars[0];
     const ground = effectiveBg(stripe.parentElement);
     const groundIsLight = relLum(ground) > 0.5;
@@ -223,7 +232,9 @@ const STRIPES = () => {
       tone,
       bars: bars.length,
       groundIsLight,
-      ground: ground ? `rgb(${Math.round(ground.r)},${Math.round(ground.g)},${Math.round(ground.b)})` : "?",
+      ground: ground
+        ? `rgb(${Math.round(ground.r)},${Math.round(ground.g)},${Math.round(ground.b)})`
+        : "?",
       faintestRatio,
       cls: (stripe.getAttribute("class") ?? "").slice(0, 70),
     });
@@ -345,7 +356,9 @@ async function main() {
         "faintest stripe bar stays visible",
         faded.length === 0,
         faded.length
-          ? faded.map((f) => `${f.variant} ${f.faintestRatio}:1 on ${f.ground}`).join(" | ")
+          ? faded
+              .map((f) => `${f.variant} ${f.faintestRatio}:1 on ${f.ground}`)
+              .join(" | ")
           : `min ${Math.min(...stripes.map((x) => x.faintestRatio ?? 99)).toFixed(2)}:1`,
       );
 

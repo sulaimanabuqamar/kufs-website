@@ -1,5 +1,14 @@
 # sharp needs its native postinstall to run — it is used by the offline asset
 # and hero-frame generation scripts (WebP encoding).
+#
+# esbuild and better-sqlite3 are TinaCMS's toolchain: the Tina CLI bundles the
+# schema with esbuild and backs its local dev index with better-sqlite3. Both
+# are dev-only — neither is reachable from a production build of the site.
+#
+# core-js's postinstall only prints a funding notice.
 allowBuilds:
+  better-sqlite3: true
+  core-js: false
+  esbuild: true
   sharp: true
   unrs-resolver: false

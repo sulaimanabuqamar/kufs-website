@@ -55,3 +55,9 @@ src/assets/fonts/*.otf
 src/assets/fonts/*.woff2
 public/fonts/*.woff2
 public/fonts/*.ttf
+
+# TinaCMS. The admin SPA is built into public/admin/ only when the Tina
+# credentials are set — its absence is what makes /admin 404 on a deployment
+# with no CMS configured. tina/__generated__ is build output too.
+/public/admin
+/tina/__generated__

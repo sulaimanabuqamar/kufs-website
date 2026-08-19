@@ -15,9 +15,10 @@ it goes live, and every version is kept.
 ## Contents
 
 1. [The five-minute version](#the-five-minute-version)
-2. [One-time setup](#one-time-setup)
-3. [Making a change](#making-a-change)
-4. [Common jobs](#common-jobs)
+2. [The admin panel](#the-admin-panel) — editing without touching any code
+3. [One-time setup](#one-time-setup)
+4. [Making a change](#making-a-change)
+5. [Common jobs](#common-jobs)
    - [Add a sponsor](#add-a-sponsor)
    - [Update the roster for a new year](#update-the-roster-for-a-new-year)
    - [Add a news post](#add-a-news-post)
@@ -25,20 +26,180 @@ it goes live, and every version is kept.
    - [Change open roles](#change-open-roles)
    - [Change team facts, emails or the competition date](#change-team-facts)
    - [Replace the car in the hero](#replace-the-car-in-the-hero)
-5. [What the checks mean when they fail](#what-the-checks-mean)
-6. [Handover checklist for the outgoing committee](#handover-checklist)
-7. [Where everything lives](#where-everything-lives)
+6. [What the checks mean when they fail](#what-the-checks-mean)
+7. [Handover checklist for the outgoing committee](#handover-checklist)
+8. [Where everything lives](#where-everything-lives)
 
 ---
 
 ## The five-minute version
 
+- There are **two ways to change the site**, and they edit exactly the same thing.
+  The [admin panel](#the-admin-panel) at `kufs-website.vercel.app/admin` is a
+  normal-looking website editor — no code, no git. Editing the files in
+  **`content/`** by hand does the same job with more control. Use whichever you
+  prefer; you will not break anything by mixing them.
 - All editable content is in the **`content/`** folder.
 - Change a file there, commit it, open a pull request, and a preview link appears
   automatically. When it looks right, merge — the live site updates in about a minute.
 - If you type something the site cannot use (a missing image, an invalid date), the
   build **fails and tells you exactly which file and which line**. It will not publish
   a broken page. That safety net is deliberate; do not work around it.
+
+---
+
+## The admin panel
+
+If you have never used a content management system: this is a web page where you fill
+in boxes and press Save. You do not need to install anything, you do not need to
+understand git, and you cannot break the website with it — the checks described
+further down still run, and a bad edit is refused before it goes live.
+
+### Logging in
+
+1. Go to **`https://kufs-website.vercel.app/admin`**.
+2. Sign in with the account the previous committee added you to. If nobody has added
+   you, ask the web lead — access is limited to committee leads on purpose.
+3. You land on a list of everything you can edit: Site settings, Sponsors, Team
+   roster, Sponsorship tiers, Progress timeline, Open roles, The car, News.
+
+> **If `/admin` shows "404 — page not found"**, the panel is switched off for this
+> deployment. That is a normal, supported state, not a fault: it means the Tina
+> credentials are not set. The website itself is completely unaffected, and all of the
+> content is still editable by editing the files in `content/` directly. See
+> [Turning the panel on](#turning-the-panel-on).
+
+### What happens when you press Save
+
+This is the part that surprises people, so read it once:
+
+1. You press **Save**.
+2. Your edit is **committed to the GitHub repository** — the panel is a friendly front
+   end for the same files described in the rest of this document. There is no separate
+   database. Nothing is stored inside the CMS.
+3. Vercel notices the commit and **rebuilds the site**.
+4. **About one to two minutes later**, the live site shows your change.
+
+**The delay is normal.** If you refresh the site five seconds after saving and nothing
+has changed, nothing is broken — the rebuild has not finished. Wait two minutes and
+refresh again. Do not press Save repeatedly; each press queues another rebuild.
+
+### Adding a sponsor
+
+1. Open **Sponsors**.
+2. Press **Add item** at the bottom of the list.
+3. Fill in:
+   - **Company name** — exactly as they write it themselves.
+   - **Tier** — pick from the list. This decides where and how big their logo appears.
+   - **Website** — the full address, including `https://`.
+   - **Logo** — press the image box, then **Upload**, and pick their logo file. Ask
+     them for a transparent PNG or SVG: these logos sit on both white and navy
+     backgrounds.
+   - **Width in pixels** and **Height in pixels** — the real size of the file you just
+     uploaded. On a Mac, right-click the file → Get Info. On Windows, right-click →
+     Properties → Details. These are not optional: the page uses them to reserve the
+     right amount of space so nothing jumps around while the logo loads.
+   - **Alt text** — the company's name. This is what a blind visitor hears. Do not
+     write "logo" or "image".
+4. **Blurb** and **Contribution** are optional and worth writing. "Five-axis CNC
+   machining of suspension components" tells a reader far more than a logo does.
+5. Press **Save**.
+
+They now appear on `/sponsors`, in the footer of every page, and on the home page.
+
+### Posting a news update
+
+1. Open **News**, then **Create New**.
+2. **Headline** — the web address is made from this automatically, so you do not type
+   a filename.
+3. **Published date**, **Written by**, and **Excerpt** — the excerpt is the two-line
+   summary on the news list. 280 characters maximum.
+4. **Cover image** — same three extra fields as a logo: width, height, alt text.
+5. Write the post in the big box at the bottom. It works like any document editor —
+   headings, bold, links, lists.
+6. **Keep as a draft** is on by default for a new post. While it is on, the post is
+   invisible to search engines, absent from the news feed and off the home page, but
+   you can still see it on the site to check it. Turn it off when you want it public.
+7. Press **Save**.
+
+### Uploading a photo
+
+Any image box works the same way: press it, press **Upload**, choose the file. The
+file is committed to the repository alongside your edit, so it is backed up with
+everything else.
+
+Two things to get right, every time:
+
+- **Width and height** must match the real file. Wrong numbers make the page jump
+  around as it loads.
+- **Alt text** must describe the picture, not name it. "Chassis jig with the front
+  bulkhead tacked in place" — not "chassis photo".
+
+Photographs are the single biggest gap on this site. A real picture of the team
+working beats a placeholder every time, so upload them as you take them.
+
+### When a save is rejected
+
+Two different things can stop an edit, and they look different.
+
+**The panel refuses to save.** A required box is empty, or a number field has letters
+in it. The panel highlights the box. Fill it in and save again.
+
+**The save works, but the site does not update.** This means the edit was committed
+but the rebuild failed the content checks. The rules in `src/lib/schemas.ts` are
+stricter than the panel can express — a web address that is not really an address, a
+sponsorship tier used twice, the same person entered twice.
+
+You will get an email from Vercel saying the deployment failed. To see why:
+
+1. Open the Vercel dashboard → the failed deployment → **Build Logs**.
+2. Look for a block that starts `Invalid content in content/...`. It names the file and
+   the exact field, in plain English. For example:
+
+   ```
+   Invalid content in content/sponsors.json
+     • 0.url: Invalid URL
+     • 0.since: Too small: expected number to be >=2000
+   ```
+
+3. Go back to the panel, fix that field, and save again.
+
+**The live site is never affected by a failed build.** It keeps serving the last good
+version until a build succeeds. Nothing is lost and nothing is broken — you just have
+to fix the field.
+
+### Turning the panel on
+
+Only needed if `/admin` returns 404 and you want the panel back.
+
+1. Sign in at [app.tina.io](https://app.tina.io) with the team's Tina account and open
+   the KUFS project. If there is no project, create one and point it at this GitHub
+   repository.
+2. Copy the **Client ID** from the project's Overview tab, and create a **read-write
+   token** on the Tokens tab.
+3. In the Vercel dashboard → the KUFS project → Settings → Environment Variables, add:
+   - `NEXT_PUBLIC_TINA_CLIENT_ID` — the Client ID.
+   - `TINA_TOKEN` — the token. **This one is a secret.** It can write to the
+     repository. Never paste it into a file, a message, or an issue.
+4. Redeploy. `/admin` works from the next deployment onwards.
+
+To turn the panel off again, delete those two variables and redeploy. The website is
+unaffected.
+
+### Editing the panel itself
+
+Developers only. The fields in the panel are **generated from the content rules** in
+`src/lib/schemas.ts` by `tina/zod-to-tina.ts` — there is no second list of fields to
+keep in step. Add a field to the Zod schema and it appears in the panel automatically.
+
+What is written by hand is `tina/overlays.ts`: the plain-English labels and the help
+text under each box. It can only annotate fields, never add or remove them, and
+`pnpm check:tina` fails if a label points at a field that no longer exists.
+
+To work on the panel locally, run `pnpm dev:cms` instead of `pnpm dev`. That starts the
+site with a local copy of the CMS at `http://localhost:3000/admin`, backed by the files
+on your machine — no Tina account and no internet needed. Saves write straight to
+`content/`, so you can see exactly what the panel produces.
 
 ---
 
@@ -123,7 +284,10 @@ live site updates within about a minute.
    `example-partner.webp`.
    - Ask them for a **transparent PNG or SVG**. Logos here sit on both white and navy.
    - Note its width and height in pixels (right-click → Get Info on Mac).
-2. Add a block to `content/sponsors.json`, copying an existing one:
+2. Add a block to the `"sponsors"` list in `content/sponsors.json`, copying an
+   existing one. The file looks like `{ "sponsors": [ ... ] }` — the outer wrapper is
+   there because the admin panel writes JSON objects; leave it alone and edit the
+   list inside it.
 
 ```json
 {
@@ -154,6 +318,11 @@ Nothing else needs changing.
 ### Update the roster for a new year
 
 **File:** `content/team.json`
+
+> **The list files all look like `{ "<name>": [ ... ] }`.** `sponsors.json` wraps its
+> list in `"sponsors"`, `team.json` in `"team"`, and so on. That outer object is there
+> because the admin panel writes JSON objects and cannot write a bare list. Leave the
+> wrapper alone and edit the list inside it.
 
 **This is a one-file job.** Replace the whole list. The `/team` page regroups itself:
 subteams with nobody in them disappear, subteams you add appear, and the counts update.
@@ -230,7 +399,7 @@ The three most recent posts appear on the home page automatically.
 
 ### Update the season timeline
 
-**File:** `content/milestones.json`
+**File:** `content/milestones.json` (a `{ "milestones": [ ... ] }` wrapper — see above)
 
 ```json
 {
@@ -249,7 +418,7 @@ makes to sponsors. Do not quietly delete a milestone that moved.
 
 ### Change open roles
 
-**File:** `content/roles.json` — drives the `/join` page.
+**File:** `content/roles.json` (a `{ "roles": [ ... ] }` wrapper — see above) — drives the `/join` page.
 
 ```json
 {
@@ -266,7 +435,7 @@ role's block when it is filled.
 
 ### Change team facts
 
-**File:** `content/site.ts`
+**File:** `content/site.json`
 
 This one is TypeScript rather than JSON, but you only ever change the text between
 quotes. It holds the team name, tagline, email addresses, social links, the competition
@@ -283,7 +452,7 @@ The spinning car on the home page is currently a stand-in, built in code, becaus
 is no CAD export yet. Replacing it with the real car is **two steps**:
 
 1. Export the car as a `.glb` file and put it at `public/models/2027-car.glb`.
-2. In `content/site.ts`, change `modelPath: null` to
+2. In `content/site.json`, change `"modelPath": null` to
    `modelPath: "/models/2027-car.glb"`, then run:
 
 ```bash
@@ -334,10 +503,17 @@ For the outgoing committee, at the end of your term.
 - [ ] Add them to the Formspree account (this receives sponsorship enquiries — losing
       access to it means losing enquiries).
 - [ ] Add them to Plausible, if analytics is set up.
-- [ ] Confirm the team email addresses in `content/site.ts` still reach someone who has
+- [ ] **Transfer the TinaCMS account** (the `/admin` panel). Sign in at
+      [app.tina.io](https://app.tina.io), open the KUFS project → Collaborators, and
+      add the incoming web lead as an owner. Then remove yourself once they confirm
+      they can log in. If the token is rotated or the project is deleted, `/admin`
+      returns 404 and **the website carries on working normally** — every piece of
+      content is still in `content/` and still editable by hand, so this is an
+      inconvenience rather than an emergency.
+- [ ] Confirm the team email addresses in `content/site.json` still reach someone who has
       not graduated.
 - [ ] Update the roster in `content/team.json`.
-- [ ] Update the competition date and year in `content/site.ts`.
+- [ ] Update the competition date and year in `content/site.json`.
 - [ ] Walk them through this document, and through one real change end to end.
 - [ ] Remove graduated members' access.
 
@@ -350,7 +526,8 @@ enquiry arriving at an inbox nobody opens is worse than no website.
 
 ```
 content/           ← everything you will normally edit
-  site.ts             team name, emails, competition date, values, statistics
+  site.json           team name, emails, competition date, values, statistics
+  site.ts             loads site.json and checks it — no values live here
   sponsors.json       who backs us
   team.json           the roster
   milestones.json     the season timeline

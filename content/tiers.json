@@ -1,70 +1,72 @@
-[
-  {
-    "tier": "tier1",
-    "name": "Tier 1",
-    "amount": "AED 100,000",
-    "summary": "Our lead partner. Large-size, high-visibility placement across the car, the team and every piece of material we produce — plus direct access to Khalifa University engineering talent.",
-    "slots": null,
-    "benefits": {
-      "livery": "Large-size logo on the vehicle body, sidepods and rear wing — high-visibility placement",
-      "kit": "Large-size logo on teamwear, front and back",
-      "website": "Large-size logo on this site, the team banner, exhibition posters and promotional material",
-      "social": "Featured across KU and KUFS social media platforms",
-      "designReport": "Large-size logo in the Competition Design Report",
-      "recruitment": "Access to KU's top engineering talent for internships and recruitment",
-      "recognition": "Acknowledgement in official presentations and media features",
-      "labVisit": "Invitation to visit the KUFS lab and attend demonstration or test events"
+{
+  "tiers": [
+    {
+      "tier": "tier1",
+      "name": "Tier 1",
+      "amount": "AED 100,000",
+      "summary": "Our lead partner. Large-size, high-visibility placement across the car, the team and every piece of material we produce — plus direct access to Khalifa University engineering talent.",
+      "slots": null,
+      "benefits": {
+        "livery": "Large-size logo on the vehicle body, sidepods and rear wing — high-visibility placement",
+        "kit": "Large-size logo on teamwear, front and back",
+        "website": "Large-size logo on this site, the team banner, exhibition posters and promotional material",
+        "social": "Featured across KU and KUFS social media platforms",
+        "designReport": "Large-size logo in the Competition Design Report",
+        "recruitment": "Access to KU's top engineering talent for internships and recruitment",
+        "recognition": "Acknowledgement in official presentations and media features",
+        "labVisit": "Invitation to visit the KUFS lab and attend demonstration or test events"
+      }
+    },
+    {
+      "tier": "tier2",
+      "name": "Tier 2",
+      "amount": "AED 60,000",
+      "summary": "Medium-size placement on the car and the team, with recognition through our presentations and outreach.",
+      "slots": null,
+      "benefits": {
+        "livery": "Medium-size logo on the vehicle body and rear section",
+        "kit": "Medium-size logo on teamwear, back",
+        "website": "Medium-size logo on this site and the team banner",
+        "social": "Included in KU and KUFS social media posts",
+        "designReport": "Medium-size logo in the Competition Design Report",
+        "recruitment": false,
+        "recognition": "Acknowledgement during presentations and outreach events, and inclusion in flyers and event materials",
+        "labVisit": "Invitation to visit the KUFS lab and meet the team"
+      }
+    },
+    {
+      "tier": "tier3",
+      "name": "Tier 3",
+      "amount": "AED 25,000",
+      "summary": "Small-size placement across the car, the team and our published material. Where most of our first partners start.",
+      "slots": null,
+      "benefits": {
+        "livery": "Small-size logo on the vehicle body",
+        "kit": "Small-size logo on the teamwear sleeve",
+        "website": "Small-size logo on this site, the team banner, flyers and event posters",
+        "social": "Featured on KU and KUFS social media platforms",
+        "designReport": "Small-size logo in the Competition Design Report",
+        "recruitment": false,
+        "recognition": "Acknowledgement during presentations and outreach events",
+        "labVisit": false
+      }
+    },
+    {
+      "tier": "inkind",
+      "name": "In-Kind",
+      "amount": "Value-based support",
+      "summary": "Materials, components, machining, software, equipment, logistics or expertise instead of cash. Placement is set by the verified value of what you contribute.",
+      "slots": null,
+      "benefits": {
+        "livery": "Placement based on the verified value of the contribution",
+        "kit": "Placement based on the verified value of the contribution",
+        "website": "Listed on this site with what you supply",
+        "social": "Credited when we use what you have given us",
+        "designReport": "Credited in the Competition Design Report",
+        "recruitment": false,
+        "recognition": "Acknowledgement during presentations and outreach events, and inclusion in relevant promotional and event materials",
+        "labVisit": false
+      }
     }
-  },
-  {
-    "tier": "tier2",
-    "name": "Tier 2",
-    "amount": "AED 60,000",
-    "summary": "Medium-size placement on the car and the team, with recognition through our presentations and outreach.",
-    "slots": null,
-    "benefits": {
-      "livery": "Medium-size logo on the vehicle body and rear section",
-      "kit": "Medium-size logo on teamwear, back",
-      "website": "Medium-size logo on this site and the team banner",
-      "social": "Included in KU and KUFS social media posts",
-      "designReport": "Medium-size logo in the Competition Design Report",
-      "recruitment": false,
-      "recognition": "Acknowledgement during presentations and outreach events, and inclusion in flyers and event materials",
-      "labVisit": "Invitation to visit the KUFS lab and meet the team"
-    }
-  },
-  {
-    "tier": "tier3",
-    "name": "Tier 3",
-    "amount": "AED 25,000",
-    "summary": "Small-size placement across the car, the team and our published material. Where most of our first partners start.",
-    "slots": null,
-    "benefits": {
-      "livery": "Small-size logo on the vehicle body",
-      "kit": "Small-size logo on the teamwear sleeve",
-      "website": "Small-size logo on this site, the team banner, flyers and event posters",
-      "social": "Featured on KU and KUFS social media platforms",
-      "designReport": "Small-size logo in the Competition Design Report",
-      "recruitment": false,
-      "recognition": "Acknowledgement during presentations and outreach events",
-      "labVisit": false
-    }
-  },
-  {
-    "tier": "inkind",
-    "name": "In-Kind",
-    "amount": "Value-based support",
-    "summary": "Materials, components, machining, software, equipment, logistics or expertise instead of cash. Placement is set by the verified value of what you contribute.",
-    "slots": null,
-    "benefits": {
-      "livery": "Placement based on the verified value of the contribution",
-      "kit": "Placement based on the verified value of the contribution",
-      "website": "Listed on this site with what you supply",
-      "social": "Credited when we use what you have given us",
-      "designReport": "Credited in the Competition Design Report",
-      "recruitment": false,
-      "recognition": "Acknowledgement during presentations and outreach events, and inclusion in relevant promotional and event materials",
-      "labVisit": false
-    }
-  }
-]
+  ]
+}
