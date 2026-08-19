@@ -422,10 +422,10 @@ the `/news/[slug]` route exists — see below).
 
 Read this before the next milestone.
 
-1. **`/news/[slug]` does not exist.** Home page news cards therefore link to `/news`
-   rather than to the article, to avoid shipping three 404s. Building that route means
-   adding `next-mdx-remote` (or `@next/mdx`) to render the MDX body — the loader
-   already returns it as `body`.
+1. **Both news posts are placeholders**, flagged `draft: true`. They render on `/news`
+   and their own routes behind a visible banner, and that one flag keeps them out of the
+   sitemap, out of the RSS feed, off the home page, and marked `noindex`. As a result the
+   home page currently shows no news section at all — correct, since nothing is published.
 2. **A4 Speed is not the live headline face.** The font file has not been supplied, so
    Barlow Condensed Bold Italic — the declared fallback — is running. See
    [Licensing](#licensing). Enabling it is a one-file change plus `pnpm font:subset`.

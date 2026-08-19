@@ -53,12 +53,8 @@ export function LatestNews() {
               </time>
               <h3 className="text-h4 text-text">
                 {/* The card is the hit area; the link is still the focusable
-                    element, so keyboard order and link semantics are intact.
-
-                    TODO(milestone 2): point at `/news/${post.slug}` once the
-                    article route exists. Linking there now would ship three
-                    404s on the home page, so these go to the index instead. */}
-                <Link href="/news" className="outline-none">
+                    element, so keyboard order and link semantics are intact. */}
+                <Link href={`/news/${post.slug}`} className="outline-none">
                   {post.title}
                   <StretchedLinkOverlay />
                 </Link>
