@@ -1,0 +1,54 @@
+{
+  "year": 2027,
+  "name": "KU-01",
+  "positioning": "Our 2027 Formula Student car. A carbon monocoque built around a zoned laminate schedule, six weeks earlier to shakedown than any car we have run before.",
+  "status": "in-build",
+  "spec": {
+    "mass": null,
+    "wheelbase": "1550 mm",
+    "trackFront": null,
+    "trackRear": null,
+    "power": null,
+    "drivetrain": null,
+    "chassis": "Carbon fibre monocoque, zoned laminate",
+    "laminate": null,
+    "suspension": "Double wishbone, pushrod actuated, front and rear",
+    "tyres": "18 × 6.0 – 10 in",
+    "downforce": null,
+    "brakes": null,
+    "electronics": null
+  },
+  "subsystems": [
+    {
+      "name": "Aerodynamics",
+      "headline": "A package designed around the endurance event, not the sprint",
+      "body": "Multi-element front and rear wings with a full-length floor. The aero brief this season prioritises a stable balance through the long-radius corners of the endurance course over peak downforce on a single lap — a car that is predictable at hour one and hour two scores more points than one that is quick and fragile. CFD iteration runs alongside the chassis surface development so the two are never designed in isolation.",
+      "image": null
+    },
+    {
+      "name": "Chassis",
+      "headline": "A zoned laminate, not a uniform one",
+      "body": "Last season's monocoque cleared structural equivalency comfortably, but it did so by carrying a uniform laminate through regions the FEA had been showing were nowhere near limit load. This year the schedule is zoned: the side impact structure and front bulkhead keep their full stack, the upper surfaces and seatback drop plies. The coupon programme is where that gets proved before it goes anywhere near the mould.",
+      "image": null
+    },
+    {
+      "name": "Powertrain",
+      "headline": "Calibrated for a repeatable endurance map",
+      "body": "The powertrain brief is a map the car can hold for 22 km with the season's cooling package, not a peak figure for a dyno printout. Fuel system, cooling and calibration are developed together, and the dyno programme is scheduled early enough that findings can still change the packaging rather than merely being documented.",
+      "image": null
+    },
+    {
+      "name": "Electronics",
+      "headline": "Telemetry that survives contact with a race weekend",
+      "body": "A CAN-based loom feeding a driver display and a logging stack, built so that a fault is diagnosable in the paddock rather than back at the university. The priority is reliability and serviceability over channel count: data nobody can retrieve between sessions is data the team does not have.",
+      "image": null
+    },
+    {
+      "name": "Suspension",
+      "headline": "Kinematics validated against what the car actually does",
+      "body": "Double wishbones with pushrod actuation at both ends, with the kinematic model checked against measured geometry on the setup pads rather than trusted from CAD. Damper development gets rig time with our motorsport partner, which is the single biggest step change available to us on vehicle dynamics.",
+      "image": null
+    }
+  ],
+  "gallery": []
+}

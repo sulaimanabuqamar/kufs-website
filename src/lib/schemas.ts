@@ -224,6 +224,17 @@ export type TeamMember = z.infer<typeof teamMemberSchema>;
    milestones.json
    ------------------------------------------------------------------------- */
 
+/** Season phases, in order. Drives the grouping on /progress. */
+export const MILESTONE_PHASES = [
+  "Design",
+  "Manufacture",
+  "Assembly",
+  "Testing",
+  "Competition",
+] as const;
+
+export type MilestonePhase = (typeof MILESTONE_PHASES)[number];
+
 export const MILESTONE_STATUSES = ["done", "active", "upcoming"] as const;
 export type MilestoneStatus = (typeof MILESTONE_STATUSES)[number];
 
@@ -232,6 +243,13 @@ export const milestoneSchema = z.object({
   date: isoDate,
   status: z.enum(MILESTONE_STATUSES),
   description: z.string().min(1),
+  /** Which phase of the season this belongs to. Groups /progress. */
+  phase: z.enum(MILESTONE_PHASES),
+  /** What actually happened, written after the fact. null = not started, and
+   *  the page says so rather than inventing an entry. */
+  update: z.string().min(1).nullable().optional().default(null),
+  /** Photo from the workshop or the track. null until one exists. */
+  photo: imageRef.nullable().optional().default(null),
 });
 
 export const milestonesSchema = z
@@ -319,6 +337,87 @@ export const roleSchema = z.object({
 
 export const rolesSchema = z.array(roleSchema).min(1);
 export type Role = z.infer<typeof roleSchema>;
+
+/* -------------------------------------------------------------------------
+   cars/<year>.json — the season's car
+   ------------------------------------------------------------------------- */
+
+/**
+ * Spec rows, in display order.
+ *
+ * A fixed list rather than free-form keys so the table is comparable between
+ * seasons: 2028's car sits beside 2027's and every row lines up. Anything the
+ * team has not measured yet is `null` and renders as TBC — an invented figure
+ * on a page engineers will read is worse than an admitted gap.
+ */
+export const SPEC_ROWS = [
+  { key: "mass", label: "Mass", unit: "kg" },
+  { key: "wheelbase", label: "Wheelbase", unit: "mm" },
+  { key: "trackFront", label: "Front track", unit: "mm" },
+  { key: "trackRear", label: "Rear track", unit: "mm" },
+  { key: "power", label: "Power", unit: "" },
+  { key: "drivetrain", label: "Drivetrain", unit: "" },
+  { key: "chassis", label: "Chassis construction", unit: "" },
+  { key: "laminate", label: "Laminate schedule", unit: "" },
+  { key: "suspension", label: "Suspension", unit: "" },
+  { key: "tyres", label: "Tyres", unit: "" },
+  { key: "downforce", label: "Downforce", unit: "" },
+  { key: "brakes", label: "Brakes", unit: "" },
+  { key: "electronics", label: "Electronics", unit: "" },
+] as const;
+
+export type SpecKey = (typeof SPEC_ROWS)[number]["key"];
+
+/** null renders as TBC. Never fill one of these in with an estimate. */
+const specValue = z.string().min(1).nullable();
+
+export const CAR_SUBSYSTEMS = [
+  "Aerodynamics",
+  "Chassis",
+  "Powertrain",
+  "Electronics",
+  "Suspension",
+] as const;
+
+export const carSchema = z.object({
+  /** The competition year this car was built for. */
+  year: z.number().int().min(2024).max(2100),
+  /** The car's name or designation, e.g. "KU-01". */
+  name: z.string().min(1),
+  /** One line: what this car is and what changed from last season. */
+  positioning: z.string().min(1),
+  status: z.enum(["concept", "in-build", "testing", "competing", "retired"]),
+  spec: z.object({
+    mass: specValue,
+    wheelbase: specValue,
+    trackFront: specValue,
+    trackRear: specValue,
+    power: specValue,
+    drivetrain: specValue,
+    chassis: specValue,
+    laminate: specValue,
+    suspension: specValue,
+    tyres: specValue,
+    downforce: specValue,
+    brakes: specValue,
+    electronics: specValue,
+  }),
+  subsystems: z
+    .array(
+      z.object({
+        name: z.enum(CAR_SUBSYSTEMS),
+        headline: z.string().min(1),
+        body: z.string().min(1),
+        /** Photo or CAD render. null until one exists. */
+        image: imageRef.nullable(),
+      }),
+    )
+    .min(1),
+  /** May be empty — the page renders an honest empty state. */
+  gallery: z.array(imageRef),
+});
+
+export type Car = z.infer<typeof carSchema>;
 
 /* -------------------------------------------------------------------------
    news/*.mdx frontmatter

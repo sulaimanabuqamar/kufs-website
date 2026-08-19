@@ -6,7 +6,9 @@ import matter from "gray-matter";
 
 import site from "@/content/site";
 import {
+  carSchema,
   milestonesSchema,
+  MILESTONE_PHASES,
   rolesSchema,
   tiersSchema,
   newsFrontmatterSchema,
@@ -18,6 +20,8 @@ import {
   type Sponsor,
   type SponsorTier,
   SUBTEAMS,
+  type Car,
+  type MilestonePhase,
   type Role,
   type SponsorshipTier,
   type Subteam,
@@ -129,6 +133,18 @@ export function getUpcomingMilestones(count = 3): Milestone[] {
 
 const NEWS_DIR = join(CONTENT_DIR, "news");
 
+/**
+ * Every post, newest first, INCLUDING drafts.
+ *
+ * Drafts are readable — /news lists them and /news/<slug> renders them, with a
+ * visible placeholder banner — but they are not published:
+ * `getPublishedNews()` excludes them, which is what the home page and the
+ * sitemap use, and the article route marks them `noindex`.
+ *
+ * The distinction matters because the seeded posts are placeholder copy about
+ * a real team. They need to be visible so the news components render in a real
+ * state, and they must not be indexable, quotable or presented as fact.
+ */
 export const getNewsPosts = once((): NewsPost[] => {
   const files = readdirSync(NEWS_DIR).filter((f) => f.endsWith(".mdx"));
 
@@ -144,13 +160,33 @@ export const getNewsPosts = once((): NewsPost[] => {
     return { ...frontmatter, slug, body: content } satisfies NewsPost;
   });
 
-  return posts
-    .filter((post) => !post.draft || process.env.NODE_ENV === "development")
-    .sort((a, b) => b.date.localeCompare(a.date));
+  return posts.sort((a, b) => b.date.localeCompare(a.date));
 });
 
+/** Posts that are not drafts. Use this anywhere the post is being promoted. */
+export const getPublishedNews = once((): NewsPost[] =>
+  getNewsPosts().filter((post) => !post.draft),
+);
+
+export function getPostBySlug(slug: string): NewsPost | undefined {
+  return getNewsPosts().find((post) => post.slug === slug);
+}
+
+/** Previous and next by date, for article footer navigation. Drafts are
+ *  included so the chain does not break while the seeded posts are in place. */
+export function getAdjacentPosts(slug: string): {
+  previous: NewsPost | undefined;
+  next: NewsPost | undefined;
+} {
+  const posts = getNewsPosts();
+  const index = posts.findIndex((p) => p.slug === slug);
+  if (index === -1) return { previous: undefined, next: undefined };
+  // The list is newest-first, so "next" is the newer post.
+  return { previous: posts[index + 1], next: posts[index - 1] };
+}
+
 export function getLatestNews(count = 3): NewsPost[] {
-  return getNewsPosts().slice(0, count);
+  return getPublishedNews().slice(0, count);
 }
 
 /* -------------------------------------------------------------------------
@@ -198,4 +234,57 @@ export function getTeamBySubteam(): { subteam: Subteam; members: TeamMember[] }[
     subteam,
     members: team.filter((m) => m.subteam === subteam),
   })).filter((group) => group.members.length > 0);
+}
+
+/* -------------------------------------------------------------------------
+   Cars
+   ------------------------------------------------------------------------- */
+
+/**
+ * The car for a given season.
+ *
+ * PER-SEASON BY DESIGN. Each car is its own file at content/cars/<year>.json,
+ * and /the-car reads the year from site.competition.year. Next season is a new
+ * file plus one number in site.ts — not a rewrite, and last year's car stays on
+ * disk for an archive page whenever someone wants to build one.
+ */
+export function getCar(year: number = site.competition.year): Car {
+  return parseOrThrow(
+    carSchema,
+    readJson(join("cars", `${year}.json`)),
+    `content/cars/${year}.json`,
+  );
+}
+
+/* -------------------------------------------------------------------------
+   Milestones, grouped by phase
+   ------------------------------------------------------------------------- */
+
+/** Milestones grouped by season phase, in phase order, skipping empty phases. */
+export function getMilestonesByPhase(): {
+  phase: MilestonePhase;
+  milestones: Milestone[];
+}[] {
+  const all = getMilestones();
+  return MILESTONE_PHASES.map((phase) => ({
+    phase,
+    milestones: all.filter((m) => m.phase === phase),
+  })).filter((group) => group.milestones.length > 0);
+}
+
+/** Headline counts for the /progress summary. */
+export function getProgressSummary(): {
+  total: number;
+  complete: number;
+  active: number;
+  percent: number;
+} {
+  const all = getMilestones();
+  const complete = all.filter((m) => m.status === "done").length;
+  return {
+    total: all.length,
+    complete,
+    active: all.filter((m) => m.status === "active").length,
+    percent: all.length === 0 ? 0 : Math.round((complete / all.length) * 100),
+  };
 }
