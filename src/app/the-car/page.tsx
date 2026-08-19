@@ -20,6 +20,8 @@ export const metadata: Metadata = {
   openGraph: { title: TITLE, description: DESCRIPTION, url: "/the-car" },
 };
 
+const FREEZE_DATE = "30 October 2026";
+
 const STATUS_LABEL: Record<string, string> = {
   concept: "In concept",
   "in-build": "In build",
@@ -56,6 +58,25 @@ export default function TheCarPage() {
             <h1 className="text-h1 text-text">{car.name}</h1>
             <SpeedStripe variant="accent" />
             <p className="text-lead text-text-muted">{car.positioning}</p>
+            {/* The single most important technical fact about the programme,
+                and the site said it nowhere before. */}
+            <dl className="mt-2 flex flex-wrap gap-x-10 gap-y-4">
+              <div>
+                <dt className="text-caption uppercase tracking-wider text-text-muted">
+                  Architecture
+                </dt>
+                <dd className="text-h4 text-accent">{site.vehicle.architecture}</dd>
+              </div>
+              <div>
+                <dt className="text-caption uppercase tracking-wider text-text-muted">
+                  Target mass
+                </dt>
+                <dd className="tabular text-h4 text-accent">{site.vehicle.targetMass}</dd>
+              </div>
+            </dl>
+
+            <p className="text-small text-text-muted">{site.vehicle.note}</p>
+
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <Button href="/progress" size="lg">
                 Follow the build
@@ -81,7 +102,8 @@ export default function TheCarPage() {
             />
             <p className="border-t border-border px-5 py-3 text-caption text-text-muted">
               {/* Honest label. This is a render of a stand-in model, not the car. */}
-              Placeholder render. Photography of the built car follows shakedown.
+              Placeholder render — the car does not exist yet. Photography follows first
+              drive, scheduled for 31 March 2027.
             </p>
           </div>
         </div>
@@ -93,7 +115,7 @@ export default function TheCarPage() {
           id="spec-heading"
           eyebrow="Specification"
           title="The numbers"
-          lead={`${specified} of ${SPEC_ROWS.length} figures confirmed. Everything still being measured is marked TBC rather than estimated — this page is read by design judges.`}
+          lead={`${specified} of ${SPEC_ROWS.length} rows have a value. These are TARGETS and a working baseline from our benchmarking study — not measured specifications. The architecture is frozen on ${FREEZE_DATE}, and anything not yet decided is marked TBC rather than estimated.`}
         />
 
         <div className="mt-12 overflow-x-auto">

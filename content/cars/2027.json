@@ -1,52 +1,52 @@
 {
   "year": 2027,
   "name": "KU-01",
-  "positioning": "Our 2027 Formula Student car. A carbon monocoque built around a zoned laminate schedule, six weeks earlier to shakedown than any car we have run before.",
-  "status": "in-build",
+  "positioning": "Khalifa University's first Formula Student car: a single-motor rear-wheel-drive electric single-seater, built for Formula Student UK 2027. The architecture is selected at the end of September and frozen at the end of October \u2014 the figures below are targets, not decisions.",
+  "status": "concept",
   "spec": {
-    "mass": null,
-    "wheelbase": "1550 mm",
+    "mass": "230\u2013250 kg target, without driver",
+    "wheelbase": null,
     "trackFront": null,
     "trackRear": null,
     "power": null,
-    "drivetrain": null,
-    "chassis": "Carbon fibre monocoque, zoned laminate",
+    "drivetrain": "Single rear motor, rear-wheel drive, single-stage chain transmission (baseline)",
+    "chassis": "AISI 4130 tubular steel spaceframe (baseline)",
     "laminate": null,
-    "suspension": "Double wishbone, pushrod actuated, front and rear",
-    "tyres": "18 × 6.0 – 10 in",
-    "downforce": null,
+    "suspension": "Unequal-length double wishbone (baseline)",
+    "tyres": "10-inch wheels where tyre supply and packaging support them (baseline)",
+    "downforce": "No aerodynamic package in the first running season",
     "brakes": null,
     "electronics": null
   },
   "subsystems": [
     {
       "name": "Aerodynamics",
-      "headline": "A package designed around the endurance event, not the sprint",
-      "body": "Multi-element front and rear wings with a full-length floor. The aero brief this season prioritises a stable balance through the long-radius corners of the endurance course over peak downforce on a single lap — a car that is predictable at hour one and hour two scores more points than one that is quick and fragile. CFD iteration runs alongside the chassis surface development so the two are never designed in isolation.",
+      "headline": "Deliberately no aero package in season one",
+      "body": "Our benchmarking is explicit that a full aerodynamic package adds manufacturing, setup and validation load a first-year team cannot absorb. The first car runs clean bodywork with cooling-duct control only. That is a decision about where the season's limited hours go, not a lack of ambition \u2014 the aero subteam's work this year is bodywork, radiator flow and the analysis that justifies both.",
       "image": null
     },
     {
       "name": "Chassis",
-      "headline": "A zoned laminate, not a uniform one",
-      "body": "Last season's monocoque cleared structural equivalency comfortably, but it did so by carrying a uniform laminate through regions the FEA had been showing were nowhere near limit load. This year the schedule is zoned: the side impact structure and front bulkhead keep their full stack, the upper surfaces and seatback drop plies. The coupon programme is where that gets proved before it goes anywhere near the mould.",
+      "headline": "Steel spaceframe, chosen for the lowest late-change risk",
+      "body": "An AISI 4130 tubular steel spaceframe is the baseline: it carries the lowest manufacturing and late-change risk of the architectures we benchmarked, and it is the one a first-year team can actually build and modify. A carbon monocoque is explicitly deferred \u2014 the tooling, process control and evidence burden are not survivable alongside a first competition entry.",
       "image": null
     },
     {
       "name": "Powertrain",
-      "headline": "Calibrated for a repeatable endurance map",
-      "body": "The powertrain brief is a map the car can hold for 22 km with the season's cooling package, not a peak figure for a dyno printout. Fuel system, cooling and calibration are developed together, and the dyno programme is scheduled early enough that findings can still change the packaging rather than merely being documented.",
+      "headline": "One motor, one chain, a commercial inverter",
+      "body": "A single rear motor driving through a single-stage chain reduction, with a proven commercial inverter rather than anything developed in-house. Every reference car we studied uses this layout, and it is the one that stays serviceable in a paddock. Final drive ratio comes out of lap simulation and tractive-effort modelling, not out of another team's spec sheet.",
       "image": null
     },
     {
       "name": "Electronics",
-      "headline": "Telemetry that survives contact with a race weekend",
-      "body": "A CAN-based loom feeding a driver display and a logging stack, built so that a fault is diagnosable in the paddock rather than back at the university. The priority is reliability and serviceability over channel count: data nobody can retrieve between sessions is data the team does not have.",
+      "headline": "Safety case first, features later",
+      "body": "An electric car's electronics are a safety case before they are a feature set. The order of work is safe torque command, shutdown logic and thermal logging \u2014 then telemetry, then anything clever. This is also the subteam that owns the Electrical System Form and works with the Electrical System Officer, both of which the competition requires before the car is allowed to move.",
       "image": null
     },
     {
       "name": "Suspension",
-      "headline": "Kinematics validated against what the car actually does",
-      "body": "Double wishbones with pushrod actuation at both ends, with the kinematic model checked against measured geometry on the setup pads rather than trusted from CAD. Damper development gets rig time with our motorsport partner, which is the single biggest step change available to us on vehicle dynamics.",
+      "headline": "Double wishbones, validated against measurement",
+      "body": "Unequal-length double wishbones on 10-inch wheels, subject to tyre availability. The kinematic model gets checked against measured geometry on the setup pads rather than trusted from CAD \u2014 a first-year team's biggest risk is believing its own simulation.",
       "image": null
     }
   ],
