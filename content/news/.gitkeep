@@ -1,0 +1,5 @@
+Posts are .mdx files in this directory — see CONTRIBUTING.md.
+
+This file exists so the directory survives in git while there are no posts.
+The loader tolerates the directory being missing either way, but keeping it
+present means a new committee can see where posts go.

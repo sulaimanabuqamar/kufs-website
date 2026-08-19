@@ -1,6 +1,6 @@
 import "server-only";
 
-import { readFileSync, readdirSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
 
@@ -142,6 +142,13 @@ const NEWS_DIR = join(CONTENT_DIR, "news");
  * state, and they must not be indexable, quotable or presented as fact.
  */
 export const getNewsPosts = once((): NewsPost[] => {
+  // The directory may not exist at all. Git does not track empty directories,
+  // so once the last post is removed, a fresh clone has no content/news/ —
+  // which is exactly what happened in CI while it built fine locally, because
+  // the empty directory still existed on disk. "No posts yet" is a legitimate
+  // state for a first-year team and must not fail the build.
+  if (!existsSync(NEWS_DIR)) return [];
+
   const files = readdirSync(NEWS_DIR).filter((f) => f.endsWith(".mdx"));
 
   const posts = files.map((file) => {
