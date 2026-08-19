@@ -42,7 +42,7 @@ export function MobileNav() {
   }, [pathname]);
 
   return (
-    <div className="md:hidden">
+    <div className="lg:hidden">
       <button
         ref={triggerRef}
         type="button"
@@ -151,8 +151,14 @@ export function MobileNav() {
           </ul>
         </nav>
 
-        <div className="shrink-0 border-t border-border p-5">
-          <Button href={CTA.join.href} size="md" className="w-full">
+        {/* Both CTAs pinned to the bottom of the drawer, sponsorship first.
+            On a phone the nav list can be long enough to scroll, so the two
+            conversion paths are anchored where a thumb already is. */}
+        <div className="flex shrink-0 flex-col gap-3 border-t border-border p-5">
+          <Button href={CTA.sponsor.href} size="md" className="w-full">
+            {CTA.sponsor.label}
+          </Button>
+          <Button href={CTA.join.href} size="md" variant="secondary" className="w-full">
             {CTA.join.label}
           </Button>
         </div>

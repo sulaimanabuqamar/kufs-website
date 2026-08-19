@@ -11,6 +11,19 @@ export type NavItem = {
   description?: string;
 };
 
+/**
+ * Header navigation.
+ *
+ * Ordered by audience priority, not by site structure. Sponsors are audience
+ * number one, so the two commercial pages sit together and adjacent: /sponsors
+ * is the proof ("who already backs them"), /become-a-sponsor is the ask. A
+ * prospective partner reads them in that order.
+ *
+ * "Join the Team" is a plain nav link rather than a button: recruitment
+ * converts from the body of the site — the home page recruitment band, /team,
+ * /join — where a student has already been persuaded. Sponsorship has no such
+ * warm path, so it takes the header CTA.
+ */
 export const PRIMARY_NAV: readonly NavItem[] = [
   {
     href: "/the-car",
@@ -29,16 +42,24 @@ export const PRIMARY_NAV: readonly NavItem[] = [
     description: "The partners who make it possible.",
   },
   {
+    href: "/become-a-sponsor",
+    label: "Partner With Us",
+    description: "Tiers, deliverables and how to start.",
+  },
+  {
     href: "/news",
     label: "News",
     description: "Updates from the workshop and the paddock.",
   },
+  {
+    href: "/join",
+    label: "Join the Team",
+    description: "Open roles across every subteam.",
+  },
 ] as const;
 
-/** Secondary links — footer only, kept out of the header to protect the CTA. */
+/** Secondary links — footer only. */
 export const SECONDARY_NAV: readonly NavItem[] = [
-  { href: "/become-a-sponsor", label: "Become a Sponsor" },
-  { href: "/join", label: "Join the Team" },
   { href: "/press-kit", label: "Press Kit" },
   { href: "/contact", label: "Contact" },
 ] as const;
