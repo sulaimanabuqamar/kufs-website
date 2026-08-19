@@ -47,6 +47,34 @@ function readJson(file: string): unknown {
   return JSON.parse(readFileSync(join(CONTENT_DIR, file), "utf8"));
 }
 
+/**
+ * Reads a list file, which is stored as `{ "<key>": [ ... ] }` rather than as
+ * a bare top-level array.
+ *
+ * The wrapper exists for one reason: TinaCMS writes JSON documents as objects
+ * and cannot produce a top-level array. Rather than let that reshape the Zod
+ * schemas — which carry the uniqueness refinements and the exported types —
+ * the unwrapping happens here, in the one function that reads these files. The
+ * schemas still validate a plain array, exactly as before.
+ *
+ * A missing or non-array key is reported here rather than as a Zod error about
+ * the root being an object, which is a considerably less helpful thing to read
+ * at 2am.
+ */
+function readList(file: string, key: string): unknown {
+  const data = readJson(file);
+  if (data && typeof data === "object" && !Array.isArray(data)) {
+    const list = (data as Record<string, unknown>)[key];
+    if (Array.isArray(list)) return list;
+  }
+  throw new Error(
+    `\n\ncontent/${file} must be an object with a "${key}" array:\n` +
+      `  { "${key}": [ ... ] }\n\n` +
+      `It is stored wrapped because the admin panel writes JSON objects and\n` +
+      `cannot write a top-level array. See readList() in src/lib/content.ts.\n`,
+  );
+}
+
 function once<T>(fn: () => T): () => T {
   let cached: { value: T } | undefined;
   return () => (cached ??= { value: fn() }).value;
@@ -69,7 +97,7 @@ export { TIER_LABEL } from "@/lib/tiers";
 export const getSponsors = once((): Sponsor[] => {
   const sponsors = parseOrThrow(
     sponsorsSchema,
-    readJson("sponsors.json"),
+    readList("sponsors.json", "sponsors"),
     "content/sponsors.json",
   );
   return [...sponsors].sort(
@@ -93,7 +121,7 @@ export function getSponsorsByTier(): { tier: SponsorTier; sponsors: Sponsor[] }[
    ------------------------------------------------------------------------- */
 
 export const getTeam = once((): TeamMember[] =>
-  parseOrThrow(teamSchema, readJson("team.json"), "content/team.json"),
+  parseOrThrow(teamSchema, readList("team.json", "team"), "content/team.json"),
 );
 
 /* -------------------------------------------------------------------------
@@ -103,7 +131,7 @@ export const getTeam = once((): TeamMember[] =>
 export const getMilestones = once((): Milestone[] => {
   const milestones = parseOrThrow(
     milestonesSchema,
-    readJson("milestones.json"),
+    readList("milestones.json", "milestones"),
     "content/milestones.json",
   );
   return [...milestones].sort((a, b) => a.date.localeCompare(b.date));
@@ -197,7 +225,11 @@ export function getLatestNews(count = 3): NewsPost[] {
    ------------------------------------------------------------------------- */
 
 export const getTiers = once((): SponsorshipTier[] => {
-  const tiers = parseOrThrow(tiersSchema, readJson("tiers.json"), "content/tiers.json");
+  const tiers = parseOrThrow(
+    tiersSchema,
+    readList("tiers.json", "tiers"),
+    "content/tiers.json",
+  );
   return [...tiers].sort(
     (a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier),
   );
@@ -208,7 +240,7 @@ export const getTiers = once((): SponsorshipTier[] => {
    ------------------------------------------------------------------------- */
 
 export const getRoles = once((): Role[] =>
-  parseOrThrow(rolesSchema, readJson("roles.json"), "content/roles.json"),
+  parseOrThrow(rolesSchema, readList("roles.json", "roles"), "content/roles.json"),
 );
 
 /** Roles grouped by subteam, in display order, skipping empty groups. */

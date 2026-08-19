@@ -1,90 +1,92 @@
-[
-  {
-    "title": "Aerodynamics",
-    "subteam": "Aerodynamics",
-    "description": "Bodywork and cooling flow for a first-year car. Our benchmarking says no full aero package in season one — so the work is clean bodywork, radiator duct design and the CFD to justify it.",
-    "lookingFor": [
-      "Willingness to learn a solver from scratch — we will teach you",
-      "Interest in fluid mechanics or thermal design",
-      "Patience with meshes that will not converge"
-    ],
-    "openings": null
-  },
-  {
-    "title": "Chassis & Driver Ergonomics",
-    "subteam": "Chassis & Driver Ergonomics",
-    "description": "The steel spaceframe, the driver cell and everything about fitting a human safely inside it. This subteam owns the Structural Equivalency Spreadsheet the competition requires.",
-    "lookingFor": [
-      "CAD ability, or the willingness to get there quickly",
-      "Comfortable in a workshop with PPE",
-      "Methodical about documentation — the SES is judged on it"
-    ],
-    "openings": null
-  },
-  {
-    "title": "Steering",
-    "subteam": "Steering",
-    "description": "Rack, column, wheel and the geometry that connects them. Currently a one-person subteam, which makes this one of the largest gaps on the car.",
-    "lookingFor": [
-      "Mechanical design interest; no prior experience expected",
-      "Happy to own a subsystem end to end",
-      "Willing to defend a design decision to a judge"
-    ],
-    "openings": null
-  },
-  {
-    "title": "Suspension",
-    "subteam": "Suspension",
-    "description": "Wishbones, uprights, springs and dampers, and the kinematics that decide how the car behaves. Also a one-person subteam right now.",
-    "lookingFor": [
-      "Interest in vehicle dynamics",
-      "Comfortable with CAD and hand calculations",
-      "Prepared to validate a model against a real measurement"
-    ],
-    "openings": null
-  },
-  {
-    "title": "Throttle & Braking Systems",
-    "subteam": "Throttle & Braking Systems",
-    "description": "Pedal box, brake system and the throttle position sensing an electric car needs. Safety-critical work that scrutineers inspect closely.",
-    "lookingFor": [
-      "Precise, careful approach — this is safety-critical",
-      "Interest in mechanical design or sensors",
-      "No prior motorsport experience needed"
-    ],
-    "openings": null
-  },
-  {
-    "title": "Powertrain & Drivetrain",
-    "subteam": "Powertrain & Drivetrain",
-    "description": "Motor mounting, the single-stage chain drive, the differential and the final drive ratio — sized from lap simulation rather than copied from another team's car.",
-    "lookingFor": [
-      "Interest in transmissions, or in simulation",
-      "Comfortable turning a requirement into a number",
-      "Mechanical or electrical background both welcome"
-    ],
-    "openings": null
-  },
-  {
-    "title": "High Voltage",
-    "subteam": "High Voltage",
-    "description": "The accumulator, the tractive system and every safety interlock around them. This subteam owns the Electrical System Form and works directly with the Electrical System Officer.",
-    "lookingFor": [
-      "Electrical engineering background, or serious intent to learn",
-      "Absolute discipline around safety procedure",
-      "Interest in battery systems and power electronics"
-    ],
-    "openings": null
-  },
-  {
-    "title": "Low Voltage & Controls",
-    "subteam": "Low Voltage & Controls",
-    "description": "The loom, the shutdown circuit, the dashboard and the logging that tells us what the car actually did. Everything from CAN bus to the driver display.",
-    "lookingFor": [
-      "Any C, C++ or Python — embedded experience not expected",
-      "Interest in real-time systems or instrumentation",
-      "Happy to debug hardware, not just code"
-    ],
-    "openings": null
-  }
-]
+{
+  "roles": [
+    {
+      "title": "Aerodynamics",
+      "subteam": "Aerodynamics",
+      "description": "Bodywork and cooling flow for a first-year car. Our benchmarking says no full aero package in season one — so the work is clean bodywork, radiator duct design and the CFD to justify it.",
+      "lookingFor": [
+        "Willingness to learn a solver from scratch — we will teach you",
+        "Interest in fluid mechanics or thermal design",
+        "Patience with meshes that will not converge"
+      ],
+      "openings": null
+    },
+    {
+      "title": "Chassis & Driver Ergonomics",
+      "subteam": "Chassis & Driver Ergonomics",
+      "description": "The steel spaceframe, the driver cell and everything about fitting a human safely inside it. This subteam owns the Structural Equivalency Spreadsheet the competition requires.",
+      "lookingFor": [
+        "CAD ability, or the willingness to get there quickly",
+        "Comfortable in a workshop with PPE",
+        "Methodical about documentation — the SES is judged on it"
+      ],
+      "openings": null
+    },
+    {
+      "title": "Steering",
+      "subteam": "Steering",
+      "description": "Rack, column, wheel and the geometry that connects them. Currently a one-person subteam, which makes this one of the largest gaps on the car.",
+      "lookingFor": [
+        "Mechanical design interest; no prior experience expected",
+        "Happy to own a subsystem end to end",
+        "Willing to defend a design decision to a judge"
+      ],
+      "openings": null
+    },
+    {
+      "title": "Suspension",
+      "subteam": "Suspension",
+      "description": "Wishbones, uprights, springs and dampers, and the kinematics that decide how the car behaves. Also a one-person subteam right now.",
+      "lookingFor": [
+        "Interest in vehicle dynamics",
+        "Comfortable with CAD and hand calculations",
+        "Prepared to validate a model against a real measurement"
+      ],
+      "openings": null
+    },
+    {
+      "title": "Throttle & Braking Systems",
+      "subteam": "Throttle & Braking Systems",
+      "description": "Pedal box, brake system and the throttle position sensing an electric car needs. Safety-critical work that scrutineers inspect closely.",
+      "lookingFor": [
+        "Precise, careful approach — this is safety-critical",
+        "Interest in mechanical design or sensors",
+        "No prior motorsport experience needed"
+      ],
+      "openings": null
+    },
+    {
+      "title": "Powertrain & Drivetrain",
+      "subteam": "Powertrain & Drivetrain",
+      "description": "Motor mounting, the single-stage chain drive, the differential and the final drive ratio — sized from lap simulation rather than copied from another team's car.",
+      "lookingFor": [
+        "Interest in transmissions, or in simulation",
+        "Comfortable turning a requirement into a number",
+        "Mechanical or electrical background both welcome"
+      ],
+      "openings": null
+    },
+    {
+      "title": "High Voltage",
+      "subteam": "High Voltage",
+      "description": "The accumulator, the tractive system and every safety interlock around them. This subteam owns the Electrical System Form and works directly with the Electrical System Officer.",
+      "lookingFor": [
+        "Electrical engineering background, or serious intent to learn",
+        "Absolute discipline around safety procedure",
+        "Interest in battery systems and power electronics"
+      ],
+      "openings": null
+    },
+    {
+      "title": "Low Voltage & Controls",
+      "subteam": "Low Voltage & Controls",
+      "description": "The loom, the shutdown circuit, the dashboard and the logging that tells us what the car actually did. Everything from CAN bus to the driver display.",
+      "lookingFor": [
+        "Any C, C++ or Python — embedded experience not expected",
+        "Interest in real-time systems or instrumentation",
+        "Happy to debug hardware, not just code"
+      ],
+      "openings": null
+    }
+  ]
+}

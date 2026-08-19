@@ -1,10 +1,10 @@
 {
   "year": 2027,
   "name": "KU-01",
-  "positioning": "Khalifa University's first Formula Student car: a single-motor rear-wheel-drive electric single-seater, built for Formula Student UK 2027. The architecture is selected at the end of September and frozen at the end of October \u2014 the figures below are targets, not decisions.",
+  "positioning": "Khalifa University's first Formula Student car: a single-motor rear-wheel-drive electric single-seater, built for Formula Student UK 2027. The architecture is selected at the end of September and frozen at the end of October — the figures below are targets, not decisions.",
   "status": "concept",
   "spec": {
-    "mass": "230\u2013250 kg target, without driver",
+    "mass": "230–250 kg target, without driver",
     "wheelbase": null,
     "trackFront": null,
     "trackRear": null,
@@ -22,32 +22,27 @@
     {
       "name": "Aerodynamics",
       "headline": "Deliberately no aero package in season one",
-      "body": "Our benchmarking is explicit that a full aerodynamic package adds manufacturing, setup and validation load a first-year team cannot absorb. The first car runs clean bodywork with cooling-duct control only. That is a decision about where the season's limited hours go, not a lack of ambition \u2014 the aero subteam's work this year is bodywork, radiator flow and the analysis that justifies both.",
-      "image": null
+      "body": "Our benchmarking is explicit that a full aerodynamic package adds manufacturing, setup and validation load a first-year team cannot absorb. The first car runs clean bodywork with cooling-duct control only. That is a decision about where the season's limited hours go, not a lack of ambition — the aero subteam's work this year is bodywork, radiator flow and the analysis that justifies both."
     },
     {
       "name": "Chassis",
       "headline": "Steel spaceframe, chosen for the lowest late-change risk",
-      "body": "An AISI 4130 tubular steel spaceframe is the baseline: it carries the lowest manufacturing and late-change risk of the architectures we benchmarked, and it is the one a first-year team can actually build and modify. A carbon monocoque is explicitly deferred \u2014 the tooling, process control and evidence burden are not survivable alongside a first competition entry.",
-      "image": null
+      "body": "An AISI 4130 tubular steel spaceframe is the baseline: it carries the lowest manufacturing and late-change risk of the architectures we benchmarked, and it is the one a first-year team can actually build and modify. A carbon monocoque is explicitly deferred — the tooling, process control and evidence burden are not survivable alongside a first competition entry."
     },
     {
       "name": "Powertrain",
       "headline": "One motor, one chain, a commercial inverter",
-      "body": "A single rear motor driving through a single-stage chain reduction, with a proven commercial inverter rather than anything developed in-house. Every reference car we studied uses this layout, and it is the one that stays serviceable in a paddock. Final drive ratio comes out of lap simulation and tractive-effort modelling, not out of another team's spec sheet.",
-      "image": null
+      "body": "A single rear motor driving through a single-stage chain reduction, with a proven commercial inverter rather than anything developed in-house. Every reference car we studied uses this layout, and it is the one that stays serviceable in a paddock. Final drive ratio comes out of lap simulation and tractive-effort modelling, not out of another team's spec sheet."
     },
     {
       "name": "Electronics",
       "headline": "Safety case first, features later",
-      "body": "An electric car's electronics are a safety case before they are a feature set. The order of work is safe torque command, shutdown logic and thermal logging \u2014 then telemetry, then anything clever. This is also the subteam that owns the Electrical System Form and works with the Electrical System Officer, both of which the competition requires before the car is allowed to move.",
-      "image": null
+      "body": "An electric car's electronics are a safety case before they are a feature set. The order of work is safe torque command, shutdown logic and thermal logging — then telemetry, then anything clever. This is also the subteam that owns the Electrical System Form and works with the Electrical System Officer, both of which the competition requires before the car is allowed to move."
     },
     {
       "name": "Suspension",
       "headline": "Double wishbones, validated against measurement",
-      "body": "Unequal-length double wishbones on 10-inch wheels, subject to tyre availability. The kinematic model gets checked against measured geometry on the setup pads rather than trusted from CAD \u2014 a first-year team's biggest risk is believing its own simulation.",
-      "image": null
+      "body": "Unequal-length double wishbones on 10-inch wheels, subject to tyre availability. The kinematic model gets checked against measured geometry on the setup pads rather than trusted from CAD — a first-year team's biggest risk is believing its own simulation."
     }
   ],
   "gallery": []

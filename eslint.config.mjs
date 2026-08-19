@@ -26,6 +26,10 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "public/hero/frames/**",
+    // Written by `tinacms build` and gitignored. Linting generated code that
+    // nobody edits produces noise and no defect.
+    "tina/__generated__/**",
+    "public/admin/**",
   ]),
 ]);
 

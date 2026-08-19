@@ -1,302 +1,280 @@
-[
-  {
-    "name": "Obay Hussni",
-    "year": "Junior",
-    "major": "Mechanical Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "President"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Aaesha Hanawi",
-    "year": "Junior",
-    "major": "Mechanical Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "Vice President"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Malak Al Qedrah",
-    "year": "Junior",
-    "major": "Aerospace Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "Secretary"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Yasmine Youssef",
-    "year": "Sophomore",
-    "major": "Computer Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "Marketing / Media / Outreach"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Yasmine Abukuhail",
-    "year": "Freshman",
-    "major": "Chemical Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "Marketing / Media / Outreach"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Natali Alkhatib",
-    "year": "Sophomore",
-    "major": "Chemistry",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "Marketing / Media / Outreach"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Abdallah Al Omari",
-    "year": "Senior",
-    "major": "Industrial Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "Sponsorship & Finance"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Emad Dawre",
-    "year": "Senior",
-    "major": "Mechanical Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "CTO Mechanical"
-      },
-      {
-        "division": "Engineering",
-        "title": "Chassis & Driver Ergonomics"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Salma Al Riyahi",
-    "year": "Sophomore",
-    "major": "Energy Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "Marketing / Media / Outreach"
-      },
-      {
-        "division": "Operations",
-        "title": "Sponsorship & Finance"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Hala Abudoreg",
-    "year": "Sophomore",
-    "major": "Aerospace Engineering",
-    "roles": [
-      {
-        "division": "Operations",
-        "title": "Marketing / Media / Outreach"
-      },
-      {
-        "division": "Operations",
-        "title": "Sponsorship & Finance"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Mark Nabil Shehata",
-    "year": "Senior",
-    "major": "Aerospace Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Aerodynamics"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Zeineldin Suliman",
-    "year": "Sophomore",
-    "major": "Aerospace Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Aerodynamics"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Yuvan Anoop Whabi",
-    "year": "Sophomore",
-    "major": "Mechanical Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Chassis & Driver Ergonomics"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Ali Eisa Almatroushi",
-    "year": "Senior",
-    "major": "Mechanical Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Chassis & Driver Ergonomics"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Suneet Rohra",
-    "year": "Freshman",
-    "major": "Aerospace Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Steering"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Muhammad Talha",
-    "year": "Junior",
-    "major": "Mechanical Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Suspension"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Nuzhat Mahdiyat",
-    "year": "Sophomore",
-    "major": "Computer Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Throttle & Braking Systems"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Abdulla Hassouneh",
-    "year": "Senior",
-    "major": "Mechanical Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Throttle & Braking Systems"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Asmaa Abdelfattah",
-    "year": "Junior",
-    "major": "Aerospace Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Powertrain & Drivetrain"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Mohammed Khaled",
-    "year": "Senior",
-    "major": "Electrical Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Powertrain & Drivetrain"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Inamullah Randhawa",
-    "year": "Sophomore",
-    "major": "Electrical Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "High Voltage"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Aayan Ahmed",
-    "year": "Junior",
-    "major": "Electrical Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "High Voltage"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Yazeed Nawasreh",
-    "year": "Junior",
-    "major": "Computer Science",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Low Voltage & Controls"
-      }
-    ],
-    "photo": null
-  },
-  {
-    "name": "Abdullah Haider",
-    "year": "Sophomore",
-    "major": "Energy Engineering",
-    "roles": [
-      {
-        "division": "Engineering",
-        "title": "Low Voltage & Controls"
-      }
-    ],
-    "photo": null
-  }
-]
+{
+  "team": [
+    {
+      "name": "Obay Hussni",
+      "year": "Junior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "President"
+        }
+      ]
+    },
+    {
+      "name": "Aaesha Hanawi",
+      "year": "Junior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "Vice President"
+        }
+      ]
+    },
+    {
+      "name": "Malak Al Qedrah",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "Secretary"
+        }
+      ]
+    },
+    {
+      "name": "Yasmine Youssef",
+      "year": "Sophomore",
+      "major": "Computer Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "Marketing / Media / Outreach"
+        }
+      ]
+    },
+    {
+      "name": "Yasmine Abukuhail",
+      "year": "Freshman",
+      "major": "Chemical Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "Marketing / Media / Outreach"
+        }
+      ]
+    },
+    {
+      "name": "Natali Alkhatib",
+      "year": "Sophomore",
+      "major": "Chemistry",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "Marketing / Media / Outreach"
+        }
+      ]
+    },
+    {
+      "name": "Abdallah Al Omari",
+      "year": "Senior",
+      "major": "Industrial Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "Sponsorship & Finance"
+        }
+      ]
+    },
+    {
+      "name": "Emad Dawre",
+      "year": "Senior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "CTO Mechanical"
+        },
+        {
+          "division": "Engineering",
+          "title": "Chassis & Driver Ergonomics"
+        }
+      ]
+    },
+    {
+      "name": "Salma Al Riyahi",
+      "year": "Sophomore",
+      "major": "Energy Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "Marketing / Media / Outreach"
+        },
+        {
+          "division": "Operations",
+          "title": "Sponsorship & Finance"
+        }
+      ]
+    },
+    {
+      "name": "Hala Abudoreg",
+      "year": "Sophomore",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Operations",
+          "title": "Marketing / Media / Outreach"
+        },
+        {
+          "division": "Operations",
+          "title": "Sponsorship & Finance"
+        }
+      ]
+    },
+    {
+      "name": "Mark Nabil Shehata",
+      "year": "Senior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Aerodynamics"
+        }
+      ]
+    },
+    {
+      "name": "Zeineldin Suliman",
+      "year": "Sophomore",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Aerodynamics"
+        }
+      ]
+    },
+    {
+      "name": "Yuvan Anoop Whabi",
+      "year": "Sophomore",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Chassis & Driver Ergonomics"
+        }
+      ]
+    },
+    {
+      "name": "Ali Eisa Almatroushi",
+      "year": "Senior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Chassis & Driver Ergonomics"
+        }
+      ]
+    },
+    {
+      "name": "Suneet Rohra",
+      "year": "Freshman",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Steering"
+        }
+      ]
+    },
+    {
+      "name": "Muhammad Talha",
+      "year": "Junior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Suspension"
+        }
+      ]
+    },
+    {
+      "name": "Nuzhat Mahdiyat",
+      "year": "Sophomore",
+      "major": "Computer Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Throttle & Braking Systems"
+        }
+      ]
+    },
+    {
+      "name": "Abdulla Hassouneh",
+      "year": "Senior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Throttle & Braking Systems"
+        }
+      ]
+    },
+    {
+      "name": "Asmaa Abdelfattah",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Powertrain & Drivetrain"
+        }
+      ]
+    },
+    {
+      "name": "Mohammed Khaled",
+      "year": "Senior",
+      "major": "Electrical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Powertrain & Drivetrain"
+        }
+      ]
+    },
+    {
+      "name": "Inamullah Randhawa",
+      "year": "Sophomore",
+      "major": "Electrical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "High Voltage"
+        }
+      ]
+    },
+    {
+      "name": "Aayan Ahmed",
+      "year": "Junior",
+      "major": "Electrical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "High Voltage"
+        }
+      ]
+    },
+    {
+      "name": "Yazeed Nawasreh",
+      "year": "Junior",
+      "major": "Computer Science",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Low Voltage & Controls"
+        }
+      ]
+    },
+    {
+      "name": "Abdullah Haider",
+      "year": "Sophomore",
+      "major": "Energy Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Low Voltage & Controls"
+        }
+      ]
+    }
+  ]
+}

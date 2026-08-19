@@ -1,0 +1,155 @@
+{
+  "name": "KUFS",
+  "longName": "Khalifa University Formula Student",
+  "university": "Khalifa University",
+  "tagline": "ENGINEERED TO RACE. DRIVEN TO LEAD.",
+  "positioning": "KUFS is the official Formula Student team of Khalifa University. We design, build, and compete with passion, precision, and purpose.",
+  "description": "KUFS is the official Formula Student team of Khalifa University, Abu Dhabi. We are building the university's first electric Formula Student car for Formula Student UK 2027 at Silverstone.",
+  "url": "https://kufs.ku.ac.ae",
+  "contactEmail": "kufs@ku.ac.ae",
+  "sponsorshipEmail": "partnerships.kufs@ku.ac.ae",
+  "socials": [
+    {
+      "label": "Instagram",
+      "href": "https://instagram.com/kufsracing",
+      "handle": "@kufsracing"
+    },
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/company/khalifa-university-formula-student",
+      "handle": "Khalifa University Formula Student"
+    },
+    {
+      "label": "YouTube",
+      "href": "https://www.youtube.com/@kufsracing",
+      "handle": "@kufsracing"
+    }
+  ],
+  "competition": {
+    "name": "Formula Student UK",
+    "class": "FS Class",
+    "organiser": "Institution of Mechanical Engineers (IMechE)",
+    "venue": "Silverstone Circuit",
+    "year": 2027,
+    "startsAt": "2027-07-14T08:00:00+01:00"
+  },
+  "stats": [
+    {
+      "value": "100+",
+      "label": "University teams",
+      "detail": "compete at Silverstone each July, from more than 30 countries."
+    },
+    {
+      "value": "8",
+      "label": "Scored disciplines",
+      "detail": "Static events judge design, cost and business case. Dynamic events judge the car."
+    },
+    {
+      "value": null,
+      "label": "Spectators and industry visitors",
+      "detail": "at Formula Student UK. Awaiting the published figure for the 2027 event."
+    }
+  ],
+  "programme": {
+    "foundedYear": 2026,
+    "firstCompetitionYear": 2027,
+    "seasonOneLine": "Season one. We are building Khalifa University's first Formula Student car, for Silverstone 2027."
+  },
+  "vehicle": {
+    "architecture": "Single-motor rear-wheel-drive electric",
+    "targetMass": "230–250 kg",
+    "architectureDownselect": "2026-09-30",
+    "conceptFreeze": "2026-10-30",
+    "note": "Our benchmarking work sets a single-motor rear-wheel-drive electric baseline with a 230–250 kg target mass. The architecture is selected at the end of September and frozen at the end of October — until then these are targets, not decisions."
+  },
+  "links": {
+    "whatIsFormulaStudentVideo": "https://www.youtube.com/watch?v=CjQifWW9r5w",
+    "officialFsuk": "https://www.imeche.org/events/formula-student",
+    "fsukKeyDates": "https://www.imeche.org/events/formula-student/team-information/key-dates",
+    "fsukRulebook": "https://www.imeche.org/docs/default-source/1-oscar/formula-student/2026/rules/fsuk-2026-rules---v1-09e21118e54216d0c8310ff0100d05193.pdf?sfvrsn=2",
+    "fsResults": "https://fsstats.co.uk/Home/Results",
+    "firstYearTeamArticles": "https://www.designjudges.com/articles?category=First%20Year%20Teams"
+  },
+  "aedToUsd": 0.2723,
+  "values": [
+    {
+      "title": "ENGINEERED",
+      "description": "We apply knowledge and creativity to solve real-world challenges."
+    },
+    {
+      "title": "DRIVEN",
+      "description": "We push limits, on and off the track."
+    },
+    {
+      "title": "UNITED",
+      "description": "We are a team of diverse talents working as one."
+    },
+    {
+      "title": "COMPETITIVE",
+      "description": "We strive for excellence in every competition."
+    }
+  ],
+  "straplines": [
+    "From classroom concepts to circuit performance.",
+    "Representing Khalifa University on the Formula Student stage.",
+    "Innovate. Engineer. Compete."
+  ],
+  "sponsorship": {
+    "prospectusPath": "/downloads/kufs-sponsorship-prospectus.pdf",
+    "prospectusAvailable": false,
+    "enquiryEmail": "partnerships.kufs@ku.ac.ae",
+    "reasons": [
+      {
+        "title": "Founding partner of a programme, not a logo on a mature car",
+        "body": "There is exactly one season in which a company can be part of the first car Khalifa University has ever built. Your name goes on that car, in our first Competition Design Report, and into the team's history from the beginning.",
+        "stat": {
+          "value": "1",
+          "label": "First season — this one",
+          "computed": null
+        }
+      },
+      {
+        "title": "Direct access to Khalifa University engineering talent",
+        "body": "Tier 1 partners get access to KU's top engineering students for internships and recruitment. These are students who will have specified, manufactured and defended real hardware against a competition deadline.",
+        "stat": {
+          "value": null,
+          "label": "Students on the team",
+          "computed": "headcount"
+        }
+      },
+      {
+        "title": "An electric vehicle programme in a region investing in exactly that",
+        "body": "Khalifa University sits at the centre of the UAE's advanced-mobility and clean-energy work. This is an electric car: if you supply cells, inverters, motors, composites or machining, your product goes on it and gets tested in public.",
+        "stat": {
+          "value": null,
+          "label": "Engineering disciplines represented",
+          "computed": "disciplines"
+        }
+      },
+      {
+        "title": "Reporting you can put in front of your own board",
+        "body": "We report back at the end of the season: where your logo appeared, what it was fitted to, click-throughs from this site, and what the car achieved. A first-year team has more to prove, not less.",
+        "stat": {
+          "value": "1",
+          "label": "Written season report, every year",
+          "computed": null
+        }
+      }
+    ]
+  },
+  "facultyAdvisor": {
+    "name": "Dr. Bashar Khasawneh",
+    "role": "Faculty Advisor"
+  },
+  "hero": {
+    "mode": "sequence",
+    "frameCount": 90,
+    "poster": {
+      "src": "/hero/poster.webp",
+      "width": 1600,
+      "height": 900,
+      "alt": "The KUFS single-seat race car in three-quarter view against a dark studio background."
+    },
+    "modelPath": null
+  }
+}

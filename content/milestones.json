@@ -1,101 +1,92 @@
-[
-  {
-    "title": "Team Setup & Research",
-    "date": "2026-08-24",
-    "status": "upcoming",
-    "description": "Finalise team structure, review rules, research, and estimate budget.",
-    "phase": "Design",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "Architecture Down-select",
-    "date": "2026-09-30",
-    "status": "upcoming",
-    "description": "Select the vehicle architecture and subsystem concept. Initial packaging with justification and calculations.",
-    "phase": "Design",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "Rules Review & Concept Freeze",
-    "date": "2026-10-30",
-    "status": "upcoming",
-    "description": "Review FSUK 2027 rules, finalise the concept, freeze major decisions and subsystem targets. Release master CAD and perform laptime simulations.",
-    "phase": "Design",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "DCS & Funding Internal Approval",
-    "date": "2026-11-25",
-    "status": "upcoming",
-    "description": "Complete the DCS with the HLPP, review funding applications, and hold internal reviews ahead of registration.",
-    "phase": "Design",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "FSUK Registration",
-    "date": "2026-12-04",
-    "status": "upcoming",
-    "description": "Submit the DCS and complete team registration.",
-    "phase": "Design",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "Safety-Critical Release & SES/ESA/ESO",
-    "date": "2027-01-25",
-    "status": "upcoming",
-    "description": "Release the safety-critical design, complete the SES and ESA/ESO, and submit by the official deadlines.",
-    "phase": "Manufacture",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "ESF Submission Gate",
-    "date": "2027-03-10",
-    "status": "upcoming",
-    "description": "Complete the electrical design and validation, and submit the ESF before the official deadline.",
-    "phase": "Manufacture",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "Integrated Vehicle & First Drive",
-    "date": "2027-03-31",
-    "status": "upcoming",
-    "description": "Complete subsystem manufacturing, integrate the vehicle, conduct bench testing, and achieve the first drive.",
-    "phase": "Assembly",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "EDR, DSS & IAD Submission Gate",
-    "date": "2027-05-03",
-    "status": "upcoming",
-    "description": "Finalise and submit the EDR, DSS and IAD. Conduct scrutineering and all vehicle dynamic tests. Prepare spares.",
-    "phase": "Testing",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "Development & Reliability Review",
-    "date": "2027-05-15",
-    "status": "upcoming",
-    "description": "Complete the first endurance-equivalent test, conduct reliability validation, and close all major issues. Prepare the vehicle for shipment.",
-    "phase": "Testing",
-    "update": null,
-    "photo": null
-  },
-  {
-    "title": "Competition Readiness Gate",
-    "date": "2027-06-30",
-    "status": "upcoming",
-    "description": "Complete full mock scrutineering, finalise presentations, and arrange spares, logistics and supporting documents for competition.",
-    "phase": "Competition",
-    "update": null,
-    "photo": null
-  }
-]
+{
+  "milestones": [
+    {
+      "title": "Team Setup & Research",
+      "date": "2026-08-24",
+      "status": "upcoming",
+      "description": "Finalise team structure, review rules, research, and estimate budget.",
+      "phase": "Design",
+      "update": null
+    },
+    {
+      "title": "Architecture Down-select",
+      "date": "2026-09-30",
+      "status": "upcoming",
+      "description": "Select the vehicle architecture and subsystem concept. Initial packaging with justification and calculations.",
+      "phase": "Design",
+      "update": null
+    },
+    {
+      "title": "Rules Review & Concept Freeze",
+      "date": "2026-10-30",
+      "status": "upcoming",
+      "description": "Review FSUK 2027 rules, finalise the concept, freeze major decisions and subsystem targets. Release master CAD and perform laptime simulations.",
+      "phase": "Design",
+      "update": null
+    },
+    {
+      "title": "DCS & Funding Internal Approval",
+      "date": "2026-11-25",
+      "status": "upcoming",
+      "description": "Complete the DCS with the HLPP, review funding applications, and hold internal reviews ahead of registration.",
+      "phase": "Design",
+      "update": null
+    },
+    {
+      "title": "FSUK Registration",
+      "date": "2026-12-04",
+      "status": "upcoming",
+      "description": "Submit the DCS and complete team registration.",
+      "phase": "Design",
+      "update": null
+    },
+    {
+      "title": "Safety-Critical Release & SES/ESA/ESO",
+      "date": "2027-01-25",
+      "status": "upcoming",
+      "description": "Release the safety-critical design, complete the SES and ESA/ESO, and submit by the official deadlines.",
+      "phase": "Manufacture",
+      "update": null
+    },
+    {
+      "title": "ESF Submission Gate",
+      "date": "2027-03-10",
+      "status": "upcoming",
+      "description": "Complete the electrical design and validation, and submit the ESF before the official deadline.",
+      "phase": "Manufacture",
+      "update": null
+    },
+    {
+      "title": "Integrated Vehicle & First Drive",
+      "date": "2027-03-31",
+      "status": "upcoming",
+      "description": "Complete subsystem manufacturing, integrate the vehicle, conduct bench testing, and achieve the first drive.",
+      "phase": "Assembly",
+      "update": null
+    },
+    {
+      "title": "EDR, DSS & IAD Submission Gate",
+      "date": "2027-05-03",
+      "status": "upcoming",
+      "description": "Finalise and submit the EDR, DSS and IAD. Conduct scrutineering and all vehicle dynamic tests. Prepare spares.",
+      "phase": "Testing",
+      "update": null
+    },
+    {
+      "title": "Development & Reliability Review",
+      "date": "2027-05-15",
+      "status": "upcoming",
+      "description": "Complete the first endurance-equivalent test, conduct reliability validation, and close all major issues. Prepare the vehicle for shipment.",
+      "phase": "Testing",
+      "update": null
+    },
+    {
+      "title": "Competition Readiness Gate",
+      "date": "2027-06-30",
+      "status": "upcoming",
+      "description": "Complete full mock scrutineering, finalise presentations, and arrange spares, logistics and supporting documents for competition.",
+      "phase": "Competition",
+      "update": null
+    }
+  ]
+}

@@ -328,8 +328,16 @@ export const teamMemberSchema = z.object({
       ]),
     )
     .min(1),
-  /** null until a headshot exists. The card falls back to initials on navy. */
-  photo: imageRef.nullable().default(null),
+  /**
+   * Absent until a headshot exists. The card falls back to initials on navy.
+   *
+   * OMITTED rather than written as an explicit `null`, and both are accepted:
+   * TinaCMS cannot seed a `null` where it expects an object — it throws
+   * "Cannot convert undefined or null to object" and refuses to start — so the
+   * files leave the key out. `.default(null)` means everything downstream
+   * still receives `null` and nothing had to change to read it.
+   */
+  photo: imageRef.nullish().default(null),
   linkedin: z.string().url().optional(),
 });
 
@@ -372,7 +380,7 @@ export const milestoneSchema = z.object({
    *  the page says so rather than inventing an entry. */
   update: z.string().min(1).nullable().optional().default(null),
   /** Photo from the workshop or the track. null until one exists. */
-  photo: imageRef.nullable().optional().default(null),
+  photo: imageRef.nullish().default(null),
 });
 
 export const milestonesSchema = z
@@ -533,8 +541,11 @@ export const carSchema = z.object({
         name: z.enum(CAR_SUBSYSTEMS),
         headline: z.string().min(1),
         body: z.string().min(1),
-        /** Photo or CAD render. null until one exists. */
-        image: imageRef.nullable(),
+        /**
+         * Photo or CAD render. Omitted until one exists; see the note on
+         * `photo` in teamMemberSchema for why it is absent rather than null.
+         */
+        image: imageRef.nullish().default(null),
       }),
     )
     .min(1),
