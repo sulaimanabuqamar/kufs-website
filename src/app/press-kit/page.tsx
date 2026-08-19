@@ -62,7 +62,7 @@ export default function Page() {
               Single colour with the red streak, for small sizes and one-colour print.
             </p>
           </li>
-          <li className="flex flex-col gap-4 rounded-lg border border-border-light bg-bg-light p-7">
+          <li className="surface-light flex flex-col gap-4 rounded-lg border border-border-light bg-bg-light p-7">
             <KufsLogo on="light" width={260} />
             <p className="mt-auto text-caption text-muted-on-light">
               Full colour with the tagline, white and off-white backgrounds.

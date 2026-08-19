@@ -16,9 +16,15 @@ import type { ReactNode } from "react";
 
 export type SectionTone = "dark" | "light";
 
+/**
+ * `surface-dark` / `surface-light` do not paint anything themselves — they set
+ * the inherited --stripe-* ramp (see the SPEED STRIPE RAMP block in
+ * tokens.css). Declaring them here, on the element that owns the background,
+ * is what lets SpeedStripe pick its own tone correctly without a prop.
+ */
 const TONE: Record<SectionTone, string> = {
-  dark: "",
-  light: "bg-bg-light text-text-on-light",
+  dark: "surface-dark",
+  light: "surface-light bg-bg-light text-text-on-light",
 };
 
 export function Section({
