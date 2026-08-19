@@ -37,25 +37,72 @@ pnpm dev            # http://localhost:3000
 | `pnpm assets:placeholders` | Regenerate placeholder sponsor logos, portraits and news covers     |
 | `pnpm check:bundle`        | Fail if `/` exceeds its JS budget or leaks a server-only dependency |
 | `pnpm check:hero`          | Assert the hero's mobile / reduced-motion / desktop behaviour       |
+| `pnpm check:contrast`      | Re-measure every contrast ratio claimed in `tokens.css`             |
+| `pnpm check:brand`         | Runtime audit: Racing Red placement, logo backgrounds, alt text     |
+| `pnpm check:perf`          | Enforce the LCP / CLS / accessibility budgets                       |
+| `pnpm font:subset`         | Convert and subset the headline face to WOFF2                       |
+| `pnpm screens`             | Screenshot every page at 390 / 768 / 1440                           |
 
 `check:bundle` needs a build first. `check:hero` needs a build **and** a running
 `pnpm start`.
 
-### Deploy
+### Deploy — first-time runbook
 
-Targets Vercel. Import the repo, set the framework to Next.js, and deploy — every
-route is statically prerendered, so no runtime configuration is required.
+Follow these in order. Someone who has never deployed anything can do this.
 
-Environment variables (all optional):
+1. **Create the GitHub repository.**
 
-| Variable                       | Purpose                                                                        |
-| ------------------------------ | ------------------------------------------------------------------------------ |
-| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Enables Plausible. Unset ⇒ no analytics script is rendered at all.             |
-| `NEXT_PUBLIC_PLAUSIBLE_HOST`   | Self-hosted Plausible origin. Defaults to `https://plausible.io`.              |
-| `STYLEGUIDE`                   | Set to `1` to expose `/styleguide` in a production build (it 404s by default). |
+   ```bash
+   gh repo create <org>/kufs-website --source=. --private --push
+   ```
 
-`robots.ts` reads `VERCEL_ENV`, which Vercel sets automatically: preview deploys are
-`Disallow: /` so a preview URL cannot outrank the real site.
+   Push all history; do not squash.
+
+2. **Protect `main`.** GitHub → Settings → Branches → Add rule for `main`:
+   require a pull request, and require the **CI** workflow to pass. This is what stops
+   a broken content edit reaching the live site.
+
+3. **Connect Vercel.** <https://vercel.com/new> → import the repository. The Next.js
+   preset is detected automatically; accept every default. Do not override the build
+   command.
+
+4. **Add environment variables** in Vercel → Settings → Environment Variables, per the
+   table above. `NEXT_PUBLIC_SITE_URL` goes in the **Production** scope only.
+
+5. **Deploy.** Vercel builds `main` and gives you a `*.vercel.app` URL. Every pull
+   request from then on gets its own preview URL automatically.
+
+6. **Verify the deploy:**
+   - `https://<your-domain>/robots.txt` allows crawling and lists the sitemap
+   - `https://<preview-url>/robots.txt` says `Disallow: /`
+   - `https://<your-domain>/sitemap.xml` lists your real domain, not `localhost`
+   - the sponsorship form on `/become-a-sponsor` sends a test enquiry that arrives
+
+7. **Custom domain — not yet.** A `ku.ac.ae` subdomain needs a DNS request to
+   university IT. When you are ready, ask them to add:
+
+   | Type    | Name   | Value                  |
+   | ------- | ------ | ---------------------- |
+   | `CNAME` | `kufs` | `cname.vercel-dns.com` |
+
+   Then add `kufs.ku.ac.ae` in Vercel → Settings → Domains, and update
+   `NEXT_PUBLIC_SITE_URL` to match. Until then the `.vercel.app` URL is the live site
+   and everything works.
+
+Environment variables. **All are optional** — the site builds and runs with none of
+them set. See `.env.example`.
+
+| Variable                         | Where to set it               | Purpose                                                                                                                                                                                                                     |
+| -------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`           | Vercel → Production only      | Canonical origin, no trailing slash. Drives canonical tags, the sitemap, `robots.txt` and every Open Graph URL. Leave it unset on Preview so previews fall back to their own `VERCEL_URL` and never claim to be production. |
+| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`   | Vercel → Production           | Enables Plausible. Unset ⇒ no analytics script is rendered at all, so local development and previews stay out of the numbers.                                                                                               |
+| `NEXT_PUBLIC_PLAUSIBLE_HOST`     | Vercel → all                  | Self-hosted Plausible origin. Defaults to `https://plausible.io`.                                                                                                                                                           |
+| `NEXT_PUBLIC_FORMSPREE_ENDPOINT` | Vercel → Production + Preview | Endpoint for the sponsorship and contact forms. Unset ⇒ both forms fall back to opening the visitor's mail client, which works but converts worse. **Set this before launch.**                                              |
+| `STYLEGUIDE`                     | Vercel → Preview, if wanted   | Set to `1` to expose `/styleguide` on a preview deploy for design review. It 404s in production.                                                                                                                            |
+
+`VERCEL_ENV` is set by Vercel automatically. `robots.ts` reads it and returns
+`Disallow: /` for anything that is not a production deployment, so a preview URL can
+never outrank the real site.
 
 ---
 
@@ -210,9 +257,19 @@ request frames that do not exist. The script prints the count it wrote.
 three.js primitives — body, nose cone, sidepods, roll hoops, three-element rear wing,
 four wheels — proportioned like a Formula Student car rather than an F1 car.
 
+It is proportioned to real Formula Student numbers — 3.0 m long, 1.55 m wheelbase,
+18-inch tyres on 10-inch rims — and painted in the team livery: KUFS Navy bodywork, the
+speed stripe raking down the sidepod in red → copper → orange, Performance Orange wing
+endplates. Under 2,000 triangles, verified on every render.
+
 **No third-party model is used, and none is committed.** This is our own geometry, so
 there is no licence to verify, nothing to attribute, and nothing to remove later.
-Replacing it is a one-line config change (`hero.modelPath`), not a rewrite.
+
+**Replacing it with the real car is one command.** Drop the CAD export at
+`public/models/2027-car.glb`, set `hero.modelPath` to that path in `content/site.ts`,
+and run `pnpm render:frames`. Every frame and the mobile poster regenerate; arbitrary
+GLBs are auto-normalised to the camera path, so the export's own scale and origin do
+not matter.
 
 ### Logo usage
 
@@ -296,10 +353,17 @@ Measured against a **production build** (`pnpm build && pnpm start`), Lighthouse
 The mobile/desktop weight gap is the hero sequence: 1.2 MB of frames that phones
 never request.
 
-**JavaScript on `/`: 148.8 KB gzipped**, against a 150 KB budget, enforced by
-`pnpm check:bundle` in CI. Essentially all of it is the React 19 + Next 16 App Router
-baseline; first-party application code is a few KB. The budget is genuinely tight —
-see "Known issues" below.
+Budgets are enforced in CI by `pnpm check:perf`: **LCP under 2.0 s on Fast 4G and
+under 3.0 s on Slow 4G**, CLS under 0.1, accessibility at 100 on every audited page.
+
+Fast 4G is roughly what a real visitor on campus wifi or a decent mobile signal gets.
+Slow 4G with a 4× CPU penalty is a deliberately pessimistic floor — not the median
+visitor, but the worst one we still want to serve well.
+
+**JavaScript: under 150 KB gzipped on every route**, enforced by `pnpm check:bundle`,
+which checks all thirteen prerendered routes rather than just the home page. Nearly all
+of it is the React 19 + Next 16 App Router baseline; first-party application code is a
+few KB.
 
 Accessibility commitments, all verified: keyboard operable throughout, one visible
 focus treatment sitewide at ≥3:1, AA contrast on every text pairing, correct landmark
@@ -362,18 +426,47 @@ Read this before the next milestone.
    rather than to the article, to avoid shipping three 404s. Building that route means
    adding `next-mdx-remote` (or `@next/mdx`) to render the MDX body — the loader
    already returns it as `body`.
-2. **Mobile hero art direction.** The poster is a single 16:9 asset. In portrait,
-   `object-cover` would crop away most of the car, so on mobile it is laid out as a
-   full-width band pinned to the bottom of the pane instead. The better answer is a
-   dedicated portrait render served via `<picture>` with `<source media>` — but
-   `next/image` has no art-direction support, and the brief requires all images to go
-   through it. Flagged rather than silently substituted.
-3. **The JS budget has almost no headroom.** 148.8 KB of a 150 KB limit, and roughly
-   all of it is framework. Any new client component that pulls in a library will breach
-   it. `check:bundle` will catch that, but the fix will have to be architectural.
-4. **Placeholder identity.** `name`, `longName` and `university` in `content/site.ts`
-   are guesses at what "KUFS" expands to. Replace before this is shown to a sponsor.
-5. **The competition date is a placeholder.** `2027-07-14T08:00:00+01:00`. The 2027
-   dates are not published; confirm against the IMechE key dates page.
-6. **Hero frame count is coupled to config.** `hero.frameCount` must match the files in
-   `public/hero/frames/`. Nothing validates this at build time yet.
+2. **A4 Speed is not the live headline face.** The font file has not been supplied, so
+   Barlow Condensed Bold Italic — the declared fallback — is running. See
+   [Licensing](#licensing). Enabling it is a one-file change plus `pnpm font:subset`.
+3. **The hero car is a stand-in.** It is proportioned and liveried correctly, but it is
+   code, not the real car. See [The placeholder car](#the-placeholder-car).
+4. **No mono light-background logo.** The brand assets include two mono lockups, both
+   for dark grounds. There is no light-ground mono artwork and inverting one ourselves
+   would be inventing a lockup. Ask the design lead if one is needed.
+5. **Placeholder sponsors, roster and news.** Every name in `content/` is invented
+   placeholder data. It must be replaced before launch — see the blocking-content list
+   below.
+6. **The JS budget has little headroom.** Around 150 KB on the heaviest routes, nearly
+   all framework. Any new client-side library will breach it; `check:bundle` will catch
+   that, but the fix will be architectural.
+7. **`/the-car`, `/progress`, `/news` and part of `/press-kit` are coming-soon states.**
+   They are routed, indexed and useful, but not built out.
+
+## Content the team must supply before launch
+
+Everything below currently renders as `TBC`, as placeholder data, or as a `TODO` in the
+source. Nothing here is invented — where a number is unknown the site says so.
+
+| What                                                              | Where                                                       |
+| ----------------------------------------------------------------- | ----------------------------------------------------------- |
+| Formula Student UK 2027 dates                                     | `content/site.ts` → `competition.startsAt`                  |
+| Real team email addresses                                         | `content/site.ts` → `contactEmail`, `sponsorshipEmail`      |
+| Confirmed social handles                                          | `content/site.ts` → `socials`                               |
+| Best FSUK finish, headcount, disciplines represented, event reach | `content/site.ts` → `stats`, `sponsorship.reasons`          |
+| Hero spec figures (mass, downforce, team size)                    | `src/components/hero/heroContent.ts`                        |
+| Sponsorship tier prices                                           | `content/tiers.json` → `amount`                             |
+| The sponsorship prospectus PDF                                    | `public/downloads/`, then set `prospectusAvailable: true`   |
+| Real sponsors, logos and blurbs                                   | `content/sponsors.json` + `public/sponsors/`                |
+| Real roster and headshots                                         | `content/team.json` + `public/team/`                        |
+| Faculty advisor                                                   | `content/site.ts` → `facultyAdvisor`                        |
+| Real milestone dates                                              | `content/milestones.json`                                   |
+| Real open roles                                                   | `content/roles.json`                                        |
+| Real news posts                                                   | `content/news/` (both current posts are marked PLACEHOLDER) |
+| Campus / workshop address                                         | `src/app/contact/page.tsx`                                  |
+| Vector logo originals                                             | `public/brand/` (current files are PDF extractions)         |
+| A4 Speed font file, with permission                               | `src/assets/fonts/`                                         |
+| The car's CAD export                                              | `public/models/`, then `pnpm render:frames`                 |
+| Formspree endpoint                                                | Vercel env, `NEXT_PUBLIC_FORMSPREE_ENDPOINT`                |
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for how to make each of these changes.
