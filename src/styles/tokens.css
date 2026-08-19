@@ -26,6 +26,32 @@
    white / off-white, where it measures 6.75:1.
    ========================================================================== */
 
+/* ==========================================================================
+   A4 Speed — the headline face, gated on a commercial licence.
+   --------------------------------------------------------------------------
+   The file at this URL is gitignored until KUFS buys the USD 12 commercial
+   licence from the author (see the Licensing section of README.md and the gate
+   note in src/lib/fonts.ts). While it is absent the src simply 404s and the
+   browser falls through to the next family in --font-display, which is the
+   Barlow Condensed Bold Italic that next/font already preloads. No build
+   failure, no visual break.
+
+   font-style is `normal` and font-weight is `700`, both deliberately:
+   the face is DRAWN slanted but reports italicAngle 0, macStyle 0 and
+   fsSelection 64 (REGULAR), and is named "Bold" while reporting usWeightClass
+   500. Declaring it italic would make the browser synthesise an oblique on top
+   of the existing slant, and asking for a weight it does not claim would make
+   it synthesise emboldening over an already-heavy face. Verified by parsing
+   the tables — see scripts/lib/font-tables.mjs.
+   ========================================================================== */
+@font-face {
+  font-family: "A4 Speed";
+  src: url("/fonts/a4-speed.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
   /* ---------------------------------------------------------------------
      COLOUR — semantic roles only. Never name a token after the colour it
@@ -145,9 +171,12 @@
      and form labels all use --font-body. Enforced by review, not by CSS —
      if you find yourself reaching for font-display on a small element, don't.
      --------------------------------------------------------------------- */
+  /* "A4 Speed" first, then the next/font-loaded Barlow Condensed variable.
+     When the licensed binary is absent the first family resolves to nothing
+     and the second takes over — that fallback IS the licence gate. */
   --font-display:
-    var(--font-display-face), "Barlow Condensed", "Arial Narrow", ui-sans-serif,
-    system-ui, sans-serif;
+    "A4 Speed", var(--font-display-face), "Barlow Condensed", "Arial Narrow",
+    ui-sans-serif, system-ui, sans-serif;
   --font-body:
     var(--font-body-face), Barlow, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, sans-serif;
@@ -160,12 +189,18 @@
   --text-display: clamp(2.75rem, 1.4rem + 6vw, 6rem);
   --text-display--line-height: 0.95;
   --text-display--letter-spacing: -0.01em;
-  --text-display--font-weight: 800;
+  /* 700, not 800: neither face in the --font-display stack HAS an 800.
+     A4 Speed ships a single weight (declared 700; its OS/2 says 500 while the
+     name says Bold), and only Barlow Condensed 700 is loaded. Asking for 800
+     made both browsers synthesise emboldening on top of an already-heavy
+     display face — thicker, muddier counters, and no extra hierarchy. Same
+     applies to --text-h1. */
+  --text-display--font-weight: 700;
 
   --text-h1: clamp(2.25rem, 1.4rem + 3.6vw, 4rem);
   --text-h1--line-height: 1.05;
   --text-h1--letter-spacing: -0.01em;
-  --text-h1--font-weight: 800;
+  --text-h1--font-weight: 700;
 
   --text-h2: clamp(1.75rem, 1.25rem + 2.1vw, 2.75rem);
   --text-h2--line-height: 1.12;

@@ -1,0 +1,8 @@
+{
+  "note": "Codepoint coverage of A4 Speed Bold, extracted from the cmap table by scripts/lib/font-tables.mjs. This is metadata, not the font: it exists so pnpm check:glyphs can run in CI, where the licensed binary is absent. Regenerate with: pnpm check:glyphs --regenerate",
+  "family": "A4 SPEED",
+  "subfamily": "Bold",
+  "numGlyphs": 98,
+  "mapped": 95,
+  "ranges": [[32, 126]]
+}

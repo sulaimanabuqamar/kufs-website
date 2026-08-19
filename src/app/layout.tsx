@@ -3,7 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { Analytics } from "@/components/Analytics";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { fontVariables } from "@/lib/fonts";
+import { A4_SPEED_URL, fontVariables, hasLicensedDisplayFont } from "@/lib/fonts";
 import site from "@/content/site";
 import { siteUrl } from "@/lib/env";
 
@@ -74,6 +74,21 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en-GB" className={`${fontVariables} h-full`}>
+      {/* Preload the headline face only when the licensed binary is actually
+          present in this build. Absent, the @font-face src 404s and the stack
+          falls through to the Barlow Condensed that next/font already
+          preloads — so there is nothing to hint at. */}
+      {hasLicensedDisplayFont() ? (
+        <head>
+          <link
+            rel="preload"
+            href={A4_SPEED_URL}
+            as="font"
+            type="font/woff2"
+            crossOrigin="anonymous"
+          />
+        </head>
+      ) : null}
       <body className="flex min-h-full flex-col">
         {/* First tab stop on every page. Visually hidden until focused. */}
         <a

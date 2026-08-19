@@ -22,6 +22,16 @@ import { dirname, basename } from "node:path";
 import { parseArgs } from "node:util";
 import subsetFont from "subset-font";
 
+import { inspectFont } from "./lib/font-tables.mjs";
+
+/**
+ * Below this many glyphs, subsetting is refused and the face is converted
+ * whole. A display face that only carries ASCII has nothing to strip — the
+ * WOFF2 container is doing all the work — and stripping it anyway risks
+ * dropping a glyph the site turns out to need. A4 Speed has 98.
+ */
+const SUBSET_THRESHOLD = 256;
+
 const { values, positionals } = parseArgs({
   options: {
     out: { type: "string", default: "src/assets/fonts/a4-speed-subset.woff2" },
@@ -64,7 +74,30 @@ const budgetKb = Number(values.budget);
 
 const original = await readFile(source);
 
-const subset = await subsetFont(original, CHARSET, { targetFormat: "woff2" });
+// Which characters does the source actually have? Subsetting to a charset the
+// font does not carry silently produces a smaller, emptier font.
+const info = inspectFont(original);
+const available = info.codepoints ?? new Set();
+const smallFace = (info.numGlyphs ?? 0) < SUBSET_THRESHOLD;
+
+/**
+ * A small face is converted whole. Anything larger is subset to the charset
+ * below, intersected with what the font actually has.
+ */
+const charset = smallFace
+  ? [...available].map((c) => String.fromCodePoint(c)).join("")
+  : [...CHARSET].filter((ch) => available.has(ch.codePointAt(0))).join("");
+
+if (smallFace) {
+  console.log(
+    `\n  ${basename(source)} has ${info.numGlyphs} glyphs — under the ${SUBSET_THRESHOLD}\n` +
+      `  glyph threshold, so it is converted WHOLE rather than subset. There is\n` +
+      `  nothing meaningful to strip, and stripping risks losing a glyph the site\n` +
+      `  needs later.`,
+  );
+}
+
+const subset = await subsetFont(original, charset, { targetFormat: "woff2" });
 
 await mkdir(dirname(outPath), { recursive: true });
 await writeFile(outPath, subset);
@@ -78,7 +111,7 @@ console.log(
 console.log(
   `  subset   ${basename(outPath).padEnd(32)} ${kb(subset.length).padStart(8)} KB`,
 );
-console.log(`  saved    ${saved}%  (${CHARSET.length} glyphs requested)\n`);
+console.log(`  saved    ${saved}%  (${charset.length} characters kept)\n`);
 
 if (subset.length / 1024 > budgetKb) {
   console.warn(

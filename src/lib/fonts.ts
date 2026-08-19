@@ -1,5 +1,7 @@
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+
 import { Barlow, Barlow_Condensed } from "next/font/google";
-// import localFont from "next/font/local";
 
 /**
  * The two faces, and the single place either of them can be swapped.
@@ -9,8 +11,8 @@ import { Barlow, Barlow_Condensed } from "next/font/google";
  * time (no runtime request to Google, no third-party origin in the critical
  * path). Weights 400/500/600 only: nothing on this site uses 300 or 700 body.
  *
- * HEADLINES — A4 Speed. See the note below; it is not wired up yet, and the
- * declared fallback is doing the work.
+ * HEADLINES — Barlow Condensed Bold Italic today, A4 Speed once licensed.
+ * See the licence gate below.
  *
  * Both are exposed as CSS variables and consumed by src/styles/tokens.css via
  * --font-body and --font-display. Nothing else in the codebase names a font.
@@ -21,30 +23,17 @@ export const bodyFont = Barlow({
   weight: ["400", "500", "600"],
   display: "swap",
   variable: "--font-body-face",
-  // Preloaded (next/font's default). Tried disabling this to get the hero
-  // poster off the back of the font queue; it moved FCP from 0.9s to 1.4s and
-  // introduced 0.007 CLS while leaving LCP unchanged, so it is a clear loss.
-  // Measured, not assumed.
+  // Preloaded (next/font's default). Disabling it was measured and made FCP
+  // worse (0.9s -> 1.4s) while leaving LCP unchanged.
 });
 
 /**
- * HEADLINE FACE — currently Barlow Condensed Bold Italic.
+ * The headline face that always ships.
  *
- * This is the declared fallback from the brief, running as the live face
- * because the A4 Speed font file was not supplied with this milestone. It is a
- * deliberately close stand-in: condensed, bold, italic, so the headline
- * rhythm, the letterfit and the rake all match what A4 Speed will do, and
- * dropping the real face in will not reflow the page.
- *
- * TO ENABLE A4 SPEED — a one-file change, exactly as specified:
- *   1. Put the source file in src/assets/fonts/
- *   2. pnpm font:subset src/assets/fonts/A4Speed-Bold.ttf
- *      (converts to WOFF2 and subsets to Latin + digits + punctuation;
- *       a comparable display face measured 14.2 KB, inside the 30 KB budget)
- *   3. Comment out the Barlow_Condensed block below and uncomment the
- *      localFont block. Nothing else in the codebase changes.
- *
- * Read the Licensing section of README.md before doing so.
+ * It is both the live face today AND the permanent fallback once A4 Speed is
+ * licensed: condensed, bold, italic, close enough that the headline rhythm and
+ * letterfit match, so enabling A4 Speed will not reflow the page. Loaded
+ * through next/font, so it stays preloaded and metric-adjusted either way.
  */
 export const displayFont = Barlow_Condensed({
   subsets: ["latin"],
@@ -54,20 +43,57 @@ export const displayFont = Barlow_Condensed({
   variable: "--font-display-face",
 });
 
-/*
-export const displayFont = localFont({
-  src: [{ path: "../assets/fonts/a4-speed-subset.woff2", weight: "700", style: "italic" }],
-  variable: "--font-display-face",
-  display: "swap",
-  // Barlow Condensed Bold Italic is the declared fallback, so the swap lands on
-  // a face with near-identical proportions instead of a system default.
-  fallback: ["Barlow Condensed", "Arial Narrow", "system-ui", "sans-serif"],
-  // Metric-adjusts the fallback so the swap does not shift layout. next/font
-  // only accepts a system font name here; 'Arial' is the closest available
-  // reference for a condensed sans.
-  adjustFontFallback: "Arial",
-});
-*/
+/* ==========================================================================
+   THE A4 SPEED LICENCE GATE
+   ==========================================================================
+
+   A4 Speed's bundled Readme states it is "completely free for personal use
+   only. For commercial purposes you must purchase a license." This site
+   carries sponsor logos, so it is not personal use: KUFS needs the USD 12
+   commercial licence from the author before shipping it.
+
+   THE GATE IS THE FILE ITSELF, not a flag.
+
+   public/fonts/a4-speed.woff2 is gitignored. Until the licence is bought, the
+   binary is not in the repository at all — which matters more than it first
+   looks, because this repository is PUBLIC. Committing a personal-use-only
+   font to a public repo is redistribution in its own right, regardless of
+   whether the site ever serves it. An environment variable would not have
+   prevented that; not having the file does.
+
+   The @font-face rule in src/styles/tokens.css names "A4 Speed" first in the
+   --font-display stack, with the Barlow Condensed variable immediately after.
+   So the behaviour is:
+
+     file absent  -> the @font-face src 404s, the browser falls straight
+                     through to Barlow Condensed. No build failure, no visual
+                     break, nothing missing but the face itself.
+     file present -> A4 Speed wins, and the layout preloads it.
+
+   That means a future committee that loses the licence can simply delete the
+   file, and a committee that buys it can simply add it. Neither has to
+   understand this file.
+
+   `pnpm check:font-licence` fails the build if a font binary is committed
+   without the licence certificate beside it.
+   ========================================================================== */
+
+/** Where the licensed binary goes once it exists. */
+export const A4_SPEED_PATH = "public/fonts/a4-speed.woff2";
+
+/** Public URL of the same file. */
+export const A4_SPEED_URL = "/fonts/a4-speed.woff2";
+
+/**
+ * True when the licensed binary is present in this build.
+ *
+ * Evaluated on the server at build time. Used only to decide whether to emit a
+ * preload hint — the font stack itself degrades on its own, so nothing depends
+ * on this being right.
+ */
+export function hasLicensedDisplayFont(): boolean {
+  return existsSync(join(process.cwd(), A4_SPEED_PATH));
+}
 
 /** Applied to <html> in src/app/layout.tsx. */
 export const fontVariables = `${bodyFont.variable} ${displayFont.variable}`;
