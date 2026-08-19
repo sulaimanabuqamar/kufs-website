@@ -17,20 +17,25 @@ import type { Sponsor, SponsorTier } from "@/lib/schemas";
  * which is greyscale. This is the placement a title partner is paying for.
  */
 
-const FEATURED: readonly SponsorTier[] = ["title", "gold"];
+const FEATURED: readonly SponsorTier[] = ["tier1", "tier2"];
 
 export function SponsorTiers() {
   const groups = getSponsorsByTier();
   const featured = groups.filter((group) => FEATURED.includes(group.tier));
   const supporting = groups.filter((group) => !FEATURED.includes(group.tier));
+  const hasSponsors = groups.length > 0;
 
   return (
     <Section labelledBy="sponsors-heading" className="border-t border-border">
       <SectionHeading
         id="sponsors-heading"
         eyebrow="Partners"
-        title="The companies behind the car"
-        lead="Every component on this car exists because somebody backed it. Our partners get engineering visibility, a graduate pipeline, and a team that reports back."
+        title={hasSponsors ? "The companies behind the car" : "Be our first partner"}
+        lead={
+          hasSponsors
+            ? "Every component on this car exists because somebody backed it. Our partners get engineering visibility, access to KU engineering talent, and a team that reports back."
+            : "We are building this university's first Formula Student car, and we are looking for the companies who will put their name on it. There is one founding season, and this is it."
+        }
       />
 
       <div className="mt-12 flex flex-col gap-10">

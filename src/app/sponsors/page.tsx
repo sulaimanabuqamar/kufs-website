@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 /** Title and Gold get a large card each; everything below shares a compact row. */
-const FEATURED: readonly SponsorTier[] = ["title", "gold"];
+const FEATURED: readonly SponsorTier[] = ["tier1", "tier2"];
 
 /**
  * Grid columns chosen from the number of items in the tier.
@@ -49,6 +49,7 @@ export default function SponsorsPage() {
   );
   const inKind = groups.find((g) => g.tier === "inkind");
   const totalSponsors = groups.reduce((n, g) => n + g.sponsors.length, 0);
+  const hasSponsors = totalSponsors > 0;
 
   return (
     <>
@@ -85,7 +86,7 @@ export default function SponsorsPage() {
               </div>
             </dl>
             <p className="text-caption text-text-muted">
-              Places are open at every tier for the 2027 season.
+              Every tier is open for the {site.competition.year} season.
             </p>
           </aside>
         </div>
@@ -100,6 +101,25 @@ export default function SponsorsPage() {
           eyebrow={site.straplines[1]}
           title="Our partners"
         />
+
+        {!hasSponsors ? (
+          /* Honest empty state. "Be the first" is a genuinely strong ask for a
+             founding season — much stronger than a page of invented logos. */
+          <div className="mt-12 rounded-lg border-2 border-dashed border-border-light bg-surface-light p-10">
+            <h3 className="text-h3 text-text-on-light">
+              This page is deliberately empty
+            </h3>
+            <p className="mt-4 max-w-[62ch] text-body text-muted-on-light">
+              We would rather show you nothing than show you logos we have not earned.
+              KUFS is in its first season and is looking for the organisations who will
+              back the university&rsquo;s first Formula Student car — on the livery, on
+              the teamwear, and in our first Competition Design Report.
+            </p>
+            <Button href={CTA.sponsor.href} variant="onLight" className="mt-6">
+              See the partnership tiers
+            </Button>
+          </div>
+        ) : null}
 
         <div className="mt-12 flex flex-col gap-16">
           {featured.map((group) => (

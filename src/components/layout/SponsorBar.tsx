@@ -18,6 +18,11 @@ import { TIER_LABEL } from "@/lib/content";
 export function SponsorBar() {
   const sponsors = getSponsors();
 
+  // No partners yet. A footer strip headed "Our partners" above empty space
+  // advertises the gap; the home page and /sponsors both carry a proper
+  // "be the first" ask instead.
+  if (sponsors.length === 0) return null;
+
   return (
     <section aria-labelledby="sponsor-bar-heading" className="border-b border-border">
       <div className="page-container py-10">
