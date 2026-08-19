@@ -22,6 +22,9 @@ import { buildPlaceholderCar, cameraPoseAt } from "@/lib/placeholderCar";
 type ThreeLike = any;
 
 export type HeroSceneHandle = {
+  /** The car itself, exposed so the frame renderer can count its triangles
+   *  and enforce the model budget. */
+  subject: ThreeLike;
   /** Move the camera to the pose for scroll progress 0..1 and draw. */
   setProgress: (progress: number) => void;
   /** Re-fit the renderer and camera to a new canvas size. */
@@ -69,12 +72,12 @@ export function createHeroScene({
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   if ("outputColorSpace" in renderer) renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.15;
+  renderer.toneMappingExposure = 1.28;
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(background);
   // Fog hides the edge of the ground disc without needing a bigger disc.
-  scene.fog = new THREE.Fog(new THREE.Color(background), 9, 22);
+  scene.fog = new THREE.Fog(new THREE.Color(background), 7.5, 16);
 
   const camera = new THREE.PerspectiveCamera(FOV, width / height, 0.1, 100);
 
@@ -94,10 +97,17 @@ export function createHeroScene({
   applyViewOffset(width, height);
 
   // --- Lighting: a three-point studio rig ---------------------------------
-  scene.add(new THREE.HemisphereLight(0xbfd0e6, 0x16143c, 0.55));
+  //
+  // Tuned for a NAVY car on a navy ground, which is a much harder lighting
+  // problem than the red placeholder it replaced: with the old rig the
+  // bodywork sank into the background entirely. The key is brighter and
+  // further round to the front-left, and both rims are stronger, so the car is
+  // read by its lit edges rather than by its silhouette.
+  scene.add(new THREE.HemisphereLight(0xcfdcf2, 0x1a1745, 0.75));
 
-  const key = new THREE.DirectionalLight(0xffffff, 2.6);
-  key.position.set(4.5, 6.5, 3.5);
+  const key = new THREE.DirectionalLight(0xfff4e8, 4.2);
+  // Front-left and high — lights the nose, the near sidepod and the helmet.
+  key.position.set(5.2, 6.2, 4.6);
   key.castShadow = true;
   key.shadow.mapSize.set(1024, 1024);
   key.shadow.camera.near = 1;
@@ -106,26 +116,39 @@ export function createHeroScene({
   key.shadow.camera.right = 5;
   key.shadow.camera.top = 5;
   key.shadow.camera.bottom = -5;
-  key.shadow.bias = -0.0012;
+  key.shadow.bias = -0.0009;
+  key.shadow.normalBias = 0.02;
   scene.add(key);
 
-  // Warm rim from behind, picking out the wing and roll hoop silhouette.
-  const rimWarm = new THREE.DirectionalLight(0xedad55, 1.7);
-  rimWarm.position.set(-5, 2.4, -3.2);
+  // Warm rim from behind in Performance Orange, picking out the rear wing and
+  // roll hoop silhouette against the background.
+  // Kept deliberately restrained and raised well above the horizon: a strong
+  // low warm light from behind reads beautifully on the car and floods the
+  // floor orange, which turned the studio into a desert.
+  const rimWarm = new THREE.DirectionalLight(0xedad55, 1.35);
+  rimWarm.position.set(-4.4, 5.2, -3.0);
   scene.add(rimWarm);
 
-  // Cool fill from the opposite side to keep the shadow side readable.
-  const rimCool = new THREE.DirectionalLight(0x6fa8ff, 0.85);
-  rimCool.position.set(-2.5, 1.6, 5);
+  // Cool fill from the opposite side so the shadow flank still has form
+  // instead of going flat black.
+  const rimCool = new THREE.DirectionalLight(0x8fbcff, 1.25);
+  rimCool.position.set(-2.2, 2.6, 5.2);
   scene.add(rimCool);
+
+  // Low bounce standing in for light coming back off the floor.
+  const bounce = new THREE.DirectionalLight(0xa9b6e8, 0.35);
+  bounce.position.set(1.5, -2, 1.5);
+  scene.add(bounce);
 
   // --- Ground --------------------------------------------------------------
   const ground = new THREE.Mesh(
     new THREE.CircleGeometry(11, 48),
     new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#1d1a4a"),
-      roughness: 0.72,
-      metalness: 0.15,
+      // Darker than the background so the car separates from the floor and
+      // the contact shadow still reads.
+      color: new THREE.Color("#100e2c"),
+      roughness: 0.68,
+      metalness: 0.2,
     }),
   );
   ground.rotation.x = -Math.PI / 2;
@@ -187,5 +210,5 @@ export function createHeroScene({
 
   setProgress(0);
 
-  return { setProgress, resize, dispose };
+  return { subject: car, setProgress, resize, dispose };
 }

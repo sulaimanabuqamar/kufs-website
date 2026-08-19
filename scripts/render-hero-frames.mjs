@@ -50,6 +50,9 @@ const OUT_DIR = join(ROOT, "public", "hero", "frames");
 const STAGING_DIR = join(ROOT, "public", "hero", "frames.staging");
 const POSTER_PATH = join(ROOT, "public", "hero", "poster.webp");
 
+/** Triangle ceiling for the hero subject. See src/lib/placeholderCar.ts. */
+const TRIANGLE_BUDGET = 2000;
+
 /* -------------------------------------------------------------------------
    Arguments
    ------------------------------------------------------------------------- */
@@ -216,6 +219,19 @@ function renderPageHtml({ width, height, modelPath }) {
     });
 
     window.__setProgress = (t) => scene.setProgress(t);
+
+    // Triangle count of the subject, so the render script can enforce the
+    // model's budget. Counted from index/position buffers rather than trusted.
+    window.__triangles = (() => {
+      let n = 0;
+      scene.subject.traverse((o) => {
+        const g = o.geometry;
+        if (!g) return;
+        n += g.index ? g.index.count / 3 : g.attributes.position.count / 3;
+      });
+      return Math.round(n);
+    })();
+
     window.__heroReady = true;
   } catch (error) {
     window.__heroError = String(error && error.stack || error);
@@ -485,6 +501,18 @@ async function main() {
 
     const pageError = await page.evaluate(() => window.__heroError ?? null);
     if (pageError) throw new Error(`Scene failed to build:\n${pageError}`);
+
+    // The hero model is lazy-loaded, but it still has to stay cheap: it runs
+    // live in Mode B on whatever laptop a team member opens it on.
+    const triangles = await page.evaluate(() => window.__triangles ?? 0);
+    if (triangles > TRIANGLE_BUDGET) {
+      throw new Error(
+        `Model is ${triangles} triangles, over the ${TRIANGLE_BUDGET} budget.\n` +
+          `Reduce radial segments on the wheels or drop suspension detail in ` +
+          `src/lib/placeholderCar.ts.`,
+      );
+    }
+    console.log(`  model      ${triangles} triangles (budget ${TRIANGLE_BUDGET})\n`);
 
     // SwiftShader takes a second or two to come up, and until it has, the
     // canvas composites as an empty rectangle. Screenshots taken during that
