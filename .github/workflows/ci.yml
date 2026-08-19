@@ -99,6 +99,12 @@ jobs:
           pnpm check:hero
           pnpm check:brand
 
+      # Regression cover for the Next 16 scroll-behaviour bug: pages opening
+      # partway down after a client-side navigation. Invisible to build,
+      # typecheck and Lighthouse; only a real click reveals it.
+      - name: Scroll position on navigation
+        run: pnpm check:scroll
+
       # LCP < 2.0s on Fast 4G, < 3.0s on Slow 4G, CLS < 0.1, accessibility 100.
       # Runs Lighthouse through `pnpm dlx` so it is not a dependency of the repo.
       - name: Performance and accessibility budgets

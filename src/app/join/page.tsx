@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { SmoothHashScroll } from "@/components/SmoothHashScroll";
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
@@ -77,6 +78,10 @@ export default function JoinPage() {
 
   return (
     <>
+      {/* Only mounted on the pages that have in-page anchors. It used to sit in
+          the root layout, which shipped a global click listener to every route
+          for a feature two pages use. */}
+      <SmoothHashScroll />
       {/* ---------- Hero ---------- */}
       <Section className="border-b border-border">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">

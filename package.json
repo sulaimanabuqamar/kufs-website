@@ -20,11 +20,13 @@
     "font:subset": "node scripts/subset-display-font.mjs",
     "check:brand": "node scripts/check-brand-rules.mjs",
     "screens": "node scripts/capture-screens.mjs",
-    "check:perf": "node scripts/check-perf.mjs"
+    "check:perf": "node scripts/check-perf.mjs",
+    "check:scroll": "node scripts/check-scroll.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",
     "next": "16.3.1",
+    "next-mdx-remote": "^6.0.0",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "server-only": "^0.0.1",

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { SmoothHashScroll } from "@/components/SmoothHashScroll";
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { TierTable } from "@/components/sponsorship/TierTable";
@@ -55,6 +56,10 @@ export default function BecomeASponsorPage() {
 
   return (
     <>
+      {/* Only mounted on the pages that have in-page anchors. It used to sit in
+          the root layout, which shipped a global click listener to every route
+          for a feature two pages use. */}
+      <SmoothHashScroll />
       {/* ---------- Hero ---------- */}
       {/* Two columns, not a lone left-hand measure. Every inner page header on
           this site pairs the copy with something load-bearing on the right —

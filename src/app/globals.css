@@ -12,8 +12,16 @@
   }
 
   html {
-    scroll-behavior: smooth;
-    /* The sticky header is 4rem tall; keep in-page anchors clear of it. */
+    /* NO `scroll-behavior: smooth` here, deliberately.
+       Next 16 no longer forces `scroll-behavior: auto` around its own scroll
+       reset during route transitions (it did up to v15). With a global smooth
+       setting, the App Router's repeated `scrollIntoView()` calls become
+       competing animations and pages open partway down — measured at 837px
+       into /team. Smooth scrolling for in-page anchors is reapplied, scoped to
+       anchor clicks only, in src/components/SmoothHashScroll.tsx. */
+
+    /* The sticky header is 4rem tall; keep in-page anchors clear of it. This
+       still applies to the smooth scroll performed by that component. */
     scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
   }
@@ -86,10 +94,8 @@
      Individual components still branch on it in JS where the work is more
      than cosmetic (the scroll sequence never even loads). */
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-
+    /* html { scroll-behavior } is not set at all any more — see above. The
+       anchor-scroll component checks this preference itself. */
     *,
     *::before,
     *::after {
