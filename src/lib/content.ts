@@ -19,12 +19,14 @@ import {
   type NewsPost,
   type Sponsor,
   type SponsorTier,
-  SUBTEAMS,
+  ENGINEERING_SUBTEAMS,
+  OPERATIONS_ROLES,
   type Car,
+  type EngineeringSubteam,
   type MilestonePhase,
+  type OperationsRole,
   type Role,
   type SponsorshipTier,
-  type Subteam,
   type TeamMember,
 } from "@/lib/schemas";
 
@@ -57,13 +59,7 @@ export { site };
    ------------------------------------------------------------------------- */
 
 /** Display order for tiers. Drives the footer bar and the home page strip. */
-export const TIER_ORDER: readonly SponsorTier[] = [
-  "title",
-  "gold",
-  "silver",
-  "bronze",
-  "inkind",
-];
+export const TIER_ORDER: readonly SponsorTier[] = ["tier1", "tier2", "tier3", "inkind"];
 
 /** Re-exported so server components have one import for content concerns.
  *  The definition lives in src/lib/tierLabels.ts because client components
@@ -208,10 +204,13 @@ export const getRoles = once((): Role[] =>
   parseOrThrow(rolesSchema, readJson("roles.json"), "content/roles.json"),
 );
 
-/** Roles grouped by subteam, in SUBTEAMS order, skipping empty groups. */
-export function getRolesBySubteam(): { subteam: Subteam; roles: Role[] }[] {
+/** Roles grouped by subteam, in display order, skipping empty groups. */
+export function getRolesBySubteam(): {
+  subteam: EngineeringSubteam;
+  roles: Role[];
+}[] {
   const roles = getRoles();
-  return SUBTEAMS.map((subteam) => ({
+  return ENGINEERING_SUBTEAMS.map((subteam) => ({
     subteam,
     roles: roles.filter((r) => r.subteam === subteam),
   })).filter((group) => group.roles.length > 0);
@@ -222,18 +221,75 @@ export function getRolesBySubteam(): { subteam: Subteam; roles: Role[] }[] {
    ------------------------------------------------------------------------- */
 
 /**
- * Roster grouped by subteam, in SUBTEAMS order, skipping empty groups.
+ * The Operations division, one entry per canonical role.
  *
- * A yearly roster swap is one edit to content/team.json — add, remove or move
- * people between subteams and this regroups automatically. No component knows
- * how many members or groups there are.
+ * Roles with no members are RETAINED, not filtered out — an empty role is a
+ * vacancy, and the whole point is that /team shows it and /join recruits for
+ * it without anyone maintaining a separate list. CTO Electrical is currently
+ * the empty one.
  */
-export function getTeamBySubteam(): { subteam: Subteam; members: TeamMember[] }[] {
+export function getOperations(): { role: OperationsRole; members: TeamMember[] }[] {
   const team = getTeam();
-  return SUBTEAMS.map((subteam) => ({
+  return OPERATIONS_ROLES.map((role) => ({
+    role,
+    members: team.filter((m) =>
+      m.roles.some((r) => r.division === "Operations" && r.title === role),
+    ),
+  }));
+}
+
+/** The Engineering division, grouped by subteam, skipping empty subteams. */
+export function getEngineering(): {
+  subteam: EngineeringSubteam;
+  members: TeamMember[];
+}[] {
+  const team = getTeam();
+  return ENGINEERING_SUBTEAMS.map((subteam) => ({
     subteam,
-    members: team.filter((m) => m.subteam === subteam),
+    members: team.filter((m) =>
+      m.roles.some((r) => r.division === "Engineering" && r.title === subteam),
+    ),
   })).filter((group) => group.members.length > 0);
+}
+
+/** Operations roles nobody currently holds. Computed, never hand-maintained. */
+export function getVacantRoles(): OperationsRole[] {
+  return getOperations()
+    .filter((group) => group.members.length === 0)
+    .map((group) => group.role);
+}
+
+/** Subteams carried by a single person — the other real recruitment gap. */
+export function getSinglePersonSubteams(): EngineeringSubteam[] {
+  return getEngineering()
+    .filter((group) => group.members.length === 1)
+    .map((group) => group.subteam);
+}
+
+/**
+ * Headline team figures, COMPUTED from content/team.json rather than written
+ * down anywhere. Editing the roster updates every number on the site, and no
+ * stat can drift out of step with the people it counts.
+ */
+export function getTeamStats(): {
+  headcount: number;
+  disciplines: number;
+  disciplineNames: string[];
+  subteams: number;
+} {
+  const team = getTeam();
+  const disciplineNames = [...new Set(team.map((m) => m.major))].sort();
+  return {
+    headcount: team.length,
+    disciplines: disciplineNames.length,
+    disciplineNames,
+    subteams: getEngineering().length,
+  };
+}
+
+/** A member's roles as a single readable line, e.g. "CTO Mechanical · Chassis". */
+export function roleLine(member: TeamMember): string {
+  return member.roles.map((r) => r.title).join(" · ");
 }
 
 /* -------------------------------------------------------------------------
@@ -245,8 +301,8 @@ export function getTeamBySubteam(): { subteam: Subteam; members: TeamMember[] }[
  *
  * PER-SEASON BY DESIGN. Each car is its own file at content/cars/<year>.json,
  * and /the-car reads the year from site.competition.year. Next season is a new
- * file plus one number in site.ts — not a rewrite, and last year's car stays on
- * disk for an archive page whenever someone wants to build one.
+ * file plus one number in site.ts — not a rewrite, and this season's car stays
+ * on disk for an archive page whenever someone wants to build one.
  */
 export function getCar(year: number = site.competition.year): Car {
   return parseOrThrow(
