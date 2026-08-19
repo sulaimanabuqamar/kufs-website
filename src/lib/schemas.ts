@@ -95,16 +95,70 @@ export const siteSchema = z.object({
      *  the countdown never depends on the visitor's locale or DST rules. */
     startsAt: z.string().datetime({ offset: true }),
   }),
-  /** Headline stats for the "What is Formula Student" explainer. */
+  /**
+   * Headline stats for the "What is Formula Student" explainer.
+   *
+   * `value: null` renders as TBC. There is deliberately no "best finish" stat:
+   * KUFS has never competed, and a TBC there would invite the reader to assume
+   * a result exists that simply has not been typed in.
+   */
   stats: z
     .array(
       z.object({
-        value: z.string().min(1),
+        value: z.string().min(1).nullable(),
         label: z.string().min(1),
         detail: z.string().min(1),
       }),
     )
     .length(3),
+
+  /** The programme's stage. Drives the first-year framing across the site. */
+  programme: z.object({
+    /** The season this team was founded. */
+    foundedYear: z.number().int().min(2020).max(2100),
+    /** First competition entry. Null if not yet entered anything. */
+    firstCompetitionYear: z.number().int().min(2024).max(2100),
+    /** One line establishing that this is season one, said with confidence. */
+    seasonOneLine: z.string().min(1),
+  }),
+
+  /**
+   * The vehicle programme.
+   *
+   * IMPORTANT: these are the team's TARGETS and working baseline, taken from
+   * the first-year benchmarking report — not decided specifications. The
+   * architecture is down-selected on 30 September 2026 and frozen on 30
+   * October 2026. The site must say "target" and "baseline", never "is".
+   */
+  vehicle: z.object({
+    /** e.g. "Single-motor rear-wheel-drive electric". */
+    architecture: z.string().min(1),
+    /** e.g. "230–250 kg". */
+    targetMass: z.string().min(1),
+    /** ISO date the architecture is selected. */
+    architectureDownselect: isoDate,
+    /** ISO date the concept is frozen. */
+    conceptFreeze: isoDate,
+    /** Short note on what is and is not yet decided. */
+    note: z.string().min(1),
+  }),
+
+  /** Public reference links, from the team's own resource list. */
+  links: z.object({
+    whatIsFormulaStudentVideo: z.string().url(),
+    officialFsuk: z.string().url(),
+    fsukKeyDates: z.string().url(),
+    fsukRulebook: z.string().url(),
+    fsResults: z.string().url(),
+    firstYearTeamArticles: z.string().url(),
+  }),
+
+  /**
+   * Indicative AED to USD rate for the sponsorship page.
+   * The dirham is pegged, so this does not move — but it is still displayed as
+   * an approximation, and it is not fetched live.
+   */
+  aedToUsd: z.number().positive(),
   /** The four brand values. Verbatim from the brand sheet — do not reword. */
   values: z
     .array(
@@ -134,8 +188,11 @@ export const siteSchema = z.object({
           title: z.string().min(1),
           body: z.string().min(1),
           stat: z.object({
+            /** A literal value, or null to render TBC. Ignored if `computed`
+             *  is set — those come from the roster so they cannot drift. */
             value: z.string().min(1).nullable(),
             label: z.string().min(1),
+            computed: z.enum(["headcount", "disciplines"]).nullable().default(null),
           }),
         }),
       )
@@ -146,7 +203,6 @@ export const siteSchema = z.object({
     .object({
       name: z.string().min(1),
       role: z.string().min(1),
-      department: z.string().min(1),
     })
     .nullable(),
 
@@ -182,7 +238,14 @@ export const sponsorSchema = z.object({
   since: z.number().int().min(2000).max(2100).optional(),
 });
 
-export const sponsorsSchema = z.array(sponsorSchema).min(1);
+/**
+ * May be EMPTY. KUFS has no confirmed partners yet, and an empty sponsor list
+ * is the honest state for a first-year team — every surface that renders
+ * sponsors handles it with a "be the first" state rather than a blank space.
+ * The invented example partners that used to live here were removed: a real
+ * prospect must never see a fictional logo next to a real ask.
+ */
+export const sponsorsSchema = z.array(sponsorSchema);
 export type Sponsor = z.infer<typeof sponsorSchema>;
 
 /* -------------------------------------------------------------------------
@@ -190,34 +253,94 @@ export type Sponsor = z.infer<typeof sponsorSchema>;
    ------------------------------------------------------------------------- */
 
 /**
- * Roster groups on /team, in display order.
+ * The two divisions the team is organised into.
  *
- * These are the six technical/business groups named in the brand brief, plus
- * Management — the Team Principal and Chief Engineer sit across all subteams
- * and need a home that is not "Business & Operations".
+ * People can sit in both — the CTO Mechanical also leads Chassis, and two of
+ * the marketing group also work on sponsorship — so a member carries a list of
+ * roles rather than a single subteam. One person, one card, several roles.
  */
-export const SUBTEAMS = [
-  "Management",
-  "Aerodynamics",
-  "Chassis",
-  "Powertrain",
-  "Electronics",
-  "Suspension",
-  "Business & Operations",
-] as const;
-export type Subteam = (typeof SUBTEAMS)[number];
+export const DIVISIONS = ["Operations", "Engineering"] as const;
+export type Division = (typeof DIVISIONS)[number];
 
+/**
+ * Operations roles, in display order.
+ *
+ * This is the canonical list, which means a role with nobody in it IS a
+ * vacancy — /team renders it as one and /join recruits for it, both computed
+ * rather than maintained by hand. CTO Electrical is currently empty.
+ */
+export const OPERATIONS_ROLES = [
+  "President",
+  "Vice President",
+  "Secretary",
+  "CTO Mechanical",
+  "CTO Electrical",
+  "Marketing / Media / Outreach",
+  "Sponsorship & Finance",
+] as const;
+export type OperationsRole = (typeof OPERATIONS_ROLES)[number];
+
+/** The eight engineering subteams, in display order. */
+export const ENGINEERING_SUBTEAMS = [
+  "Aerodynamics",
+  "Chassis & Driver Ergonomics",
+  "Steering",
+  "Suspension",
+  "Throttle & Braking Systems",
+  "Powertrain & Drivetrain",
+  "High Voltage",
+  "Low Voltage & Controls",
+] as const;
+export type EngineeringSubteam = (typeof ENGINEERING_SUBTEAMS)[number];
+
+/** Year of study, as the university records it. */
+export const STUDY_YEARS = [
+  "Freshman",
+  "Sophomore",
+  "Junior",
+  "Senior",
+  "Graduate",
+] as const;
+
+/**
+ * PRIVACY: the permitted per-person fields are name, role, subteam, year of
+ * study and major — and nothing else. The team's internal roster also holds
+ * student ID numbers and personal mobile numbers. Those must never enter this
+ * repository, in any file, in any form, including comments. There is
+ * deliberately no field here that could hold one.
+ */
 export const teamMemberSchema = z.object({
   name: z.string().min(1),
-  role: z.string().min(1),
-  subteam: z.enum(SUBTEAMS),
-  photo: imageRef,
+  year: z.enum(STUDY_YEARS),
+  major: z.string().min(1),
+  /** Every role this person holds, across both divisions. */
+  roles: z
+    .array(
+      z.union([
+        z.object({
+          division: z.literal("Operations"),
+          title: z.enum(OPERATIONS_ROLES),
+        }),
+        z.object({
+          division: z.literal("Engineering"),
+          title: z.enum(ENGINEERING_SUBTEAMS),
+        }),
+      ]),
+    )
+    .min(1),
+  /** null until a headshot exists. The card falls back to initials on navy. */
+  photo: imageRef.nullable().default(null),
   linkedin: z.string().url().optional(),
-  /** Year of study. "Alumni" is allowed for retained technical advisors. */
-  year: z.union([z.number().int().min(1).max(8), z.literal("Alumni"), z.literal("PhD")]),
 });
 
-export const teamSchema = z.array(teamMemberSchema).min(1);
+export const teamSchema = z
+  .array(teamMemberSchema)
+  .min(1)
+  .refine(
+    (list) => new Set(list.map((m) => m.name)).size === list.length,
+    "each person appears once; give them multiple roles rather than two entries",
+  );
+
 export type TeamMember = z.infer<typeof teamMemberSchema>;
 
 /* -------------------------------------------------------------------------
@@ -274,13 +397,14 @@ export type Milestone = z.infer<typeof milestoneSchema>;
  * able to read across a row, not hunt for whether a benefit was simply omitted.
  */
 export const BENEFIT_ROWS = [
-  { key: "livery", label: "Logo on car livery" },
-  { key: "kit", label: "Logo on team kit" },
-  { key: "website", label: "Logo placement on this site" },
-  { key: "social", label: "Social media features per season" },
-  { key: "launchEvent", label: "Presence at the launch event" },
-  { key: "cvBook", label: "Access to the CV book" },
-  { key: "factoryVisit", label: "Workshop visit" },
+  { key: "livery", label: "Logo on the car" },
+  { key: "kit", label: "Logo on teamwear" },
+  { key: "website", label: "Logo on this site and materials" },
+  { key: "social", label: "Social media" },
+  { key: "designReport", label: "Competition Design Report" },
+  { key: "recruitment", label: "Recruitment access" },
+  { key: "recognition", label: "Recognition at events" },
+  { key: "labVisit", label: "KUFS lab visit" },
 ] as const;
 
 export type BenefitKey = (typeof BENEFIT_ROWS)[number]["key"];
@@ -305,9 +429,10 @@ export const tierSchema = z.object({
     kit: benefitValue,
     website: benefitValue,
     social: benefitValue,
-    launchEvent: benefitValue,
-    cvBook: benefitValue,
-    factoryVisit: benefitValue,
+    designReport: benefitValue,
+    recruitment: benefitValue,
+    recognition: benefitValue,
+    labVisit: benefitValue,
   }),
 });
 
@@ -327,7 +452,7 @@ export type SponsorshipTier = z.infer<typeof tierSchema>;
 
 export const roleSchema = z.object({
   title: z.string().min(1),
-  subteam: z.enum(SUBTEAMS),
+  subteam: z.enum(ENGINEERING_SUBTEAMS),
   description: z.string().min(1),
   /** What we actually want to see. Kept honest — no "rockstar" language. */
   lookingFor: z.array(z.string().min(1)).min(1),
