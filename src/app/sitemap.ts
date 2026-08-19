@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import site from "@/content/site";
+import { siteUrl } from "@/lib/env";
 import { ALL_ROUTES } from "@/lib/nav";
 
 /**
@@ -12,6 +12,9 @@ import { ALL_ROUTES } from "@/lib/nav";
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
+  // Origin comes from NEXT_PUBLIC_SITE_URL, falling back to this deployment's
+  // own VERCEL_URL — a preview must not publish a sitemap of production URLs.
+  const origin = siteUrl();
 
   const priorityFor = (route: string) => {
     if (route === "/") return 1;
@@ -20,7 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   };
 
   return ALL_ROUTES.map((route) => ({
-    url: `${site.url}${route === "/" ? "" : route}`,
+    url: `${origin}${route === "/" ? "" : route}`,
     lastModified,
     changeFrequency: route === "/news" ? "weekly" : "monthly",
     priority: priorityFor(route),

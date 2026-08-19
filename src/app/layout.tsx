@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { fontVariables } from "@/lib/fonts";
 import site from "@/content/site";
+import { siteUrl } from "@/lib/env";
 
 import "./globals.css";
 
@@ -18,7 +19,10 @@ import "./globals.css";
  */
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  // Every relative URL in metadata resolves against this, so canonical tags,
+  // OG URLs and Twitter cards all follow the deployment rather than hardcoding
+  // production into a preview build.
+  metadataBase: new URL(siteUrl()),
   title: {
     default: `${site.longName} — ${site.competition.name} ${site.competition.year}`,
     template: `%s · ${site.name}`,
@@ -34,13 +38,13 @@ export const metadata: Metadata = {
     "engineering sponsorship",
     "Silverstone",
   ],
-  authors: [{ name: site.longName, url: site.url }],
+  authors: [{ name: site.longName, url: siteUrl() }],
   creator: site.longName,
   openGraph: {
     type: "website",
     siteName: site.longName,
     locale: "en_GB",
-    url: site.url,
+    url: siteUrl(),
     title: `${site.longName} — ${site.competition.name} ${site.competition.year}`,
     description: site.description,
   },

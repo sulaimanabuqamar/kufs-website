@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import site from "@/content/site";
+import { isProductionDeploy, siteUrl } from "@/lib/env";
 
 /**
  * Preview deploys must never be indexed — a Vercel preview outranking the
@@ -8,12 +8,14 @@ import site from "@/content/site";
  * traffic. VERCEL_ENV is set automatically on Vercel.
  */
 export default function robots(): MetadataRoute.Robots {
-  const isProduction =
-    process.env.VERCEL_ENV === "production" || process.env.VERCEL_ENV === undefined;
-
-  if (!isProduction) {
+  // Preview and development deployments are disallowed outright. A preview URL
+  // outranking the real site for the team name is a genuinely embarrassing way
+  // to lose search traffic, and it is entirely preventable.
+  if (!isProductionDeploy()) {
     return { rules: [{ userAgent: "*", disallow: "/" }] };
   }
+
+  const origin = siteUrl();
 
   return {
     rules: [
@@ -24,7 +26,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/styleguide"],
       },
     ],
-    sitemap: `${site.url}/sitemap.xml`,
-    host: site.url,
+    sitemap: `${origin}/sitemap.xml`,
+    host: origin,
   };
 }

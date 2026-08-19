@@ -21,8 +21,9 @@ const site: SiteConfig = parseOrThrow(
     description:
       "KUFS is the official Formula Student team of Khalifa University, Abu Dhabi. We design, build and race a student-engineered single-seater at Formula Student UK, Silverstone.",
 
-    // TODO(deploy): point at the real domain before launch. Drives canonical
-    // URLs, the sitemap, robots.txt and every Open Graph tag.
+    // LOCAL DEVELOPMENT FALLBACK ONLY. The live canonical origin comes from
+    // NEXT_PUBLIC_SITE_URL, falling back to this deployment's own VERCEL_URL
+    // on previews — see src/lib/env.ts. Change it there, not here.
     url: "https://kufs.ku.ac.ae",
 
     // TODO(contact): confirm these are the addresses the team actually monitors.

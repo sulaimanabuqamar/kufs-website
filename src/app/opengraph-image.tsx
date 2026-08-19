@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
 import site from "@/content/site";
+import { siteUrl } from "@/lib/env";
 
 /**
  * Dynamic Open Graph card.
@@ -137,7 +138,7 @@ export default function OpenGraphImage() {
           {site.university}
         </div>
         <div style={{ display: "flex", color: COLOR.textMuted, fontSize: 26 }}>
-          {site.url.replace(/^https?:\/\//, "")}
+          {siteUrl().replace(/^https?:\/\//, "")}
         </div>
       </div>
     </div>,
