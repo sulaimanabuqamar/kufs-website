@@ -30,6 +30,9 @@ const { values: argv } = parseArgs({
     url: { type: "string", default: "http://localhost:3000" },
     shots: { type: "boolean", default: false },
   },
+  // Tolerate a stray `--`: `pnpm <script> -- --flag` forwards the separator,
+  // which would otherwise arrive as a positional and throw.
+  allowPositionals: true,
 });
 
 const BASE = argv.url.replace(/\/$/, "");

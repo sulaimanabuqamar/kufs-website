@@ -25,6 +25,7 @@ const { values: argv } = parseArgs({
     },
     full: { type: "boolean", default: false },
   },
+  allowPositionals: true,
 });
 
 const BASE = argv.url.replace(/\/$/, "");

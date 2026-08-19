@@ -31,6 +31,7 @@ const { values: argv } = parseArgs({
       default: "/,/become-a-sponsor,/sponsors,/team,/join,/contact",
     },
   },
+  allowPositionals: true,
 });
 
 const BASE = argv.url.replace(/\/$/, "");
