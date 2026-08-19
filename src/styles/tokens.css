@@ -272,3 +272,47 @@
   --duration-base: 220ms;
   --duration-slow: 420ms;
 }
+
+/* ==========================================================================
+   SPEED STRIPE RAMP — selected by the surface, not by the call site
+   --------------------------------------------------------------------------
+   The stripe's five bars read from --stripe-1 .. --stripe-5. Those are plain
+   custom properties rather than @theme tokens, deliberately: custom properties
+   INHERIT, so the band that owns the background owns the ramp, and a stripe
+   nested any depth inside it picks up the right one with no prop to pass and
+   no prop to get wrong. This is the same principle as KufsLogo's `on` API —
+   make the wrong choice unreachable — but done in CSS so it also works for the
+   server components that render most of the site's stripes.
+
+   BRAND ramp (default, dark surfaces): red -> copper -> white -> orange, the
+   logo's signature run. Racing Red is 2.12:1 on navy, which is why the stripe
+   is the only place it is allowed on dark: legible as a graphic gesture,
+   illegible as information, and always aria-hidden.
+
+   NAVY ramp (.surface-light): a tonal ramp of KUFS Navy, top bar at full
+   strength and each subsequent bar stepping down. No white bar — on #F7F6FB a
+   white bar is invisible and the motif silently loses a bar and its rake. No
+   red, copper or orange either: Desert Copper measures 2.44:1 and Performance
+   Orange 1.96:1 against the light ground, which is what made the stripe read
+   as washed out there.
+
+   Alpha rather than pre-mixed hex so the ramp sits correctly on any light
+   ground, not just on --color-bg-light. Faintest bar measures 1.68:1 on
+   #F7F6FB — a clearly visible tint. `pnpm check:brand` asserts the pairing.
+   ========================================================================== */
+:root,
+.surface-dark {
+  --stripe-1: var(--color-stripe-red);
+  --stripe-2: color-mix(in srgb, var(--color-stripe-red) 70%, transparent);
+  --stripe-3: var(--color-stripe-copper);
+  --stripe-4: color-mix(in srgb, #ffffff 85%, transparent);
+  --stripe-5: var(--color-stripe-orange);
+}
+
+.surface-light {
+  --stripe-1: rgb(37 34 94 / 1); /* #25225E full strength */
+  --stripe-2: rgb(37 34 94 / 0.78);
+  --stripe-3: rgb(37 34 94 / 0.58);
+  --stripe-4: rgb(37 34 94 / 0.4);
+  --stripe-5: rgb(37 34 94 / 0.26);
+}

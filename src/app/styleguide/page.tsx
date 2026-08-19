@@ -182,7 +182,7 @@ export default function StyleguidePage() {
           ))}
         </ul>
 
-        <div className="mt-6 rounded-lg bg-bg-light p-8">
+        <div className="surface-light mt-6 rounded-lg bg-bg-light p-8">
           <p className="text-eyebrow uppercase text-accent-on-light">On light</p>
           <h3 className="mt-2 text-h3 text-text-on-light">This is a light section</h3>
           <SpeedStripe variant="underline" className="mt-2" />
@@ -202,16 +202,52 @@ export default function StyleguidePage() {
 
       <Block
         title="Speed stripe"
-        note="The signature motif. Decorative and aria-hidden — the only place Racing Red appears on dark."
+        note="The signature motif. Decorative and aria-hidden. The ramp is chosen by the surface, not by the call site: a band marked surface-light hands every stripe inside it the navy ramp automatically."
       >
-        <div className="flex flex-col gap-8">
-          {(["underline", "accent", "divider"] as const).map((variant) => (
-            <div key={variant} className="flex flex-col gap-2">
-              <code className="font-mono text-caption text-text-muted">{variant}</code>
-              <SpeedStripe variant={variant} />
+        <div className="grid gap-6 sm:grid-cols-2">
+          <div className="surface-dark flex flex-col gap-8 rounded-lg border border-border bg-surface p-6">
+            <div className="flex flex-col gap-1">
+              <code className="font-mono text-caption text-accent">
+                tone=&quot;brand&quot;
+              </code>
+              <p className="text-caption text-text-muted">
+                On dark. Red, copper and orange — the logo run, and the only place Racing
+                Red is permitted on navy.
+              </p>
             </div>
-          ))}
+            {(["underline", "accent", "divider"] as const).map((variant) => (
+              <div key={variant} className="flex flex-col gap-2">
+                <code className="font-mono text-caption text-text-muted">{variant}</code>
+                <SpeedStripe variant={variant} />
+              </div>
+            ))}
+          </div>
+
+          <div className="surface-light flex flex-col gap-8 rounded-lg border border-border-light bg-bg-light p-6">
+            <div className="flex flex-col gap-1">
+              <code className="font-mono text-caption text-accent-on-light">
+                tone=&quot;navy&quot;
+              </code>
+              <p className="text-caption text-muted-on-light">
+                On light. A tonal ramp of KUFS Navy, same rake and same insets. No white
+                bar: on #F7F6FB it disappears and the motif loses a bar.
+              </p>
+            </div>
+            {(["underline", "accent", "divider"] as const).map((variant) => (
+              <div key={variant} className="flex flex-col gap-2">
+                <code className="font-mono text-caption text-muted-on-light">
+                  {variant}
+                </code>
+                <SpeedStripe variant={variant} />
+              </div>
+            ))}
+          </div>
         </div>
+
+        {/* Both stripes above take their ramp from the surrounding surface
+            class. Neither passes `tone`. The prop exists as an override and is
+            deliberately not exercised here — this panel is the demonstration
+            that it is not needed. */}
       </Block>
 
       <Block
@@ -231,7 +267,7 @@ export default function StyleguidePage() {
             </code>
             <KufsLogo on="dark" withTagline width={240} />
           </div>
-          <div className="flex flex-col gap-3 rounded-lg border border-border-light bg-bg-light p-6 sm:col-span-2">
+          <div className="surface-light flex flex-col gap-3 rounded-lg border border-border-light bg-bg-light p-6 sm:col-span-2">
             <code className="font-mono text-caption text-muted-on-light">
               on=&quot;light&quot;
             </code>
