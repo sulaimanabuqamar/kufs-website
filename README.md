@@ -186,8 +186,11 @@ content/
 
 Notes:
 
-- Sponsor tiers: `title | gold | silver | bronze | inkind`. Title and gold render at
-  size on the home page; the rest render as a compact logo row.
+- Sponsor tiers: `tier1 | tier2 | tier3 | inkind`, matching the team's sponsorship
+  pack (AED 100,000 / 60,000 / 25,000 / value-based). Tier 1 and Tier 2 render at size;
+  the rest render as a compact row. **`sponsors.json` is currently empty** — KUFS has no
+  confirmed partners yet, and every surface handles that with a "be the first" state
+  rather than inventing logos.
 - At most one milestone may be `active` — it is the single "you are here" marker, and
   the schema enforces it.
 - Every image declares `src`, `width`, `height` and `alt`. The dimensions are
@@ -449,28 +452,34 @@ Read this before the next milestone.
 
 ## Content the team must supply before launch
 
-Everything below currently renders as `TBC`, as placeholder data, or as a `TODO` in the
-source. Nothing here is invented — where a number is unknown the site says so.
+Most of what used to be here has been filled in from the team's own documents. What
+remains is genuinely unknown — nothing below is guessed at anywhere on the site.
 
-| What                                                              | Where                                                       |
-| ----------------------------------------------------------------- | ----------------------------------------------------------- |
-| Formula Student UK 2027 dates                                     | `content/site.ts` → `competition.startsAt`                  |
-| Real team email addresses                                         | `content/site.ts` → `contactEmail`, `sponsorshipEmail`      |
-| Confirmed social handles                                          | `content/site.ts` → `socials`                               |
-| Best FSUK finish, headcount, disciplines represented, event reach | `content/site.ts` → `stats`, `sponsorship.reasons`          |
-| Hero spec figures (mass, downforce, team size)                    | `src/components/hero/heroContent.ts`                        |
-| Sponsorship tier prices                                           | `content/tiers.json` → `amount`                             |
-| The sponsorship prospectus PDF                                    | `public/downloads/`, then set `prospectusAvailable: true`   |
-| Real sponsors, logos and blurbs                                   | `content/sponsors.json` + `public/sponsors/`                |
-| Real roster and headshots                                         | `content/team.json` + `public/team/`                        |
-| Faculty advisor                                                   | `content/site.ts` → `facultyAdvisor`                        |
-| Real milestone dates                                              | `content/milestones.json`                                   |
-| Real open roles                                                   | `content/roles.json`                                        |
-| Real news posts                                                   | `content/news/` (both current posts are marked PLACEHOLDER) |
-| Campus / workshop address                                         | `src/app/contact/page.tsx`                                  |
-| Vector logo originals                                             | `public/brand/` (current files are PDF extractions)         |
-| A4 Speed font file, with permission                               | `src/assets/fonts/`                                         |
-| The car's CAD export                                              | `public/models/`, then `pnpm render:frames`                 |
-| Formspree endpoint                                                | Vercel env, `NEXT_PUBLIC_FORMSPREE_ENDPOINT`                |
+| What                                                    | Where                                                  | Who can close it                                                                                                                                              |
+| ------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **FSUK 2027 competition dates**                         | `content/site.ts` → `competition.startsAt`             | IMechE publishes them; expected **early October 2026**. Check the [key dates page](https://www.imeche.org/events/formula-student/team-information/key-dates). |
+| **FSUK spectator / industry-visitor attendance**        | `content/site.ts` → `stats`                            | IMechE, once the 2027 event is published. Renders TBC until then.                                                                                             |
+| **Every car specification except the baseline targets** | `content/cars/2027.json`                               | CTO Mechanical and the subteam leads, after architecture down-select (30 Sep) and concept freeze (30 Oct).                                                    |
+| **Real team email addresses**                           | `content/site.ts` → `contactEmail`, `sponsorshipEmail` | President / Secretary. The current `@ku.ac.ae` addresses are assumed formats, not confirmed inboxes.                                                          |
+| **Confirmed social handles**                            | `content/site.ts` → `socials`                          | Marketing / Media / Outreach.                                                                                                                                 |
+| **Formspree endpoint**                                  | Vercel env, `NEXT_PUBLIC_FORMSPREE_ENDPOINT`           | Whoever owns the team's shared account. Until set, both forms fall back to `mailto:`.                                                                         |
+| **Sponsorship prospectus PDF**                          | `public/downloads/`, then `prospectusAvailable: true`  | Sponsorship & Finance.                                                                                                                                        |
+| **Confirmed sponsors and their logos**                  | `content/sponsors.json` + `public/sponsors/`           | Sponsorship & Finance, once a partner signs.                                                                                                                  |
+| **Team headshots**                                      | `public/team/` + `photo` in `content/team.json`        | Marketing / Media / Outreach. Cards show a monogram until then.                                                                                               |
+| **Milestone updates and photos**                        | `content/milestones.json` → `update`, `photo`          | Subteam leads, as each milestone closes.                                                                                                                      |
+| **News posts**                                          | `content/news/`                                        | Marketing / Media / Outreach. The folder is empty — the placeholder posts were removed.                                                                       |
+| **Campus / workshop address**                           | `src/app/contact/page.tsx`                             | Secretary.                                                                                                                                                    |
+| **Vector logo originals (SVG/AI)**                      | `public/brand/`                                        | Design lead. Current files are high-resolution PNG slices of the team's exports.                                                                              |
+| **A4 Speed font file, with written permission**         | `src/assets/fonts/`                                    | Marketing / Media / Outreach — see [Licensing](#licensing).                                                                                                   |
+| **The car's CAD export**                                | `public/models/`, then `pnpm render:frames`            | CTO Mechanical, after concept freeze.                                                                                                                         |
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to make each of these changes.
+
+### A note on what is deliberately absent
+
+There is **no "best finish" statistic anywhere on this site**, and there will not be one
+until KUFS has competed. KUFS is a first-year team building its first car; a `TBC` in
+that slot would invite a reader to assume a result exists that simply has not been typed
+in. The same rule applies to the car: the specification page shows _targets_ from the
+team's benchmarking study, clearly labelled as such, because the architecture is not
+frozen until 30 October 2026.

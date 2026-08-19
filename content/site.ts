@@ -19,7 +19,7 @@ const site: SiteConfig = parseOrThrow(
       "KUFS is the official Formula Student team of Khalifa University. We design, " +
       "build, and compete with passion, precision, and purpose.",
     description:
-      "KUFS is the official Formula Student team of Khalifa University, Abu Dhabi. We design, build and race a student-engineered single-seater at Formula Student UK, Silverstone.",
+      "KUFS is the official Formula Student team of Khalifa University, Abu Dhabi. We are building the university's first electric Formula Student car for Formula Student UK 2027 at Silverstone.",
 
     // LOCAL DEVELOPMENT FALLBACK ONLY. The live canonical origin comes from
     // NEXT_PUBLIC_SITE_URL, falling back to this deployment's own VERCEL_URL
@@ -56,11 +56,12 @@ const site: SiteConfig = parseOrThrow(
       organiser: "Institution of Mechanical Engineers (IMechE)",
       venue: "Silverstone Circuit",
       year: 2027,
-      // TODO(dates): PLACEHOLDER. The 2027 event dates are not published yet.
-      // Confirm against the IMechE Formula Student key dates page
-      // (https://www.imeche.org/events/formula-student) and update this single
-      // value — the whole countdown and every "Silverstone 2027" label derive
-      // from it. Keep the +01:00 (BST) offset; the event runs in British summer.
+      // PLACEHOLDER DATE. The official FSUK 2027 key dates have not been
+      // published. Per the team's project timeline, IMechE is expected to
+      // release them in EARLY OCTOBER 2026 — check the key dates page then and
+      // replace this single value. The countdown and every "Silverstone 2027"
+      // label derive from it. Keep the +01:00 (BST) offset; the event runs in
+      // British summer.
       startsAt: "2027-07-14T08:00:00+01:00",
     },
 
@@ -89,6 +90,11 @@ const site: SiteConfig = parseOrThrow(
       "Innovate. Engineer. Compete.",
     ],
 
+    // NOTE: headcount, disciplines and subteam count are NOT here. They are
+    // computed from content/team.json by getTeamStats() so they cannot drift
+    // from the roster. These three are about the competition itself.
+    //
+    // There is deliberately no "best finish" stat. KUFS has not competed yet.
     stats: [
       {
         value: "100+",
@@ -102,13 +108,52 @@ const site: SiteConfig = parseOrThrow(
           "Static events judge design, cost and business case. Dynamic events judge the car.",
       },
       {
-        // TODO: confirm with team — this is KUFS's actual best FSUK result and
-        // must not be published until someone confirms the placing and year.
-        value: "TBC",
-        label: "Our best finish",
-        detail: "Overall at Formula Student UK. Awaiting confirmation from the team.",
+        // Genuinely unknown: IMechE has not published FSUK 2027 attendance,
+        // and quoting another year's figure to a sponsor would be inventing it.
+        value: null,
+        label: "Spectators and industry visitors",
+        detail:
+          "at Formula Student UK. Awaiting the published figure for the 2027 event.",
       },
     ],
+
+    programme: {
+      foundedYear: 2026,
+      firstCompetitionYear: 2027,
+      seasonOneLine:
+        "Season one. We are building Khalifa University's first Formula Student car, for Silverstone 2027.",
+    },
+
+    vehicle: {
+      // From the team's first-year benchmarking report. These are the working
+      // baseline and targets — the architecture is selected on 30 September
+      // 2026 and frozen on 30 October 2026. Say "target", never "is".
+      architecture: "Single-motor rear-wheel-drive electric",
+      targetMass: "230–250 kg",
+      architectureDownselect: "2026-09-30",
+      conceptFreeze: "2026-10-30",
+      note:
+        "Our benchmarking work sets a single-motor rear-wheel-drive electric baseline " +
+        "with a 230–250 kg target mass. The architecture is selected at the end of " +
+        "September and frozen at the end of October — until then these are targets, " +
+        "not decisions.",
+    },
+
+    links: {
+      whatIsFormulaStudentVideo: "https://www.youtube.com/watch?v=CjQifWW9r5w",
+      officialFsuk: "https://www.imeche.org/events/formula-student",
+      fsukKeyDates:
+        "https://www.imeche.org/events/formula-student/team-information/key-dates",
+      fsukRulebook:
+        "https://www.imeche.org/docs/default-source/1-oscar/formula-student/2026/rules/fsuk-2026-rules---v1-09e21118e54216d0c8310ff0100d05193.pdf?sfvrsn=2",
+      fsResults: "https://fsstats.co.uk/Home/Results",
+      firstYearTeamArticles:
+        "https://www.designjudges.com/articles?category=First%20Year%20Teams",
+    },
+
+    // The dirham is pegged to the dollar, so this does not move — but it is
+    // still shown as an approximation and is never fetched live.
+    aedToUsd: 0.2723,
 
     sponsorship: {
       prospectusPath: "/downloads/kufs-sponsorship-prospectus.pdf",
@@ -116,48 +161,59 @@ const site: SiteConfig = parseOrThrow(
       // at the path above; the button changes from "request it" to "download".
       prospectusAvailable: false,
       enquiryEmail: "partnerships.kufs@ku.ac.ae",
+      // `stat.value: null` renders as TBC. Headcount and discipline count are
+      // NOT hardcoded here — they are computed from content/team.json and
+      // injected by the page, so they cannot drift from the roster.
       reasons: [
         {
-          title: "Engineering visibility, not just a logo",
+          title: "Founding partner of a programme, not a logo on a mature car",
           body:
-            "Your mark travels on a car that is photographed, filmed and scrutineered in " +
-            "front of the largest gathering of student engineers in Europe — and on the " +
-            "kit worn by the students who built it.",
-          // TODO: confirm with team — FSUK publishes attendance figures, but we
-          // should cite the number for the year we are actually attending.
-          stat: { value: null, label: "Spectators and industry visitors at FSUK" },
+            "There is exactly one season in which a company can be part of the first " +
+            "car Khalifa University has ever built. Your name goes on that car, in our " +
+            "first Competition Design Report, and into the team's history from the " +
+            "beginning.",
+          stat: { value: "1", label: "First season — this one", computed: null },
         },
         {
-          title: "A recruitment pipeline that has already been tested",
+          title: "Direct access to Khalifa University engineering talent",
           body:
-            "Formula Student students arrive in industry having shipped hardware against " +
-            "a fixed deadline and defended their design to practising engineers. Partners " +
-            "get early access to that cohort.",
-          // TODO: confirm with team — headcount for the current season.
-          stat: { value: null, label: "Students on the team this season" },
+            "Tier 1 partners get access to KU's top engineering students for " +
+            "internships and recruitment. These are students who will have specified, " +
+            "manufactured and defended real hardware against a competition deadline.",
+          stat: { value: null, label: "Students on the team", computed: "headcount" },
         },
         {
-          title: "Reach into a region investing heavily in mobility",
+          title: "An electric vehicle programme in a region investing in exactly that",
           body:
             "Khalifa University sits at the centre of the UAE's advanced-mobility and " +
-            "clean-energy programmes. Backing KUFS puts your name in front of that " +
-            "audience, in Abu Dhabi and at Silverstone.",
-          // TODO: confirm with team — count of disciplines actually represented.
-          stat: { value: null, label: "Engineering disciplines represented" },
+            "clean-energy work. This is an electric car: if you supply cells, " +
+            "inverters, motors, composites or machining, your product goes on it and " +
+            "gets tested in public.",
+          stat: {
+            value: null,
+            label: "Engineering disciplines represented",
+            computed: "disciplines",
+          },
         },
         {
           title: "Reporting you can put in front of your own board",
           body:
-            "We report back at the end of every season: where your logo appeared, what it " +
-            "was fitted to, click-throughs from this site, and what the car achieved.",
-          stat: { value: "1", label: "Written season report, every year" },
+            "We report back at the end of the season: where your logo appeared, what it " +
+            "was fitted to, click-throughs from this site, and what the car achieved. " +
+            "A first-year team has more to prove, not less.",
+          stat: {
+            value: "1",
+            label: "Written season report, every year",
+            computed: null,
+          },
         },
       ],
     },
 
-    // TODO(team): confirm the faculty advisor's name and department, or set
-    // this to null to hide the section entirely.
-    facultyAdvisor: null,
+    facultyAdvisor: {
+      name: "Dr. Bashar Khasawneh",
+      role: "Faculty Advisor",
+    },
 
     hero: {
       // "sequence" is the production hero. Switch to "model" locally to preview

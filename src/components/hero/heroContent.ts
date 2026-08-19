@@ -24,12 +24,12 @@ export type HeroCheckpoint = keyof typeof HERO_CHECKPOINTS;
 export const heroCopy = {
   // The brand tagline, split so the second line can take the accent.
   headline: ["Engineered to race.", "Driven to lead."],
-  /** Revealed last, as the payoff for scrolling the hero. */
-  spec: [
-    // TODO: confirm with team. These are the shape of the figures we want to
-    // show, not measured values — do not publish until someone signs them off.
-    { label: "Target mass", value: "TBC" },
-    { label: "Downforce at 60 km/h", value: "TBC" },
-    { label: "Students on the team", value: "TBC" },
-  ],
+  /** Revealed last, as the payoff for scrolling the hero.
+   *  Values are injected by ScrollCarHero from content/site.ts and the roster —
+   *  nothing here is written down twice. */
+  specLabels: {
+    architecture: "Vehicle",
+    targetMass: "Target mass",
+    headcount: "Students on the team",
+  },
 } as const;
