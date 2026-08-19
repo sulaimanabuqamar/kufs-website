@@ -98,3 +98,8 @@ jobs:
           npx --yes wait-on http://127.0.0.1:3000 --timeout 60000
           pnpm check:hero
           pnpm check:brand
+
+      # LCP < 2.0s on Fast 4G, < 3.0s on Slow 4G, CLS < 0.1, accessibility 100.
+      # Runs Lighthouse through `pnpm dlx` so it is not a dependency of the repo.
+      - name: Performance and accessibility budgets
+        run: pnpm check:perf

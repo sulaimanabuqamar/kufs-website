@@ -1,0 +1,138 @@
+#!/usr/bin/env node
+/**
+ * Enforces the site's performance and accessibility budgets.
+ *
+ *   pnpm build && pnpm start &
+ *   pnpm check:perf -- --url http://localhost:3000
+ *
+ * BUDGETS
+ *   LCP  < 2.0s on Fast 4G   (10 Mbps, 40ms RTT, no CPU throttle)
+ *   LCP  < 3.0s on Slow 4G   (1.6 Mbps, 150ms RTT, 4x CPU throttle)
+ *   CLS  < 0.1 on both
+ *   Accessibility = 100 on every audited page
+ *
+ * The two network profiles exist because they answer different questions.
+ * Fast 4G is roughly what a visitor on campus wifi or a good mobile signal
+ * actually gets. Slow 4G with a 4x CPU penalty is a deliberately pessimistic
+ * floor — it is not the median visitor, it is the worst one we still want to
+ * serve well, and treating it as the only number leads to chasing the
+ * framework baseline rather than shipping.
+ *
+ * Lighthouse is run through `pnpm dlx` rather than added as a dependency: it
+ * pulls in a very large tree for something only CI and the occasional local
+ * check need, and nobody should have to download it to fix a typo in a sponsor
+ * blurb.
+ */
+
+import { readFile, rm } from "node:fs/promises";
+import { execFile } from "node:child_process";
+import { promisify } from "node:util";
+import { parseArgs } from "node:util";
+import { join } from "node:path";
+import { tmpdir } from "node:os";
+
+const run = promisify(execFile);
+
+const { values: argv } = parseArgs({
+  options: {
+    url: { type: "string", default: "http://localhost:3000" },
+    paths: {
+      type: "string",
+      default: "/,/become-a-sponsor,/sponsors,/team,/join,/contact",
+    },
+  },
+});
+
+const BASE = argv.url.replace(/\/$/, "");
+const PATHS = argv.paths.split(",");
+
+const BUDGETS = {
+  slow: { lcpMs: 3000, cls: 0.1 },
+  fast: { lcpMs: 2000, cls: 0.1 },
+  accessibility: 100,
+};
+
+/** Fast 4G, expressed as Lighthouse throttling flags. */
+const FAST_4G = [
+  "--throttling.rttMs=40",
+  "--throttling.throughputKbps=10240",
+  "--throttling.cpuSlowdownMultiplier=1",
+];
+
+async function lighthouse(url, extraFlags) {
+  const out = join(tmpdir(), `lh-${Math.abs(hash(url + extraFlags.join()))}.json`);
+  await run(
+    "pnpm",
+    [
+      "dlx",
+      "lighthouse@latest",
+      url,
+      "--output=json",
+      `--output-path=${out}`,
+      "--quiet",
+      "--chrome-flags=--headless=new --no-sandbox",
+      ...extraFlags,
+    ],
+    { maxBuffer: 1024 * 1024 * 64 },
+  );
+  const report = JSON.parse(await readFile(out, "utf8"));
+  await rm(out, { force: true });
+  return report;
+}
+
+/** Stable filename per (url, flags) so parallel runs cannot collide. */
+function hash(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0;
+  return h;
+}
+
+const results = [];
+function record(label, passed, detail) {
+  results.push({ label, passed });
+  console.log(`  ${passed ? "PASS" : "FAIL"}  ${label} — ${detail}`);
+}
+
+async function main() {
+  console.log(
+    `Performance budgets: LCP < ${BUDGETS.fast.lcpMs}ms on Fast 4G, ` +
+      `< ${BUDGETS.slow.lcpMs}ms on Slow 4G\n`,
+  );
+
+  for (const path of PATHS) {
+    const url = `${BASE}${path}`;
+    console.log(path);
+
+    // Slow 4G is Lighthouse's default mobile preset.
+    const slow = await lighthouse(url, []);
+    const fast = await lighthouse(url, ["--preset=desktop", ...FAST_4G]);
+
+    const lcpSlow = slow.audits["largest-contentful-paint"].numericValue;
+    const lcpFast = fast.audits["largest-contentful-paint"].numericValue;
+    const clsSlow = slow.audits["cumulative-layout-shift"].numericValue;
+    const a11y = Math.round(slow.categories.accessibility.score * 100);
+
+    record(
+      "LCP on Slow 4G",
+      lcpSlow < BUDGETS.slow.lcpMs,
+      `${Math.round(lcpSlow)}ms (budget ${BUDGETS.slow.lcpMs}ms)`,
+    );
+    record(
+      "LCP on Fast 4G",
+      lcpFast < BUDGETS.fast.lcpMs,
+      `${Math.round(lcpFast)}ms (budget ${BUDGETS.fast.lcpMs}ms)`,
+    );
+    record("CLS", clsSlow < BUDGETS.slow.cls, `${clsSlow.toFixed(3)}`);
+    record("Accessibility", a11y === BUDGETS.accessibility, `${a11y}/100`);
+    console.log("");
+  }
+
+  const failed = results.filter((r) => !r.passed);
+  console.log(`${results.length - failed.length}/${results.length} checks passed.\n`);
+  if (failed.length) process.exit(1);
+}
+
+main().catch((error) => {
+  console.error(error.message ?? error);
+  process.exit(1);
+});

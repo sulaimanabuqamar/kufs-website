@@ -19,7 +19,8 @@
     "check:contrast": "node scripts/check-contrast.mjs",
     "font:subset": "node scripts/subset-display-font.mjs",
     "check:brand": "node scripts/check-brand-rules.mjs",
-    "screens": "node scripts/capture-screens.mjs"
+    "screens": "node scripts/capture-screens.mjs",
+    "check:perf": "node scripts/check-perf.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

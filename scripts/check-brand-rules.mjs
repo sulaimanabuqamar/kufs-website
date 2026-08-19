@@ -26,7 +26,10 @@ import { chromium } from "playwright";
 const { values: argv } = parseArgs({
   options: {
     url: { type: "string", default: "http://localhost:3000" },
-    paths: { type: "string", default: "/,/become-a-sponsor,/sponsors,/team,/join" },
+    paths: {
+      type: "string",
+      default: "/,/become-a-sponsor,/sponsors,/team,/join,/contact",
+    },
   },
 });
 
