@@ -7,7 +7,7 @@ import { TierTable } from "@/components/sponsorship/TierTable";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import site from "@/content/site";
-import { getTiers } from "@/lib/content";
+import { getTeamStats, getTiers } from "@/lib/content";
 import { formspreeEndpoint } from "@/lib/env";
 import { SPONSOR_TIERS, TIER_LABEL } from "@/lib/tiers";
 
@@ -37,7 +37,7 @@ const ENQUIRY_STEPS = [
   },
   {
     title: "We agree it before you commit",
-    body: "Nothing is invoiced until the deliverables are written down and you have signed them off.",
+    body: "Nothing is invoiced until the deliverables are written down and you have signed them off, subject to university approval.",
   },
 ] as const;
 
@@ -53,6 +53,7 @@ export default function BecomeASponsorPage() {
   const tiers = getTiers();
   const { sponsorship } = site;
   const endpoint = formspreeEndpoint();
+  const stats = getTeamStats();
 
   return (
     <>
@@ -69,15 +70,23 @@ export default function BecomeASponsorPage() {
       <Section className="border-b border-border">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="flex max-w-[60ch] flex-col gap-6">
-            <p className="text-eyebrow uppercase text-accent">Partnership</p>
-            <h1 className="text-h1 text-text">Put your name on a car that finishes</h1>
+            <p className="text-eyebrow uppercase text-accent">
+              Founding partnership · Season one
+            </p>
+            <h1 className="text-h1 text-text">
+              Be on the first car this university has ever built
+            </h1>
             <SpeedStripe variant="accent" />
+            {/* Reframed from track record to founding partner. KUFS has never
+                competed, so a pitch built on results would be a lie — and a
+                founding season is the stronger story anyway, because it is
+                the one thing that can never be offered again. */}
             <p className="text-lead text-text-muted">
-              {site.longName} designs, manufactures and races a single-seat car against
-              the best university teams in the world. Partnering with us buys engineering
-              visibility, a graduate pipeline that has already been tested against a
-              deadline, and a team that reports back in writing at the end of every
-              season.
+              {site.longName} is building Khalifa University&rsquo;s first Formula Student
+              car — a {site.vehicle.architecture.toLowerCase()} single-seater for{" "}
+              {site.competition.name} {site.competition.year} at {site.competition.venue}.
+              There is exactly one season in which a company can be a founding partner of
+              this programme, and this is it.
             </p>
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <Button href="#tiers" size="lg">
@@ -123,7 +132,7 @@ export default function BecomeASponsorPage() {
           id="why-heading"
           eyebrow="Why KUFS"
           title="What a partnership actually buys"
-          lead="Four things, and we would rather be specific about them than promise exposure."
+          lead="Four things, and we would rather be specific about them than promise exposure. We have no results to trade on yet — so this is what we can actually offer."
         />
 
         <ul className="mt-12 grid gap-6 md:grid-cols-2">
@@ -136,9 +145,14 @@ export default function BecomeASponsorPage() {
               <p className="text-small text-text-muted">{reason.body}</p>
               <p className="mt-auto flex items-baseline gap-2 pt-4">
                 <span className="tabular text-h3 text-accent">
-                  {/* Numbers we have not confirmed render as TBC. Inventing a
-                      reach figure for a sponsor deck is how teams lose sponsors. */}
-                  {reason.stat.value ?? (
+                  {/* Roster-derived figures are computed, so they cannot drift.
+                      Anything still unconfirmed renders TBC — inventing a reach
+                      figure for a sponsor deck is how teams lose sponsors. */}
+                  {(reason.stat.computed === "headcount"
+                    ? String(stats.headcount)
+                    : reason.stat.computed === "disciplines"
+                      ? String(stats.disciplines)
+                      : reason.stat.value) ?? (
                     <abbr title="To be confirmed with the team" className="no-underline">
                       TBC
                     </abbr>
@@ -160,16 +174,29 @@ export default function BecomeASponsorPage() {
           tone="light"
           eyebrow="Packages"
           title="Sponsorship tiers"
-          lead="Every tier is compared on the same seven things. Amounts are being set by the team and are marked TBC until then — talk to us and we will tell you where you would sit."
+          lead="Every tier is compared on the same eight things, so you can read across a row rather than hunt for what was left out. Not sure which fits? Tell us what you had in mind and we will advise."
         />
         <div className="mt-12">
-          <TierTable tiers={tiers} />
+          <TierTable tiers={tiers} aedToUsd={site.aedToUsd} />
         </div>
 
-        <p className="mt-8 text-caption text-muted-on-light">
-          Tiers and benefits are editable in{" "}
-          <code className="font-mono">content/tiers.json</code>.
-        </p>
+        {/* Both of these are carried verbatim from the team's sponsorship pack
+            and must stay next to the table. They are the conditions the offer
+            is actually made under. */}
+        <div className="mt-10 flex flex-col gap-3 border-t border-border-light pt-6">
+          <p className="max-w-[76ch] text-small text-muted-on-light">
+            Benefits and recognition will be agreed according to the value, relevance and
+            impact of the contribution, subject to university approval.
+          </p>
+          <p className="max-w-[76ch] text-small text-muted-on-light">
+            Vehicle and logo placement is illustrative and subject to final livery design,
+            university approval and competition regulations.
+          </p>
+          <p className="mt-2 max-w-[76ch] text-caption text-muted-on-light">
+            Amounts are in UAE dirhams. Dollar equivalents are indicative only, at a fixed
+            reference rate — the dirham is pegged, but these are not quoted prices.
+          </p>
+        </div>
       </Section>
 
       {/* ---------- In-kind ---------- */}
@@ -192,28 +219,28 @@ export default function BecomeASponsorPage() {
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
             {[
               {
-                title: "Machining and fabrication",
-                body: "Five-axis work on uprights, hubs and suspension components. Welding and inspection sign-off.",
+                title: "Materials and vehicle components",
+                body: "Steel, fasteners, composites, cells, motors, inverters — anything that ends up bolted to the car.",
               },
               {
-                title: "Materials",
-                body: "Carbon fibre, aluminium stock, fasteners, adhesives, tooling board.",
+                title: "Manufacturing and machining services",
+                body: "Welding, five-axis work, waterjet, sheet metal. Turnaround matters as much as capacity.",
               },
               {
-                title: "Composites",
-                body: "Autoclave time, layup facilities, laminate engineering support.",
+                title: "Software and engineering tools",
+                body: "CAD, CFD, FEA, lap simulation, data acquisition and PCB tooling licences.",
               },
               {
-                title: "Software licences",
-                body: "CAD, CFD, FEA, data acquisition and simulation tooling.",
+                title: "Equipment and testing support",
+                body: "Dyno time, rig time, measurement equipment, or somewhere safe to run the car.",
               },
               {
-                title: "Logistics",
-                body: "Freight to Silverstone and back — one of our largest fixed costs.",
+                title: "Transportation and logistics",
+                body: "Freight from Abu Dhabi to Silverstone and back — one of our largest fixed costs.",
               },
               {
-                title: "Expertise",
-                body: "Design review attendance, mentoring, or a day of an engineer's time.",
+                title: "Technical consultation and expertise",
+                body: "Design review attendance, mentoring, or a day of an engineer's time. Often worth more than the equivalent cash.",
               },
             ].map((item) => (
               <li

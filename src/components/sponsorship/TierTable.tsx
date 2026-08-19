@@ -33,21 +33,52 @@ function BenefitValue({ value }: { value: string | false }) {
   return <span>{value}</span>;
 }
 
-function Amount({ amount }: { amount: string | null }) {
-  if (amount) return <>{amount}</>;
-  return (
-    <>
+/**
+ * Tier amount, in dirhams with an indicative dollar equivalent.
+ *
+ * Many prospects are international, and "AED 100,000" means nothing to them
+ * without a reference point. The rate is a fixed constant in content/site.ts —
+ * the dirham is pegged, so it does not move — and it is labelled approximate
+ * because it is not fetched live and is not a quoted price.
+ */
+function Amount({ amount, usd }: { amount: string | null; usd: number | null }) {
+  if (!amount) {
+    return (
       <abbr
         title="To be confirmed — the team is still setting this figure"
         className="no-underline"
       >
         TBC
       </abbr>
+    );
+  }
+  return (
+    <>
+      {amount}
+      {usd ? (
+        <span className="ml-2 whitespace-nowrap text-caption font-normal text-muted-on-light">
+          ≈ USD {usd.toLocaleString("en-US")}
+        </span>
+      ) : null}
     </>
   );
 }
 
-export function TierTable({ tiers }: { tiers: SponsorshipTier[] }) {
+/** Pulls the numeric value out of "AED 100,000" so it can be converted. */
+function usdEquivalent(amount: string | null, rate: number): number | null {
+  if (!amount) return null;
+  const digits = amount.replace(/[^0-9]/g, "");
+  if (!digits) return null;
+  return Math.round((Number(digits) * rate) / 100) * 100;
+}
+
+export function TierTable({
+  tiers,
+  aedToUsd,
+}: {
+  tiers: SponsorshipTier[];
+  aedToUsd: number;
+}) {
   return (
     <>
       {/* ---- Stacked cards: below lg ---- */}
@@ -60,7 +91,7 @@ export function TierTable({ tiers }: { tiers: SponsorshipTier[] }) {
             <header className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <h3 className="text-h3 text-text-on-light">{tier.name}</h3>
               <p className="tabular text-h4 text-accent-on-light">
-                <Amount amount={tier.amount} />
+                <Amount amount={tier.amount} usd={usdEquivalent(tier.amount, aedToUsd)} />
               </p>
             </header>
             <p className="mt-3 text-small text-muted-on-light">{tier.summary}</p>
@@ -90,8 +121,8 @@ export function TierTable({ tiers }: { tiers: SponsorshipTier[] }) {
       <div className="hidden lg:block">
         <table className="w-full border-collapse text-left align-top">
           <caption className="sr-only">
-            Sponsorship tiers compared across seven benefits. Amounts marked TBC have not
-            been set yet.
+            Sponsorship tiers compared across eight benefits, with the annual amount for
+            each.
           </caption>
           <thead>
             <tr>
@@ -111,7 +142,10 @@ export function TierTable({ tiers }: { tiers: SponsorshipTier[] }) {
                     {tier.name}
                   </span>
                   <span className="tabular mt-1 block text-small font-semibold text-muted-on-light">
-                    <Amount amount={tier.amount} />
+                    <Amount
+                      amount={tier.amount}
+                      usd={usdEquivalent(tier.amount, aedToUsd)}
+                    />
                   </span>
                   {tier.slots ? (
                     <span className="mt-1 block text-caption text-muted-on-light">
