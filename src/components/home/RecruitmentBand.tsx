@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { CTA } from "@/lib/nav";
-import { getTeam } from "@/lib/content";
-import { SUBTEAMS } from "@/lib/schemas";
+import { getTeamStats } from "@/lib/content";
+import { ENGINEERING_SUBTEAMS } from "@/lib/schemas";
 
 /**
  * Closing recruitment CTA.
@@ -15,7 +15,7 @@ import { SUBTEAMS } from "@/lib/schemas";
  * not "am I interested" but "am I good enough yet".
  */
 export function RecruitmentBand() {
-  const headcount = getTeam().length;
+  const { headcount } = getTeamStats();
 
   return (
     <Section
@@ -29,18 +29,18 @@ export function RecruitmentBand() {
             You do not need experience. You need to turn up.
           </h2>
           <p className="max-w-[58ch] text-lead opacity-90">
-            We recruit across all {SUBTEAMS.length} subteams every October, from first
-            years to PhDs, engineers and non-engineers alike. Most of the{" "}
-            {headcount > 0 ? "leads on this site" : "current team"} joined knowing nothing
-            about race cars. Applications open at the start of term.
+            KUFS is {headcount} students across {ENGINEERING_SUBTEAMS.length} engineering
+            subteams and an operations division, building Khalifa University&rsquo;s first
+            Formula Student car. Engineers and non-engineers alike — three of the eight
+            scored events are design, cost and business.
           </p>
         </div>
 
         {/* On the accent band the usual primary/secondary pair would invert
             awkwardly, so both buttons take explicit on-accent treatment.
-            Measured on --color-accent: solid text 5.94:1, the /70 border
-            4.02:1 (over the 3:1 non-text minimum), the /80 and /90 body text
-            above 4.77:1. */}
+            Measured on --color-accent (#EDAD55): solid --color-accent-contrast
+            7.29:1, the /70 border 3.98:1 (over the 3:1 non-text minimum), and
+            the /80 and /90 body text 4.96:1 and 6.10:1 (over the 4.5:1 minimum). */}
         <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
           <Button
             href={CTA.join.href}

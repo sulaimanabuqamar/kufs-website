@@ -6,7 +6,14 @@ import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { StatusPill } from "@/components/ui/StatusPill";
 import site from "@/content/site";
-import { getMilestones, getRolesBySubteam } from "@/lib/content";
+import {
+  getEngineering,
+  getMilestones,
+  getRolesBySubteam,
+  getSinglePersonSubteams,
+  getTeamStats,
+  getVacantRoles,
+} from "@/lib/content";
 import { CTA } from "@/lib/nav";
 
 const TITLE = "Join the Team";
@@ -72,9 +79,13 @@ const FAQ = [
 export default function JoinPage() {
   const roleGroups = getRolesBySubteam();
   const timeline = getMilestones();
-  const totalOpenings = roleGroups
-    .flatMap((g) => g.roles)
-    .reduce((sum, r) => sum + (r.openings ?? 0), 0);
+  const vacancies = getVacantRoles();
+  const thin = getSinglePersonSubteams();
+  const stats = getTeamStats();
+  const engineering = getEngineering();
+  const headcountBySubteam = new Map(
+    engineering.map((g) => [g.subteam, g.members.length] as const),
+  );
 
   return (
     <>
@@ -92,9 +103,10 @@ export default function JoinPage() {
             </h1>
             <SpeedStripe variant="accent" />
             <p className="text-lead text-text-muted">
-              We recruit across every subteam each October, from first years to PhDs.
-              Around {totalOpenings} places this season, and the majority of the people
-              running the team now joined knowing nothing about race cars.
+              KUFS is {stats.headcount} students building Khalifa University&rsquo;s first
+              Formula Student car. That is a small team for a whole vehicle, which means
+              the gaps below are real and whoever fills them will own something that
+              matters.
             </p>
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <Button href="#roles" size="lg">
@@ -112,9 +124,9 @@ export default function JoinPage() {
             <dl className="flex flex-col gap-4 border-t border-border pt-5">
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Places this season
+                  On the team today
                 </dt>
-                <dd className="tabular text-h3 text-accent">{totalOpenings}</dd>
+                <dd className="tabular text-h3 text-accent">{stats.headcount}</dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
@@ -124,9 +136,9 @@ export default function JoinPage() {
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Applications open
+                  Leadership roles vacant
                 </dt>
-                <dd className="text-h4 text-text">Start of autumn term</dd>
+                <dd className="tabular text-h3 text-accent">{vacancies.length}</dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
@@ -137,6 +149,63 @@ export default function JoinPage() {
             </dl>
           </aside>
         </div>
+      </Section>
+
+      {/* ---------- The real gaps ---------- */}
+      {/* Computed from content/team.json: a canonical Operations role with
+          nobody in it is a vacancy, and a subteam with one member is a single
+          point of failure. Nobody maintains this list — it follows the roster. */}
+      <Section labelledBy="gaps-heading" className="border-b border-border">
+        <SectionHeading
+          id="gaps-heading"
+          eyebrow="Where we need people most"
+          title="The honest gaps"
+          lead="Rather than list generic openings, here is exactly where the team is thin right now."
+        />
+
+        <ul className="mt-12 grid gap-5 lg:grid-cols-2">
+          {vacancies.map((role) => (
+            <li
+              key={role}
+              className="flex flex-col gap-3 rounded-lg border-2 border-accent bg-surface p-7"
+            >
+              <p className="text-caption font-semibold uppercase tracking-widest text-accent">
+                Vacant leadership role
+              </p>
+              <h3 className="text-h3 text-text">{role}</h3>
+              <p className="text-body text-text-muted">
+                Nobody currently holds this. The {role} leads the electrical side of the
+                car — the accumulator, the tractive system and the safety case that goes
+                with them — and works alongside the CTO Mechanical. It is the single most
+                consequential open position on the team.
+              </p>
+              <p className="text-small text-text-muted">
+                Suited to an electrical or energy engineering student who wants genuine
+                ownership rather than a task list.
+              </p>
+            </li>
+          ))}
+
+          {thin.map((subteam) => (
+            <li
+              key={subteam}
+              className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-7"
+            >
+              <p className="text-caption font-semibold uppercase tracking-widest text-status-active">
+                One person deep
+              </p>
+              <h3 className="text-h3 text-text">{subteam}</h3>
+              <p className="text-body text-text-muted">
+                {subteam} is carried by a single student. A whole subsystem of the car
+                depends on one person&rsquo;s availability, which is not a position any
+                team wants to be in before its first competition.
+              </p>
+              <p className="text-small text-text-muted">
+                Joining here means owning a real part of the car from your first term.
+              </p>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       {/* ---------- Who we want ---------- */}
@@ -200,11 +269,10 @@ export default function JoinPage() {
                   >
                     <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                       <h4 className="text-h4 text-text">{role.title}</h4>
-                      {role.openings ? (
-                        <p className="tabular text-caption font-semibold uppercase tracking-wider text-accent">
-                          {role.openings} {role.openings === 1 ? "place" : "places"}
-                        </p>
-                      ) : null}
+                      {/* Current size, not an invented number of places. */}
+                      <p className="tabular text-caption font-semibold uppercase tracking-wider text-text-muted">
+                        {headcountBySubteam.get(role.subteam) ?? 0} on this subteam
+                      </p>
                     </div>
                     <p className="text-small text-text-muted">{role.description}</p>
                     <div className="mt-2">
