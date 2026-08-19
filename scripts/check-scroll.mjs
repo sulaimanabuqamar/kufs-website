@@ -27,9 +27,22 @@ import { chromium } from "playwright";
 
 const { values: argv } = parseArgs({
   options: { url: { type: "string", default: "http://localhost:3000" } },
+  // Tolerate a stray `--`: `pnpm <script> -- --flag` forwards the separator,
+  // which would otherwise arrive as a positional and throw.
+  allowPositionals: true,
 });
 
 const BASE = argv.url.replace(/\/$/, "");
+
+/**
+ * The DESKTOP nav specifically.
+ *
+ * The mobile drawer lives inside <header> too and repeats every link, so a
+ * bare `header nav a` matches each label twice. Scoping to the nav that is
+ * hidden below `lg` removes the ambiguity — and makes it obvious that these
+ * assertions are about the desktop header, not the drawer.
+ */
+const NAV_LINK = (label) => `header nav.hidden a:has-text("${label}")`;
 
 /** Every page reachable from the header, keyed by its nav label. */
 const NAV = [
@@ -82,7 +95,7 @@ async function main() {
         );
         await page.waitForTimeout(100);
 
-        await page.locator(`header nav a:has-text("${target.label}")`).first().click();
+        await page.locator(NAV_LINK(target.label)).first().click();
         await page.waitForLoadState("domcontentloaded");
         // Long enough for any stray scroll animation to have finished.
         await page.waitForTimeout(700);
@@ -103,7 +116,7 @@ async function main() {
     for (const target of NAV) {
       await page.goto(BASE, { waitUntil: "domcontentloaded" });
       await page.waitForTimeout(150);
-      await page.locator(`header nav a:has-text("${target.label}")`).first().click();
+      await page.locator(NAV_LINK(target.label)).first().click();
       await page.waitForLoadState("domcontentloaded");
       await page.waitForTimeout(700);
       const y = await scrollY(page);
@@ -128,7 +141,7 @@ async function main() {
     await page.goto(BASE, { waitUntil: "networkidle" });
     await page.evaluate(() => window.scrollTo(0, 1500));
     await page.waitForTimeout(200);
-    await page.locator('header nav a:has-text("Team")').first().click();
+    await page.locator(NAV_LINK("Team")).first().click();
     await page.waitForTimeout(700);
     const afterNav = await scrollY(page);
     assert("forward nav lands at top", afterNav === 0, `scrollY=${afterNav}`);

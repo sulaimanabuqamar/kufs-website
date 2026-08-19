@@ -111,4 +111,7 @@ jobs:
       # throttling still depends on the runner's real CPU, and a single sample
       # on a shared runner is noisy enough to fail a budget it clears locally.
       - name: Performance and accessibility budgets
-        run: pnpm check:perf -- --runs 3 --paths "/,/become-a-sponsor,/team"
+        # Invoked directly rather than through `pnpm check:perf --`: pnpm
+        # forwards the `--` itself, which arrives as a positional argument and
+        # parseArgs rejects it.
+        run: node scripts/check-perf.mjs --runs 3 --paths "/,/become-a-sponsor,/team"

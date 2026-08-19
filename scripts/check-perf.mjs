@@ -50,6 +50,9 @@ const { values: argv } = parseArgs({
     /** Runs per profile. The median is used — see the note below. */
     runs: { type: "string", default: "1" },
   },
+  // Tolerate a stray `--`: `pnpm <script> -- --flag` forwards the separator,
+  // which would otherwise arrive as a positional and throw.
+  allowPositionals: true,
 });
 
 const BASE = argv.url.replace(/\/$/, "");
