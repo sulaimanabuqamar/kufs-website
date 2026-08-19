@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
-import { SponsorEnquiryForm } from "@/components/sponsorship/SponsorEnquiryForm";
+import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { TierTable } from "@/components/sponsorship/TierTable";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import site from "@/content/site";
 import { getTiers } from "@/lib/content";
+import { formspreeEndpoint } from "@/lib/env";
+import { SPONSOR_TIERS, TIER_LABEL } from "@/lib/tiers";
 
 const TITLE = "Become a Sponsor";
 const DESCRIPTION =
@@ -20,6 +22,25 @@ export const metadata: Metadata = {
 };
 
 /**
+ * What a sponsor gets after they write to us. Concrete and checkable — vague
+ * promises are what make a student team read as a student team.
+ */
+const ENQUIRY_STEPS = [
+  {
+    title: "We reply within two working days",
+    body: "From a person on the partnerships team, not an autoresponder.",
+  },
+  {
+    title: "You get a written proposal",
+    body: "Which tier fits, what your logo goes on, and what we will report back at the end of the season.",
+  },
+  {
+    title: "We agree it before you commit",
+    body: "Nothing is invoiced until the deliverables are written down and you have signed them off.",
+  },
+] as const;
+
+/**
  * The commercial page. Written for a marketing or engineering-recruitment
  * decision-maker, not for students — they arrive via /join.
  *
@@ -30,29 +51,64 @@ export const metadata: Metadata = {
 export default function BecomeASponsorPage() {
   const tiers = getTiers();
   const { sponsorship } = site;
+  const endpoint = formspreeEndpoint();
 
   return (
     <>
       {/* ---------- Hero ---------- */}
+      {/* Two columns, not a lone left-hand measure. Every inner page header on
+          this site pairs the copy with something load-bearing on the right —
+          see the note in src/components/ui/PageHeader.tsx for why that beats
+          centring. Here the right column answers the question a sponsor asks
+          straight after "why": what actually happens if I get in touch. */}
       <Section className="border-b border-border">
-        <div className="flex max-w-[64ch] flex-col gap-6">
-          <p className="text-eyebrow uppercase text-accent">Partnership</p>
-          <h1 className="text-h1 text-text">Put your name on a car that finishes</h1>
-          <SpeedStripe variant="accent" />
-          <p className="text-lead text-text-muted">
-            {site.longName} designs, manufactures and races a single-seat car against the
-            best university teams in the world. Partnering with us buys engineering
-            visibility, a graduate pipeline that has already been tested against a
-            deadline, and a team that reports back in writing at the end of every season.
-          </p>
-          <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-            <Button href="#tiers" size="lg">
-              See the tiers
-            </Button>
-            <Button href="#enquire" variant="secondary" size="lg">
-              Talk to us
-            </Button>
+        <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+          <div className="flex max-w-[60ch] flex-col gap-6">
+            <p className="text-eyebrow uppercase text-accent">Partnership</p>
+            <h1 className="text-h1 text-text">Put your name on a car that finishes</h1>
+            <SpeedStripe variant="accent" />
+            <p className="text-lead text-text-muted">
+              {site.longName} designs, manufactures and races a single-seat car against
+              the best university teams in the world. Partnering with us buys engineering
+              visibility, a graduate pipeline that has already been tested against a
+              deadline, and a team that reports back in writing at the end of every
+              season.
+            </p>
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+              <Button href="#tiers" size="lg">
+                See the tiers
+              </Button>
+              <Button href="#enquire" variant="secondary" size="lg">
+                Talk to us
+              </Button>
+            </div>
           </div>
+
+          <aside className="flex flex-col gap-5 self-start rounded-lg border border-border bg-surface p-7">
+            <h2 className="text-h4 text-text">What happens when you get in touch</h2>
+            <ol className="flex flex-col gap-4 border-t border-border pt-5">
+              {ENQUIRY_STEPS.map((item, index) => (
+                <li key={item.title} className="flex gap-4">
+                  <span
+                    aria-hidden
+                    className="tabular flex size-7 shrink-0 items-center justify-center rounded-pill bg-accent text-caption font-bold text-accent-contrast"
+                  >
+                    {index + 1}
+                  </span>
+                  <span className="flex flex-col gap-1">
+                    <span className="text-small font-semibold text-text">
+                      {item.title}
+                    </span>
+                    <span className="text-caption text-text-muted">{item.body}</span>
+                  </span>
+                </li>
+              ))}
+            </ol>
+            <p className="mt-1 text-caption text-text-muted">
+              In-kind support — parts, machining, materials, software — is worth as much
+              to us as cash. Ask either way.
+            </p>
+          </aside>
         </div>
       </Section>
 
@@ -236,7 +292,19 @@ export default function BecomeASponsorPage() {
             <p className="mt-2 mb-6 text-small text-muted-on-light">
               All fields are required except the tier, which we are happy to advise on.
             </p>
-            <SponsorEnquiryForm to={sponsorship.enquiryEmail} />
+            <EnquiryForm
+              endpoint={endpoint}
+              toEmail={sponsorship.enquiryEmail}
+              subject="Sponsorship enquiry — KUFS"
+              topicLabel="Tier of interest"
+              topicPlaceholder="Not sure yet — advise me"
+              topicOptions={SPONSOR_TIERS.map((tier) => ({
+                value: tier,
+                label: TIER_LABEL[tier],
+              }))}
+              event="Sponsor CTA"
+              messagePlaceholder="What you are interested in, and anything you would want from a partnership."
+            />
           </div>
         </div>
       </Section>

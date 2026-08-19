@@ -10,10 +10,22 @@ import type { ReactNode } from "react";
  * Header for an inner page: the single <h1>, an eyebrow, the speed stripe and
  * a lead.
  *
+ * LAYOUT: two columns at lg, copy left and a panel right — never a lone
+ * left-hand measure against empty navy.
+ *
+ * The alternative was centring the column. It was rejected because the home
+ * hero already sets a left-copy / right-visual composition, and centring every
+ * inner page would read as a different site; because a centred long measure on
+ * a dark ground reads as a blog rather than a team site; and because on the
+ * commercial pages the right-hand slot is genuinely useful — enquiry steps on
+ * /become-a-sponsor, partner counts on /sponsors, recruitment facts on /join.
+ * Filling it with something load-bearing is a better answer than removing the
+ * space. Applied consistently across every inner page header.
+ *
  * `comingSoon` marks a page that is routed and metadata-complete but not yet
- * built out. It is deliberately not a blank page: someone landing here from
- * search or from a sponsor deck should still learn what will be here, when,
- * and have two live routes to go to instead.
+ * built out, and supplies that right-hand panel. It is deliberately not a blank
+ * page: someone landing here from search or from a sponsor deck should still
+ * learn what will be here and have live routes to go to instead.
  */
 export function PageHeader({
   eyebrow,
@@ -31,14 +43,17 @@ export function PageHeader({
 }) {
   return (
     <Section>
-      <div className="flex max-w-[62ch] flex-col gap-5">
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h1 className="text-h1 text-text">{title}</h1>
-        <SpeedStripe variant="accent" />
-        <p className="text-lead text-text-muted">{lead}</p>
+      <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
+        <div className="flex max-w-[58ch] flex-col gap-5">
+          <Eyebrow>{eyebrow}</Eyebrow>
+          <h1 className="text-h1 text-text">{title}</h1>
+          <SpeedStripe variant="accent" />
+          <p className="text-lead text-text-muted">{lead}</p>
+          {children}
+        </div>
 
         {comingSoon ? (
-          <div className="mt-6 rounded-lg border border-border bg-surface p-7">
+          <aside className="self-start rounded-lg border border-border bg-surface p-7">
             <p className="text-caption font-semibold uppercase tracking-widest text-accent">
               Coming soon
             </p>
@@ -63,10 +78,8 @@ export function PageHeader({
                 ← Back to the home page
               </Link>
             </p>
-          </div>
+          </aside>
         ) : null}
-
-        {children}
       </div>
     </Section>
   );
