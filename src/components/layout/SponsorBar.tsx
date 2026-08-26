@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { getSponsors } from "@/lib/content";
+import { getCopy, getSponsors } from "@/lib/content";
 import { TIER_LABEL } from "@/lib/content";
 
 /**
@@ -27,7 +27,7 @@ export function SponsorBar() {
     <section aria-labelledby="sponsor-bar-heading" className="border-b border-border">
       <div className="page-container py-10">
         <h2 id="sponsor-bar-heading" className="text-eyebrow uppercase text-text-muted">
-          Our partners
+          {getCopy("common").ui.sponsorBarHeading}
         </h2>
 
         <ul className="mt-6 flex flex-wrap items-center gap-x-10 gap-y-6">

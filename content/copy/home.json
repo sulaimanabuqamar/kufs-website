@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "title": "KUFS — Khalifa University Formula Student",
+    "description": "KUFS is the official Formula Student team of Khalifa University, Abu Dhabi. We are building the university's first electric Formula Student car for FSUK 2027."
+  },
+  "hero": {
+    "headlineLine1": "Engineered to race.",
+    "headlineLine2": "Driven to lead.",
+    "eyebrow": "{competition} {year} / {venue}",
+    "specArchitectureLabel": "Vehicle",
+    "specTargetMassLabel": "Target mass",
+    "specHeadcountLabel": "Students on the team"
+  },
+  "whatIsFs": {
+    "eyebrow": "What is Formula Student?",
+    "title": "Europe's largest student engineering competition.",
+    "lead": null,
+    "body": "{competition} challenges university teams to design, build, cost and race a single-seat car against a rulebook written by the {organiser}.",
+    "judgingBody": "Every team is judged twice over: once on the engineering — design defence, cost report and business case, in front of practising industry engineers — and once on track, over acceleration, skid pad, sprint and a 22 km endurance run.",
+    "seasonLine": "{headcount} students across {disciplines} disciplines, building a {architecture} single-seater with a {targetMass} target mass.",
+    "tbcLabel": "TBC",
+    "tbcTooltip": "To be confirmed — not published for the 2027 event yet",
+    "shippingBody": "It is the closest thing an undergraduate gets to shipping a real product: a fixed deadline, a real budget, a scrutineer who does not care how hard the term was, and a car that either finishes or does not.",
+    "videoLinkLabel": "What is Formula Student? (video)",
+    "officialLinkLabel": "Official Formula Student UK",
+    "resultsLinkLabel": "Results and statistics"
+  },
+  "countdown": {
+    "eyebrow": "Next on the calendar",
+    "note": "{class}, organised by the {organiser}."
+  },
+  "progress": {
+    "eyebrow": "Progress",
+    "title": "Where the {year} car is right now",
+    "lead": "We publish the build schedule and then report against it — including the parts that slip.",
+    "allLink": "Full timeline →"
+  },
+  "news": {
+    "eyebrow": "News",
+    "title": "From the workshop",
+    "lead": "Build updates, event reports and the occasional post-mortem.",
+    "allLink": "All news →"
+  },
+  "sponsors": {
+    "eyebrow": "Partners",
+    "titleWithPartners": "The companies behind the car",
+    "titleEmpty": "Be our first partner",
+    "leadWithPartners": "Every component on this car exists because somebody backed it. Our partners get engineering visibility, access to KU engineering talent, and a team that reports back.",
+    "leadEmpty": "We are building this university's first Formula Student car, and we are looking for the companies who will put their name on it. There is one founding season, and this is it.",
+    "supportingHeading": "Supporting partners",
+    "entryLine": "Backing us starts at {amount}.",
+    "entryLineUnknown": "There is a tier that fits your budget.",
+    "entryBody": "Cash, materials, machining time or expertise — in-kind support counts at its value. We will tell you exactly what each tier gets you and report back in writing at the end of the season.",
+    "partnerSince": "Partner since",
+    "logoAlt": "{name} — {tier} partner"
+  },
+  "recruitment": {
+    "eyebrow": "Join the team",
+    "title": "You do not need experience. You need to turn up.",
+    "body": "KUFS is {headcount} students across {subteams} engineering subteams and an operations division, building {university}'s first Formula Student car. Engineers and non-engineers alike — three of the eight scored events are design, cost and business.",
+    "teamLink": "Meet the team"
+  }
+}

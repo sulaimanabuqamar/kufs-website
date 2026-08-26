@@ -7,13 +7,12 @@ import { TierTable } from "@/components/sponsorship/TierTable";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import site from "@/content/site";
-import { getTeamStats, getTiers } from "@/lib/content";
+import { getCopy, getTeamStats, getTiers } from "@/lib/content";
+import { fill } from "@/lib/copy";
 import { formspreeEndpoint } from "@/lib/env";
 import { SPONSOR_TIERS, TIER_LABEL } from "@/lib/tiers";
 
-const TITLE = "Become a Sponsor";
-const DESCRIPTION =
-  "Sponsorship tiers, what each one includes, and how to start a conversation with the KUFS partnerships team. Cash, materials, machining or expertise.";
+const { title: TITLE, description: DESCRIPTION } = getCopy("become-a-sponsor").meta;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -26,20 +25,6 @@ export const metadata: Metadata = {
  * What a sponsor gets after they write to us. Concrete and checkable — vague
  * promises are what make a student team read as a student team.
  */
-const ENQUIRY_STEPS = [
-  {
-    title: "We reply within two working days",
-    body: "From a person on the partnerships team, not an autoresponder.",
-  },
-  {
-    title: "You get a written proposal",
-    body: "Which tier fits, what your logo goes on, and what we will report back at the end of the season.",
-  },
-  {
-    title: "We agree it before you commit",
-    body: "Nothing is invoiced until the deliverables are written down and you have signed them off, subject to university approval.",
-  },
-] as const;
 
 /**
  * The commercial page. Written for a marketing or engineering-recruitment
@@ -50,9 +35,11 @@ const ENQUIRY_STEPS = [
  * accent (6.27:1 on --color-bg-light, against 2.12:1 on navy).
  */
 export default function BecomeASponsorPage() {
+  const copy = getCopy("become-a-sponsor");
   const tiers = getTiers();
   const { sponsorship } = site;
   const endpoint = formspreeEndpoint();
+  const formCopy = getCopy("common").form;
   const stats = getTeamStats();
 
   return (
@@ -70,38 +57,37 @@ export default function BecomeASponsorPage() {
       <Section className="border-b border-border">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="flex max-w-[60ch] flex-col gap-6">
-            <p className="text-eyebrow uppercase text-accent">
-              Founding partnership · Season one
-            </p>
-            <h1 className="text-h1 text-text">
-              Be on the first car this university has ever built
-            </h1>
+            <p className="text-eyebrow uppercase text-accent">{copy.header.eyebrow}</p>
+            <h1 className="text-h1 text-text">{copy.header.title}</h1>
             <SpeedStripe variant="accent" />
             {/* Reframed from track record to founding partner. KUFS has never
                 competed, so a pitch built on results would be a lie — and a
                 founding season is the stronger story anyway, because it is
                 the one thing that can never be offered again. */}
             <p className="text-lead text-text-muted">
-              {site.longName} is building Khalifa University&rsquo;s first Formula Student
-              car — a {site.vehicle.architecture.toLowerCase()} single-seater for{" "}
-              {site.competition.name} {site.competition.year} at {site.competition.venue}.
-              There is exactly one season in which a company can be a founding partner of
-              this programme, and this is it.
+              {fill(copy.header.body, {
+                longName: site.longName,
+                university: site.university,
+                architecture: site.vehicle.architecture.toLowerCase(),
+                competition: site.competition.name,
+                year: site.competition.year,
+                venue: site.competition.venue,
+              })}
             </p>
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <Button href="#tiers" size="lg">
-                See the tiers
+                {copy.header.tiersLink}
               </Button>
               <Button href="#enquire" variant="secondary" size="lg">
-                Talk to us
+                {copy.header.contactLink}
               </Button>
             </div>
           </div>
 
           <aside className="flex flex-col gap-5 self-start rounded-lg border border-border bg-surface p-7">
-            <h2 className="text-h4 text-text">What happens when you get in touch</h2>
+            <h2 className="text-h4 text-text">{copy.process.heading}</h2>
             <ol className="flex flex-col gap-4 border-t border-border pt-5">
-              {ENQUIRY_STEPS.map((item, index) => (
+              {copy.process.steps.map((item, index) => (
                 <li key={item.title} className="flex gap-4">
                   <span
                     aria-hidden
@@ -118,10 +104,7 @@ export default function BecomeASponsorPage() {
                 </li>
               ))}
             </ol>
-            <p className="mt-1 text-caption text-text-muted">
-              In-kind support — parts, machining, materials, software — is worth as much
-              to us as cash. Ask either way.
-            </p>
+            <p className="mt-1 text-caption text-text-muted">{copy.process.inKindNote}</p>
           </aside>
         </div>
       </Section>
@@ -130,9 +113,9 @@ export default function BecomeASponsorPage() {
       <Section labelledBy="why-heading" className="border-b border-border">
         <SectionHeading
           id="why-heading"
-          eyebrow="Why KUFS"
-          title="What a partnership actually buys"
-          lead="Four things, and we would rather be specific about them than promise exposure. We have no results to trade on yet — so this is what we can actually offer."
+          eyebrow={copy.reasons.eyebrow}
+          title={copy.reasons.title}
+          lead={copy.reasons.lead ?? undefined}
         />
 
         <ul className="mt-12 grid gap-6 md:grid-cols-2">
@@ -153,8 +136,8 @@ export default function BecomeASponsorPage() {
                     : reason.stat.computed === "disciplines"
                       ? String(stats.disciplines)
                       : reason.stat.value) ?? (
-                    <abbr title="To be confirmed with the team" className="no-underline">
-                      TBC
+                    <abbr title={copy.reasons.tbcTooltip} className="no-underline">
+                      {copy.reasons.tbcLabel}
                     </abbr>
                   )}
                 </span>
@@ -172,12 +155,16 @@ export default function BecomeASponsorPage() {
         <SectionHeading
           id="tiers-heading"
           tone="light"
-          eyebrow="Packages"
-          title="Sponsorship tiers"
-          lead="Every tier is compared on the same eight things, so you can read across a row rather than hunt for what was left out. Not sure which fits? Tell us what you had in mind and we will advise."
+          eyebrow={copy.tiers.eyebrow}
+          title={copy.tiers.title}
+          lead={copy.tiers.lead ?? undefined}
         />
         <div className="mt-12">
-          <TierTable tiers={tiers} aedToUsd={site.aedToUsd} />
+          <TierTable
+            tiers={tiers}
+            aedToUsd={site.aedToUsd}
+            copy={getCopy("common").tierTable}
+          />
         </div>
 
         {/* Both of these are carried verbatim from the team's sponsorship pack
@@ -185,16 +172,13 @@ export default function BecomeASponsorPage() {
             is actually made under. */}
         <div className="mt-10 flex flex-col gap-3 border-t border-border-light pt-6">
           <p className="max-w-[76ch] text-small text-muted-on-light">
-            Benefits and recognition will be agreed according to the value, relevance and
-            impact of the contribution, subject to university approval.
+            {copy.tiers.inKindFootnote}
           </p>
           <p className="max-w-[76ch] text-small text-muted-on-light">
-            Vehicle and logo placement is illustrative and subject to final livery design,
-            university approval and competition regulations.
+            {copy.tiers.liveryFootnote}
           </p>
           <p className="mt-2 max-w-[76ch] text-caption text-muted-on-light">
-            Amounts are in UAE dirhams. Dollar equivalents are indicative only, at a fixed
-            reference rate — the dirham is pegged, but these are not quoted prices.
+            {copy.tiers.currencyFootnote}
           </p>
         </div>
       </Section>
@@ -205,44 +189,15 @@ export default function BecomeASponsorPage() {
           <div className="flex flex-col gap-5">
             <SectionHeading
               id="inkind-heading"
-              eyebrow="In-kind"
-              title="You do not have to write us a cheque"
-              lead="A large share of Formula Student sponsorship is parts, not cash — and it is often worth more to us than the equivalent money, because it comes with expertise attached."
+              eyebrow={copy.inKind.eyebrow}
+              title={copy.inKind.title}
+              lead={copy.inKind.lead ?? undefined}
             />
-            <p className="text-body text-text-muted">
-              We value in-kind contributions at market rate and place you at the
-              equivalent tier, with the same benefits. If you are not sure whether what
-              you do is useful to us, ask — the answer is usually yes.
-            </p>
+            <p className="text-body text-text-muted">{copy.inKind.body}</p>
           </div>
 
           <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            {[
-              {
-                title: "Materials and vehicle components",
-                body: "Steel, fasteners, composites, cells, motors, inverters — anything that ends up bolted to the car.",
-              },
-              {
-                title: "Manufacturing and machining services",
-                body: "Welding, five-axis work, waterjet, sheet metal. Turnaround matters as much as capacity.",
-              },
-              {
-                title: "Software and engineering tools",
-                body: "CAD, CFD, FEA, lap simulation, data acquisition and PCB tooling licences.",
-              },
-              {
-                title: "Equipment and testing support",
-                body: "Dyno time, rig time, measurement equipment, or somewhere safe to run the car.",
-              },
-              {
-                title: "Transportation and logistics",
-                body: "Freight from Abu Dhabi to Silverstone and back — one of our largest fixed costs.",
-              },
-              {
-                title: "Technical consultation and expertise",
-                body: "Design review attendance, mentoring, or a day of an engineer's time. Often worth more than the equivalent cash.",
-              },
-            ].map((item) => (
+            {copy.inKind.categories.map((item) => (
               <li
                 key={item.title}
                 className="rounded-md border border-border bg-surface p-5"
@@ -262,18 +217,19 @@ export default function BecomeASponsorPage() {
             <SectionHeading
               id="enquire-heading"
               tone="light"
-              eyebrow="Next step"
-              title="Start the conversation"
-              lead="Tell us roughly what you have in mind and we will come back with a concrete proposal, usually within two working days."
+              eyebrow={copy.enquiry.eyebrow}
+              title={copy.enquiry.title}
+              lead={copy.enquiry.lead ?? undefined}
             />
 
             <div className="rounded-lg border-2 border-border-light bg-surface-light p-6">
-              <h3 className="text-h4 text-text-on-light">Sponsorship prospectus</h3>
+              <h3 className="text-h4 text-text-on-light">
+                {copy.enquiry.prospectusHeading}
+              </h3>
               {sponsorship.prospectusAvailable ? (
                 <>
                   <p className="mt-2 text-small text-muted-on-light">
-                    The full pack: tiers, deliverables, reach figures and last
-                    season&rsquo;s report.
+                    {copy.enquiry.prospectusAvailable}
                   </p>
                   <Button
                     href={sponsorship.prospectusPath}
@@ -281,7 +237,7 @@ export default function BecomeASponsorPage() {
                     className="mt-5"
                     download
                   >
-                    Download the prospectus (PDF)
+                    {copy.enquiry.prospectusDownloadLabel}
                   </Button>
                 </>
               ) : (
@@ -290,17 +246,16 @@ export default function BecomeASponsorPage() {
                       404s, the CTA becomes a request — and the email is prefilled
                       so it costs the visitor nothing. */}
                   <p className="mt-2 text-small text-muted-on-light">
-                    The written prospectus is being finalised for this season. Ask us for
-                    it and we will send it the moment it is ready — usually the same week.
+                    {copy.enquiry.prospectusUnavailable}
                   </p>
                   <Button
                     href={`mailto:${sponsorship.enquiryEmail}?subject=${encodeURIComponent(
-                      "Request: KUFS sponsorship prospectus",
+                      copy.enquiry.prospectusRequestSubject,
                     )}`}
                     variant="onLightSecondary"
                     className="mt-5"
                   >
-                    Request the prospectus
+                    {copy.enquiry.prospectusRequestLabel}
                   </Button>
                 </>
               )}
@@ -308,7 +263,7 @@ export default function BecomeASponsorPage() {
 
             <div className="text-small text-muted-on-light">
               <p>
-                Prefer to talk directly?{" "}
+                {copy.enquiry.directHeading}{" "}
                 <a
                   href={`mailto:${sponsorship.enquiryEmail}`}
                   className="font-semibold text-accent-on-light underline underline-offset-2"
@@ -320,22 +275,23 @@ export default function BecomeASponsorPage() {
           </div>
 
           <div className="rounded-lg border-2 border-border-light bg-surface-light p-6 sm:p-8">
-            <h3 className="text-h4 text-text-on-light">Sponsorship enquiry</h3>
+            <h3 className="text-h4 text-text-on-light">{copy.enquiry.formHeading}</h3>
             <p className="mt-2 mb-6 text-small text-muted-on-light">
-              All fields are required except the tier, which we are happy to advise on.
+              {copy.enquiry.formNote}
             </p>
             <EnquiryForm
+              copy={formCopy}
               endpoint={endpoint}
               toEmail={sponsorship.enquiryEmail}
-              subject="Sponsorship enquiry — KUFS"
-              topicLabel="Tier of interest"
-              topicPlaceholder="Not sure yet — advise me"
+              subject={copy.enquiry.formSubject}
+              topicLabel={copy.enquiry.tierLabel}
+              topicPlaceholder={copy.enquiry.tierPlaceholder}
               topicOptions={SPONSOR_TIERS.map((tier) => ({
                 value: tier,
                 label: TIER_LABEL[tier],
               }))}
               event="Sponsor CTA"
-              messagePlaceholder="What you are interested in, and anything you would want from a partnership."
+              messagePlaceholder={copy.enquiry.messagePlaceholder}
             />
           </div>
         </div>

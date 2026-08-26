@@ -8,8 +8,13 @@ import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { mdxComponents } from "@/components/news/mdxComponents";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
-import { getAdjacentPosts, getNewsPosts, getPostBySlug } from "@/lib/content";
-import { CTA } from "@/lib/nav";
+import {
+  getAdjacentPosts,
+  getCopy,
+  getNav,
+  getNewsPosts,
+  getPostBySlug,
+} from "@/lib/content";
 
 const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
@@ -67,6 +72,8 @@ export async function generateMetadata({
 }
 
 export default async function NewsPostPage({ params }: { params: Promise<Params> }) {
+  const copy = getCopy("news").post;
+  const nav = getNav();
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) notFound();
@@ -83,7 +90,7 @@ export default async function NewsPostPage({ params }: { params: Promise<Params>
               href="/news"
               className="font-semibold text-accent underline-offset-4 hover:underline"
             >
-              ← All news
+              {copy.backLink}
             </Link>
           </p>
 
@@ -115,13 +122,9 @@ export default async function NewsPostPage({ params }: { params: Promise<Params>
               className="mt-2 rounded-lg border-2 border-status-upcoming/50 bg-surface p-5"
             >
               <p className="text-caption font-semibold uppercase tracking-widest text-status-upcoming">
-                Placeholder post
+                {copy.draftBadge}
               </p>
-              <p className="mt-2 text-small text-text-muted">
-                Seeded content so the news pages render in a real state. The figures and
-                events below are illustrative and have not happened. This post is excluded
-                from search engines, the sitemap and the home page.
-              </p>
+              <p className="mt-2 text-small text-text-muted">{copy.draftNote}</p>
             </div>
           ) : null}
         </div>
@@ -155,7 +158,7 @@ export default async function NewsPostPage({ params }: { params: Promise<Params>
                 className="flex flex-col gap-1 rounded-lg border border-border bg-surface p-5 transition-colors hover:border-border-strong"
               >
                 <span className="text-caption uppercase tracking-wider text-text-muted">
-                  ← Older
+                  {copy.olderLink}
                 </span>
                 <span className="text-h4 text-text">{previous.title}</span>
               </Link>
@@ -169,7 +172,7 @@ export default async function NewsPostPage({ params }: { params: Promise<Params>
                 className="flex flex-col gap-1 rounded-lg border border-border bg-surface p-5 text-right transition-colors hover:border-border-strong sm:items-end"
               >
                 <span className="text-caption uppercase tracking-wider text-text-muted">
-                  Newer →
+                  {copy.newerLink}
                 </span>
                 <span className="text-h4 text-text">{next.title}</span>
               </Link>
@@ -181,15 +184,12 @@ export default async function NewsPostPage({ params }: { params: Promise<Params>
       {/* ---------- CTA ---------- */}
       <Section tight className="border-t border-border">
         <div className="mx-auto flex w-full max-w-[46rem] flex-col items-start gap-5 rounded-lg border border-border bg-surface p-8">
-          <h2 className="text-h3 text-text">Stories like this need a car</h2>
-          <p className="max-w-[56ch] text-body text-text-muted">
-            Everything on this site is built by students and paid for by partners. If your
-            organisation can help, we would like to hear from you.
-          </p>
+          <h2 className="text-h3 text-text">{copy.ctaTitle}</h2>
+          <p className="max-w-[56ch] text-body text-text-muted">{copy.ctaBody}</p>
           <div className="flex flex-col gap-3 sm:flex-row">
-            <Button href={CTA.sponsor.href}>{CTA.sponsor.label}</Button>
-            <Button href={CTA.join.href} variant="secondary">
-              {CTA.join.label}
+            <Button href={nav.cta.sponsor.href}>{nav.cta.sponsor.label}</Button>
+            <Button href={nav.cta.join.href} variant="secondary">
+              {nav.cta.join.label}
             </Button>
           </div>
         </div>

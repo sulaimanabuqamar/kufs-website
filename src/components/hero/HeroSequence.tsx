@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { loadFrameSequence, type FrameLoadHandle } from "@/lib/frameLoader";
+import { fill } from "@/lib/copy";
 import { useScrollProgress } from "@/lib/useScrollProgress";
 
 /**
@@ -20,10 +21,13 @@ export function HeroSequence({
   trackRef,
   frameCount,
   onProgress,
+  loadingLabel,
 }: {
   trackRef: React.RefObject<HTMLElement | null>;
   frameCount: number;
   onProgress: (progress: number) => void;
+  /** Screen-reader progress text. Contains a {percent} placeholder. */
+  loadingLabel: string;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const handleRef = useRef<FrameLoadHandle | null>(null);
@@ -146,7 +150,7 @@ export function HeroSequence({
           role="status"
           aria-live="polite"
         >
-          <span className="sr-only">Loading hero animation, {percent} percent.</span>
+          <span className="sr-only">{fill(loadingLabel, { percent })}</span>
           <span aria-hidden className="tabular text-caption text-text-muted">
             {percent}%
           </span>

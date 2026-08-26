@@ -1,6 +1,7 @@
 import { defineConfig } from "tinacms";
 
 import {
+  COPY_SCHEMAS,
   carSchema,
   milestoneSchema,
   newsFrontmatterSchema,
@@ -12,7 +13,19 @@ import {
 } from "../src/lib/schemas";
 
 import {
+  becomeASponsorCopyOverlay,
   carOverlay,
+  commonCopyOverlay,
+  contactCopyOverlay,
+  homeCopyOverlay,
+  joinCopyOverlay,
+  newsCopyOverlay,
+  notFoundCopyOverlay,
+  pressKitCopyOverlay,
+  progressCopyOverlay,
+  sponsorsCopyOverlay,
+  teamCopyOverlay,
+  theCarCopyOverlay,
   milestoneOverlay,
   newsOverlay,
   roleOverlay,
@@ -70,6 +83,56 @@ const media = {
 };
 
 /* -------------------------------------------------------------------------
+   Page copy
+   -------------------------------------------------------------------------
+   One collection per page, plus "Shared wording" for the header, footer, nav
+   labels, forms and buttons.
+
+   Mirroring the SITE rather than the component tree is deliberate: the person
+   editing has the live page open in another tab and is looking for the page
+   they can see. A single copy.json would have been one file to maintain and a
+   panel nobody could navigate.
+
+   Fields are compiled from the Zod schemas like everything else, so the length
+   limits are enforced by the same rules that validate the build — an editor
+   who pastes a paragraph into a heading is stopped by the panel, and if they
+   get past it, by CI.
+   ------------------------------------------------------------------------- */
+
+const COPY_COLLECTIONS = [
+  { name: "common", label: "Shared wording", overlay: commonCopyOverlay },
+  { name: "home", label: "Home page", overlay: homeCopyOverlay },
+  {
+    name: "become-a-sponsor",
+    label: "Become a Sponsor page",
+    overlay: becomeASponsorCopyOverlay,
+  },
+  { name: "sponsors", label: "Sponsors page", overlay: sponsorsCopyOverlay },
+  { name: "team", label: "Team page", overlay: teamCopyOverlay },
+  { name: "the-car", label: "The Car page", overlay: theCarCopyOverlay },
+  { name: "progress", label: "Progress page", overlay: progressCopyOverlay },
+  { name: "news", label: "News page", overlay: newsCopyOverlay },
+  { name: "join", label: "Join the Team page", overlay: joinCopyOverlay },
+  { name: "press-kit", label: "Press Kit page", overlay: pressKitCopyOverlay },
+  { name: "contact", label: "Contact page", overlay: contactCopyOverlay },
+  { name: "not-found", label: "Page-not-found page", overlay: notFoundCopyOverlay },
+] as const;
+
+const copyCollections = COPY_COLLECTIONS.map((entry) => ({
+  name: `copy_${entry.name.replace(/-/g, "_")}`,
+  label: entry.label,
+  path: "content/copy",
+  format: "json" as const,
+  match: { include: entry.name },
+  ui: {
+    // One file each. An editor should never be able to create a second
+    // home.json or delete the only one — the build reads these by name.
+    allowedActions: { create: false, delete: false },
+  },
+  fields: fieldsFromZod(COPY_SCHEMAS[entry.name], entry.overlay),
+}));
+
+/* -------------------------------------------------------------------------
    Collections
    ------------------------------------------------------------------------- */
 
@@ -90,6 +153,7 @@ export default defineConfig({
 
   schema: {
     collections: [
+      ...copyCollections,
       {
         name: "site",
         label: "Site settings",

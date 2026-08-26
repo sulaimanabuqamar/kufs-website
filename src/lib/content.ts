@@ -5,6 +5,7 @@ import { join } from "node:path";
 import matter from "gray-matter";
 
 import site from "@/content/site";
+import { CTA_HREF, PRIMARY_ROUTES, SECONDARY_ROUTES, type NavItem } from "@/lib/nav";
 import {
   carSchema,
   milestonesSchema,
@@ -13,6 +14,9 @@ import {
   tiersSchema,
   newsFrontmatterSchema,
   parseOrThrow,
+  COPY_SCHEMAS,
+  type Copy,
+  type CopyKey,
   sponsorsSchema,
   teamSchema,
   type Milestone,
@@ -81,6 +85,101 @@ function once<T>(fn: () => T): () => T {
 }
 
 export { site };
+
+/* -------------------------------------------------------------------------
+   Copy
+   ------------------------------------------------------------------------- */
+
+/**
+ * Every user-visible word on a page, from content/copy/<page>.json.
+ *
+ *   const copy = getCopy("sponsors");
+ *   <h1>{copy.header.title}</h1>
+ *
+ * One file per page plus `common`, mirroring the site rather than the
+ * component tree. Validated through the same Zod pipeline as everything else,
+ * so an over-length heading typed into /admin fails the build with the field
+ * named rather than reaching the layout.
+ *
+ * Memoised per page: /become-a-sponsor reads its copy from four components and
+ * should parse it once.
+ */
+const copyCache = new Map<CopyKey, unknown>();
+
+export function getCopy<K extends CopyKey>(page: K): Copy<K> {
+  const cached = copyCache.get(page);
+  if (cached) return cached as Copy<K>;
+
+  const parsed = parseOrThrow(
+    COPY_SCHEMAS[page],
+    readJson(join("copy", `${page}.json`)),
+    `content/copy/${page}.json`,
+  );
+  copyCache.set(page, parsed);
+  return parsed as Copy<K>;
+}
+
+/**
+ * Milestone status words, in the shape StatusPill wants.
+ *
+ * StatusPill takes them as a prop rather than reading copy itself, so it stays
+ * importable from a client tree. This is the one place the mapping lives.
+ */
+export function getStatusLabels() {
+  const ui = getCopy("common").ui;
+  return {
+    done: ui.statusDone,
+    active: ui.statusActive,
+    upcoming: ui.statusUpcoming,
+  };
+}
+
+/* -------------------------------------------------------------------------
+   Navigation
+   ------------------------------------------------------------------------- */
+
+/**
+ * The nav, with editable labels merged onto the fixed route list.
+ *
+ * src/lib/nav.ts owns which pages exist; content/copy/common.json owns what
+ * they are called. This is the join, and it is strict in both directions: a
+ * route with no label, or a label for a route that no longer exists, fails the
+ * build here rather than rendering a gap in the header.
+ *
+ * Returns items in the order the ROUTES are declared, not the order the copy
+ * file happens to be in — reordering the header is a layout decision, and
+ * leaving it to whichever way a CMS list got dragged is how a nav ends up with
+ * the sponsorship page buried at position six.
+ */
+export const getNav = once(() => {
+  const copy = getCopy("common");
+
+  const merge = <R extends string>(
+    routes: readonly R[],
+    entries: readonly { href: string; label: string; description?: string }[],
+    which: string,
+  ): NavItem[] =>
+    routes.map((href) => {
+      const entry = entries.find((item) => item.href === href);
+      if (!entry) {
+        throw new Error(
+          `\n\nNo ${which} nav label for ${href} in content/copy/common.json.\n` +
+            `Every route in src/lib/nav.ts needs one. Add it back in /admin under\n` +
+            `Shared wording -> Navigation, or restore the entry in the file.\n`,
+        );
+      }
+      return { href, label: entry.label, description: entry.description };
+    });
+
+  return {
+    primary: merge(PRIMARY_ROUTES, copy.nav.primary, "primary"),
+    secondary: merge(SECONDARY_ROUTES, copy.nav.secondary, "secondary"),
+    cta: {
+      sponsor: { href: CTA_HREF.sponsor, label: copy.cta.sponsor },
+      join: { href: CTA_HREF.join, label: copy.cta.join },
+    },
+  };
+});
 
 /* -------------------------------------------------------------------------
    Sponsors

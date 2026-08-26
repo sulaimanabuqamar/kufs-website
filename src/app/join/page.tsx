@@ -7,18 +7,19 @@ import { Section, SectionHeading } from "@/components/ui/Section";
 import { StatusPill } from "@/components/ui/StatusPill";
 import site from "@/content/site";
 import {
+  getCopy,
   getEngineering,
   getMilestones,
+  getNav,
   getRolesBySubteam,
   getSinglePersonSubteams,
   getTeamStats,
   getVacantRoles,
+  getStatusLabels,
 } from "@/lib/content";
-import { CTA } from "@/lib/nav";
+import { fill } from "@/lib/copy";
 
-const TITLE = "Join the Team";
-const DESCRIPTION =
-  "Open roles across every KUFS subteam — engineering and business. Recruitment timeline, what members get, and what we actually look for.";
+const { title: TITLE, description: DESCRIPTION } = getCopy("join").meta;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -34,49 +35,10 @@ const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
   timeZone: "UTC",
 });
 
-const BENEFITS = [
-  {
-    title: "You build real hardware",
-    body: "Not a coursework model. A part you specified gets machined, fitted, and either works at Silverstone or does not. Very few graduates have that on a CV.",
-  },
-  {
-    title: "You travel to compete",
-    body: "The team goes to Silverstone for Formula Student UK. Scrutineering, the paddock, a week alongside a hundred other university teams.",
-  },
-  {
-    title: "You meet industry directly",
-    body: "Design judges are practising engineers. Our partners run workshops, attend reviews and see your work. Several members have been hired off the back of it.",
-  },
-  {
-    title: "You learn to ship against a deadline",
-    body: "The competition date does not move. Learning to make decisions with incomplete information and a fixed date is the single most transferable thing here.",
-  },
-];
-
-const FAQ = [
-  {
-    q: "How much time does it take?",
-    a: "Realistically 6–10 hours a week through term, more in the weeks before manufacturing deadlines and competition. We would rather you commit to less and turn up reliably than promise more and disappear.",
-  },
-  {
-    q: "What year do I need to be in?",
-    a: "Any. First years are welcome and encouraged — you get three more seasons than someone joining in their final year, and the people running the team now mostly joined in first year.",
-  },
-  {
-    q: "Do I need prior experience?",
-    a: "No. Nobody arrives knowing how to lay up a monocoque or calibrate an engine. We teach it. What we cannot teach is turning up, so that is what we select for.",
-  },
-  {
-    q: "I am not an engineer. Is there a place for me?",
-    a: "Yes, and we need you more than we need another CFD applicant. Sponsorship, marketing, media and cost control are scored events and hard constraints — a car nobody funded does not get built.",
-  },
-  {
-    q: "When can I apply?",
-    a: "Recruitment opens at the start of the autumn term each year. Applications outside that window are still read — if we have a gap, we will come back to you.",
-  },
-];
-
 export default function JoinPage() {
+  const copy = getCopy("join");
+  const statusLabels = getStatusLabels();
+  const nav = getNav();
   const roleGroups = getRolesBySubteam();
   const timeline = getMilestones();
   const vacancies = getVacantRoles();
@@ -97,54 +59,53 @@ export default function JoinPage() {
       <Section className="border-b border-border">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="flex max-w-[58ch] flex-col gap-6">
-            <p className="text-eyebrow uppercase text-accent">Recruitment</p>
-            <h1 className="text-h1 text-text">
-              You do not need experience. You need to turn up.
-            </h1>
+            <p className="text-eyebrow uppercase text-accent">{copy.header.eyebrow}</p>
+            <h1 className="text-h1 text-text">{copy.header.title}</h1>
             <SpeedStripe variant="accent" />
             <p className="text-lead text-text-muted">
-              KUFS is {stats.headcount} students building Khalifa University&rsquo;s first
-              Formula Student car. That is a small team for a whole vehicle, which means
-              the gaps below are real and whoever fills them will own something that
-              matters.
+              {fill(copy.header.body, {
+                headcount: stats.headcount,
+                subteams: roleGroups.length,
+                university: site.university,
+              })}
             </p>
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <Button href="#roles" size="lg">
-                See open roles
+                {copy.header.rolesLink}
               </Button>
               <Button href="/team" variant="secondary" size="lg">
-                Meet the team
+                {copy.header.teamLink}
               </Button>
             </div>
           </div>
 
           {/* Right column carries the facts a student actually decides on. */}
           <aside className="flex flex-col gap-4 self-start rounded-lg border border-border bg-surface p-7">
-            <h2 className="text-h4 text-text">Recruitment at a glance</h2>
+            <h2 className="text-h4 text-text">{copy.header.asideHeading}</h2>
             <dl className="flex flex-col gap-4 border-t border-border pt-5">
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  On the team today
+                  {copy.header.headcountLabel}
                 </dt>
                 <dd className="tabular text-h3 text-accent">{stats.headcount}</dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Subteams recruiting
+                  {copy.header.subteamsLabel}
                 </dt>
                 <dd className="tabular text-h3 text-accent">{roleGroups.length}</dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Leadership roles vacant
+                  {copy.header.vacantLabel}
                 </dt>
                 <dd className="tabular text-h3 text-accent">{vacancies.length}</dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Experience required
+                  {copy.header.experienceLabel}
                 </dt>
-                <dd className="text-h4 text-text">None</dd>
+                <dd className="text-h4 text-text">{copy.header.experienceValue}</dd>
               </div>
             </dl>
           </aside>
@@ -158,9 +119,9 @@ export default function JoinPage() {
       <Section labelledBy="gaps-heading" className="border-b border-border">
         <SectionHeading
           id="gaps-heading"
-          eyebrow="Where we need people most"
-          title="The honest gaps"
-          lead="Rather than list generic openings, here is exactly where the team is thin right now."
+          eyebrow={copy.gaps.eyebrow}
+          title={copy.gaps.title}
+          lead={copy.gaps.lead ?? undefined}
         />
 
         <ul className="mt-12 grid gap-5 lg:grid-cols-2">
@@ -170,19 +131,13 @@ export default function JoinPage() {
               className="flex flex-col gap-3 rounded-lg border-2 border-accent bg-surface p-7"
             >
               <p className="text-caption font-semibold uppercase tracking-widest text-accent">
-                Vacant leadership role
+                {copy.gaps.vacantBadge}
               </p>
               <h3 className="text-h3 text-text">{role}</h3>
               <p className="text-body text-text-muted">
-                Nobody currently holds this. The {role} leads the electrical side of the
-                car — the accumulator, the tractive system and the safety case that goes
-                with them — and works alongside the CTO Mechanical. It is the single most
-                consequential open position on the team.
+                {fill(copy.gaps.vacantBody, { role })}
               </p>
-              <p className="text-small text-text-muted">
-                Suited to an electrical or energy engineering student who wants genuine
-                ownership rather than a task list.
-              </p>
+              <p className="text-small text-text-muted">{copy.gaps.vacantSuited}</p>
             </li>
           ))}
 
@@ -192,17 +147,13 @@ export default function JoinPage() {
               className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-7"
             >
               <p className="text-caption font-semibold uppercase tracking-widest text-status-active">
-                One person deep
+                {copy.gaps.thinBadge}
               </p>
               <h3 className="text-h3 text-text">{subteam}</h3>
               <p className="text-body text-text-muted">
-                {subteam} is carried by a single student. A whole subsystem of the car
-                depends on one person&rsquo;s availability, which is not a position any
-                team wants to be in before its first competition.
+                {fill(copy.gaps.thinBody, { subteam })}
               </p>
-              <p className="text-small text-text-muted">
-                Joining here means owning a real part of the car from your first term.
-              </p>
+              <p className="text-small text-text-muted">{copy.gaps.thinSuited}</p>
             </li>
           ))}
         </ul>
@@ -214,26 +165,19 @@ export default function JoinPage() {
           <div className="flex flex-col gap-5">
             <SectionHeading
               id="who-heading"
-              eyebrow="Who we are looking for"
-              title="Engineers and non-engineers, equally"
+              eyebrow={copy.audience.eyebrow}
+              title={copy.audience.title}
             />
+            <p className="text-body text-text-muted">{copy.audience.body}</p>
             <p className="text-body text-text-muted">
-              Formula Student teams reliably over-recruit mechanical engineers and
-              under-recruit everyone else. We are saying this plainly because it is the
-              most useful thing on this page: if you study business, marketing, finance,
-              communications or design, you are not a nice-to-have here. You are the
-              reason the car gets funded, the reason anyone hears about it, and a third of
-              the points available at competition.
-            </p>
-            <p className="text-body text-text-muted">
-              Three of the eight scored events at Formula Student UK are static — Design,
-              Cost, and the Business Plan Presentation. They are judged on documentation,
-              commercial reasoning and how well you present, not on lap time.
+              {fill(copy.audience.staticEventsNote, {
+                competition: site.competition.name,
+              })}
             </p>
           </div>
 
           <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-            {BENEFITS.map((benefit) => (
+            {copy.benefits.map((benefit) => (
               <li
                 key={benefit.title}
                 className="rounded-lg border border-border bg-surface p-6"
@@ -250,9 +194,9 @@ export default function JoinPage() {
       <Section id="roles" labelledBy="roles-heading" className="border-b border-border">
         <SectionHeading
           id="roles-heading"
-          eyebrow="Open roles"
-          title="Where we need people"
-          lead="Roles are editable in content/roles.json — this list is what we are actually recruiting for right now."
+          eyebrow={copy.roles.eyebrow}
+          title={copy.roles.title}
+          lead={copy.roles.lead ?? undefined}
         />
 
         <div className="mt-12 flex flex-col gap-12">
@@ -271,13 +215,14 @@ export default function JoinPage() {
                       <h4 className="text-h4 text-text">{role.title}</h4>
                       {/* Current size, not an invented number of places. */}
                       <p className="tabular text-caption font-semibold uppercase tracking-wider text-text-muted">
-                        {headcountBySubteam.get(role.subteam) ?? 0} on this subteam
+                        {headcountBySubteam.get(role.subteam) ?? 0}{" "}
+                        {copy.roles.onSubteamLabel}
                       </p>
                     </div>
                     <p className="text-small text-text-muted">{role.description}</p>
                     <div className="mt-2">
                       <p className="text-caption font-semibold uppercase tracking-wide text-text-muted">
-                        What we look for
+                        {copy.roles.lookingForLabel}
                       </p>
                       <ul className="mt-2 flex flex-col gap-1.5">
                         {role.lookingFor.map((item) => (
@@ -306,9 +251,9 @@ export default function JoinPage() {
       <Section labelledBy="timeline-heading" className="border-b border-border">
         <SectionHeading
           id="timeline-heading"
-          eyebrow="The season"
-          title="What you would be joining"
-          lead="The build schedule you would be working to. Recruitment opens at the start of the autumn term, ahead of the manufacturing push."
+          eyebrow={copy.season.eyebrow}
+          title={copy.season.title}
+          lead={copy.season.lead ?? undefined}
         />
 
         <ol className="mt-12 flex flex-col">
@@ -323,7 +268,11 @@ export default function JoinPage() {
               >
                 {DATE_FORMAT.format(new Date(`${milestone.date}T00:00:00Z`))}
               </time>
-              <StatusPill status={milestone.status} className="justify-self-start" />
+              <StatusPill
+                labels={statusLabels}
+                status={milestone.status}
+                className="justify-self-start"
+              />
               <div>
                 <h3 className="text-h4 text-text">{milestone.title}</h3>
                 <p className="mt-1 max-w-[70ch] text-small text-text-muted">
@@ -337,12 +286,19 @@ export default function JoinPage() {
 
       {/* ---------- FAQ ---------- */}
       <Section labelledBy="faq-heading">
-        <SectionHeading id="faq-heading" eyebrow="Before you apply" title="Questions" />
+        <SectionHeading
+          id="faq-heading"
+          eyebrow={copy.faq.eyebrow}
+          title={copy.faq.title}
+        />
         <dl className="mt-12 grid gap-6 lg:grid-cols-2">
-          {FAQ.map((item) => (
-            <div key={item.q} className="rounded-lg border border-border bg-surface p-6">
-              <dt className="text-h4 text-text">{item.q}</dt>
-              <dd className="mt-2 text-small text-text-muted">{item.a}</dd>
+          {copy.faq.items.map((item) => (
+            <div
+              key={item.question}
+              className="rounded-lg border border-border bg-surface p-6"
+            >
+              <dt className="text-h4 text-text">{item.question}</dt>
+              <dd className="mt-2 text-small text-text-muted">{item.answer}</dd>
             </div>
           ))}
         </dl>
@@ -352,11 +308,8 @@ export default function JoinPage() {
       <Section tight className="border-t border-border bg-accent text-accent-contrast">
         <div className="flex flex-col items-start gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex flex-col gap-3">
-            <h2 className="text-h2">Applications open each October</h2>
-            <p className="max-w-[56ch] text-lead opacity-90">
-              Send us a short email telling us what you study and which subteam interests
-              you. That is the whole application — we will take it from there.
-            </p>
+            <h2 className="text-h2">{copy.apply.title}</h2>
+            <p className="max-w-[56ch] text-lead opacity-90">{copy.apply.body}</p>
           </div>
           {/* On the accent band the standard variants would invert awkwardly, so
               both buttons take explicit on-accent treatment. Measured on
@@ -364,19 +317,19 @@ export default function JoinPage() {
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
             <Button
               href={`mailto:${site.contactEmail}?subject=${encodeURIComponent(
-                "Joining KUFS",
+                copy.apply.emailSubject,
               )}`}
               size="lg"
               className="bg-bg text-text hover:bg-surface-raised"
             >
-              Email us to apply
+              {copy.apply.emailLabel}
             </Button>
             <Button
-              href={CTA.sponsor.href}
+              href={nav.cta.sponsor.href}
               size="lg"
               className="border-2 border-accent-contrast/70 bg-transparent text-accent-contrast hover:bg-accent-contrast/10"
             >
-              I want to sponsor instead
+              {copy.apply.sponsorLink}
             </Button>
           </div>
         </div>

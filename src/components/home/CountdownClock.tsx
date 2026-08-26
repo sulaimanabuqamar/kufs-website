@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { fill } from "@/lib/copy";
+
 /**
  * The ticking half of the countdown.
  *
@@ -50,12 +52,29 @@ function phaseFor(targetMs: number, nowMs: number): Phase {
   };
 }
 
+/** Every word arrives as a prop: this is a client component, so it must not
+ *  reach into the content layer. Countdown reads the copy on the server. */
+export type CountdownClockCopy = {
+  days: string;
+  hours: string;
+  minutes: string;
+  seconds: string;
+  happeningNow: string;
+  happeningNowDetail: string;
+  finished: string;
+  finishedDetail: string;
+  remainingSummary: string;
+  loadingSummary: string;
+};
+
 export function CountdownClock({
   targetIso,
   eventName,
+  copy,
 }: {
   targetIso: string;
   eventName: string;
+  copy: CountdownClockCopy;
 }) {
   const [phase, setPhase] = useState<Phase>({ kind: "pending" });
 
@@ -86,8 +105,8 @@ export function CountdownClock({
   if (phase.kind === "running") {
     return (
       <Message
-        headline="Happening now"
-        detail={`${eventName} is under way at Silverstone. Follow the team for live updates from the paddock.`}
+        headline={copy.happeningNow}
+        detail={fill(copy.happeningNowDetail, { event: eventName })}
       />
     );
   }
@@ -95,8 +114,8 @@ export function CountdownClock({
   if (phase.kind === "finished") {
     return (
       <Message
-        headline="That's a wrap"
-        detail={`${eventName} is done. Our full write-up — what worked, what didn't, and what changes for next season — is in the news.`}
+        headline={copy.finished}
+        detail={fill(copy.finishedDetail, { event: eventName })}
       />
     );
   }
@@ -108,19 +127,24 @@ export function CountdownClock({
       {/* The digits are decorative for assistive tech: a per-second live
           region would be unusable. The summary below carries the meaning. */}
       <ol aria-hidden className="flex flex-wrap items-end gap-x-4 gap-y-6 sm:gap-x-8">
-        <Unit value={remaining?.days} label="Days" pad={2} />
+        <Unit value={remaining?.days} label={copy.days} pad={2} />
         <Separator />
-        <Unit value={remaining?.hours} label="Hours" pad={2} />
+        <Unit value={remaining?.hours} label={copy.hours} pad={2} />
         <Separator />
-        <Unit value={remaining?.minutes} label="Minutes" pad={2} />
+        <Unit value={remaining?.minutes} label={copy.minutes} pad={2} />
         <Separator />
-        <Unit value={remaining?.seconds} label="Seconds" pad={2} />
+        <Unit value={remaining?.seconds} label={copy.seconds} pad={2} />
       </ol>
 
       <p className="sr-only">
         {remaining
-          ? `${remaining.days} days, ${remaining.hours} hours and ${remaining.minutes} minutes until ${eventName}.`
-          : `Loading the countdown to ${eventName}.`}
+          ? fill(copy.remainingSummary, {
+              days: remaining.days,
+              hours: remaining.hours,
+              minutes: remaining.minutes,
+              event: eventName,
+            })
+          : fill(copy.loadingSummary, { event: eventName })}
       </p>
     </div>
   );

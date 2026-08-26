@@ -3,7 +3,7 @@ import Link from "next/link";
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow, Section } from "@/components/ui/Section";
-import { CTA } from "@/lib/nav";
+import { getCopy, getNav } from "@/lib/content";
 import type { ReactNode } from "react";
 
 /**
@@ -41,6 +41,9 @@ export function PageHeader({
   comingSoon?: string;
   children?: ReactNode;
 }) {
+  const nav = getNav();
+  const copy = getCopy("common");
+
   return (
     <Section>
       <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
@@ -55,19 +58,16 @@ export function PageHeader({
         {comingSoon ? (
           <aside className="self-start rounded-lg border border-border bg-surface p-7">
             <p className="text-caption font-semibold uppercase tracking-widest text-accent">
-              Coming soon
+              {copy.comingSoon.badge}
             </p>
             <p className="mt-3 text-body text-text-muted">{comingSoon}</p>
-            <p className="mt-3 text-small text-text-muted">
-              In the meantime, the fastest route in is a direct message or an email — we
-              answer both.
-            </p>
+            <p className="mt-3 text-small text-text-muted">{copy.comingSoon.body}</p>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Button href={CTA.sponsor.href} size="md">
-                {CTA.sponsor.label}
+              <Button href={nav.cta.sponsor.href} size="md">
+                {nav.cta.sponsor.label}
               </Button>
-              <Button href={CTA.join.href} size="md" variant="secondary">
-                {CTA.join.label}
+              <Button href={nav.cta.join.href} size="md" variant="secondary">
+                {nav.cta.join.label}
               </Button>
             </div>
             <p className="mt-5 text-small">
@@ -75,7 +75,7 @@ export function PageHeader({
                 href="/"
                 className="font-semibold text-accent underline-offset-4 hover:underline"
               >
-                ← Back to the home page
+                {copy.comingSoon.backLink}
               </Link>
             </p>
           </aside>

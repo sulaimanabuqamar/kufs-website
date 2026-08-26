@@ -76,6 +76,8 @@ export type Overlay = Record<
 
 type JsonSchema = {
   type?: string | string[];
+  maxLength?: number;
+  minLength?: number;
   properties?: Record<string, JsonSchema>;
   required?: string[];
   items?: JsonSchema;
@@ -202,6 +204,36 @@ function unwrap(node: JsonSchema): { node: JsonSchema; nullable: boolean } {
   return { node: current, nullable };
 }
 
+/**
+ * Turns a Zod `.max()` into panel-side validation and visible help text.
+ *
+ * WITHOUT THIS THE LIMIT IS ONLY A BUILD FAILURE. An editor pastes a paragraph
+ * into a heading, the panel accepts it, the save commits, and the deploy fails
+ * several minutes later with a message they have to go and find in a Vercel
+ * log. Enforcing it in the field turns that into a red line under the box
+ * while they are still typing, which is the whole point of having a limit.
+ *
+ * Zod is still the authority — this is generated FROM the schema, so the two
+ * cannot disagree, and CI remains the backstop for anything edited by hand.
+ */
+function lengthUi(max: number | undefined, existing: Record<string, unknown> = {}) {
+  if (!max) return existing;
+  return {
+    ...existing,
+    validate: (value: unknown) =>
+      typeof value === "string" && value.length > max
+        ? `${value.length} characters. The most that fits here is ${max} — anything longer wraps and pushes the rest of the page down.`
+        : undefined,
+  };
+}
+
+/** Appends the limit to the help text, so it is visible before it is hit. */
+function withLimit(description: string | undefined, max: number | undefined) {
+  if (!max) return description;
+  const note = `Up to ${max} characters.`;
+  return description ? `${description} ${note}` : note;
+}
+
 function fail(path: string, reason: string): never {
   throw new Error(
     `tina/zod-to-tina: cannot map ${path || "(root)"} — ${reason}.\n` +
@@ -223,15 +255,19 @@ function compileNode(
 
   const { node: inner, nullable } = unwrap(node);
 
+  const max = typeof inner.maxLength === "number" ? inner.maxLength : undefined;
+
   const base: Partial<TinaField> = {
     name,
     label: ui.label ?? humanise(name),
     // A nullable field is how this codebase says "not known yet" — it renders
     // as TBC rather than as a hole. Editors need to be told that.
-    description:
+    description: withLimit(
       ui.description ??
-      (nullable ? "Leave empty for TBC." : undefined) ??
-      inner.description,
+        (nullable ? "Leave empty for TBC." : undefined) ??
+        inner.description,
+      max,
+    ),
     required: required && !nullable ? true : undefined,
   };
 
@@ -241,7 +277,11 @@ function compileNode(
   if (ui.component === "datetime") return { ...base, type: "datetime" } as TinaField;
   if (ui.component === "rich-text") return { ...base, type: "rich-text" } as TinaField;
   if (ui.component === "textarea") {
-    return { ...base, type: "string", ui: { component: "textarea" } } as TinaField;
+    return {
+      ...base,
+      type: "string",
+      ui: lengthUi(max, { component: "textarea" }),
+    } as TinaField;
   }
 
   // Enums.
@@ -277,7 +317,9 @@ function compileNode(
     // `date: isoDate | z.date()`, both of which arrive as one field.
     const types = new Set(branches.map((b) => b.type));
     if (types.size === 1 && (types.has("string") || types.has("number"))) {
-      return { ...base, type: types.has("string") ? "string" : "number" } as TinaField;
+      return types.has("string")
+        ? ({ ...base, type: "string", ui: lengthUi(max) } as TinaField)
+        : ({ ...base, type: "number" } as TinaField);
     }
 
     const discriminated = discriminatedTemplates(branches);
@@ -333,7 +375,9 @@ function compileNode(
     } as TinaField;
   }
 
-  if (inner.type === "string") return { ...base, type: "string" } as TinaField;
+  if (inner.type === "string") {
+    return { ...base, type: "string", ui: lengthUi(max) } as TinaField;
+  }
   if (inner.type === "number" || inner.type === "integer") {
     return { ...base, type: "number" } as TinaField;
   }

@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { roleLine } from "@/lib/content";
+import { getCopy, roleLine } from "@/lib/content";
 import type { TeamMember } from "@/lib/schemas";
 
 /**
@@ -45,7 +45,7 @@ export function MemberCard({ member }: { member: TeamMember }) {
           rel="noopener noreferrer"
           className="mt-1 text-caption font-semibold text-accent underline-offset-4 hover:underline"
         >
-          LinkedIn <span aria-hidden>↗</span>
+          {getCopy("common").ui.linkedinLabel} <span aria-hidden>↗</span>
           <span className="sr-only">, {member.name}</span>
         </a>
       ) : null}

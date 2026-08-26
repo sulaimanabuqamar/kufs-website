@@ -72,6 +72,10 @@ export function HeroStage({
   eyebrow,
   positioning,
   spec,
+  headline,
+  cta,
+  scrollHint,
+  heroLoading,
 }: {
   mode: HeroMode;
   frameCount: number;
@@ -80,6 +84,13 @@ export function HeroStage({
   eyebrow: string;
   positioning: string;
   spec: readonly { label: string; value: string }[];
+  headline: readonly string[];
+  cta: {
+    sponsor: { href: string; label: string };
+    join: { href: string; label: string };
+  };
+  scrollHint: string;
+  heroLoading: string;
 }) {
   const trackRef = useRef<HTMLElement>(null);
   const [reveal, setReveal] = useState("");
@@ -136,6 +147,7 @@ export function HeroStage({
         {enhanced && mode === "sequence" ? (
           <div className="absolute inset-0">
             <HeroSequence
+              loadingLabel={heroLoading}
               trackRef={trackRef}
               frameCount={frameCount}
               onProgress={handleProgress}
@@ -161,13 +173,15 @@ export function HeroStage({
         <div className="relative z-10 h-full">
           <HeroCopy
             eyebrow={eyebrow}
+            headline={headline}
             positioning={positioning}
             spec={spec}
+            cta={cta}
             revealed={!enhanced}
           />
         </div>
 
-        {enhanced ? <ScrollCue /> : null}
+        {enhanced ? <ScrollCue label={scrollHint} /> : null}
       </div>
     </section>
   );
@@ -175,14 +189,14 @@ export function HeroStage({
 
 /** Decorative "keep scrolling" hint. Hidden from assistive tech — scrolling
  *  is not an instruction a screen reader user needs. */
-function ScrollCue() {
+function ScrollCue({ label }: { label: string }) {
   return (
     <div
       aria-hidden
       className="absolute inset-x-0 bottom-6 z-10 flex justify-center group-data-[reveal~=spec]:opacity-0 transition-opacity duration-[var(--duration-slow)]"
     >
       <span className="flex flex-col items-center gap-2 text-caption uppercase tracking-[0.2em] text-text-muted">
-        Scroll
+        {label}
         <svg viewBox="0 0 16 24" className="h-6 w-4 motion-safe:animate-bounce">
           <path
             d="M8 4v14m0 0 4-4m-4 4-4-4"

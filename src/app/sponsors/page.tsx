@@ -4,21 +4,19 @@ import Image from "next/image";
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { getSponsorsByTier, TIER_LABEL } from "@/lib/content";
-import { CTA } from "@/lib/nav";
+import { getCopy, getNav, getSponsorsByTier, TIER_LABEL } from "@/lib/content";
+import { fill } from "@/lib/copy";
 import site from "@/content/site";
 import type { Sponsor, SponsorTier } from "@/lib/schemas";
 import { cn } from "@/lib/cn";
 
-const TITLE = "Our Sponsors";
-const DESCRIPTION =
-  "The companies and organisations backing Khalifa University Formula Student, and what each of them contributes to the car.";
+const { title, description } = getCopy("sponsors").meta;
 
 export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
+  title,
+  description,
   alternates: { canonical: "/sponsors" },
-  openGraph: { title: TITLE, description: DESCRIPTION, url: "/sponsors" },
+  openGraph: { title, description, url: "/sponsors" },
 };
 
 /** Title and Gold get a large card each; everything below shares a compact row. */
@@ -42,6 +40,8 @@ function tierGrid(count: number, size: "featured" | "compact"): string {
 }
 
 export default function SponsorsPage() {
+  const copy = getCopy("sponsors");
+  const nav = getNav();
   const groups = getSponsorsByTier();
   const featured = groups.filter((g) => FEATURED.includes(g.tier));
   const supporting = groups.filter(
@@ -59,17 +59,14 @@ export default function SponsorsPage() {
       <Section className="border-b border-border">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="flex max-w-[58ch] flex-col gap-5">
-            <p className="text-eyebrow uppercase text-accent">Partners</p>
-            <h1 className="text-h1 text-text">The companies behind the car</h1>
+            <p className="text-eyebrow uppercase text-accent">{copy.header.eyebrow}</p>
+            <h1 className="text-h1 text-text">{copy.header.title}</h1>
             <SpeedStripe variant="accent" />
-            <p className="text-lead text-text-muted">
-              Every component on this car exists because somebody backed it. These are the
-              organisations that did, and what each of them contributes.
-            </p>
+            <p className="text-lead text-text-muted">{copy.header.lead}</p>
           </div>
 
           <aside className="flex flex-col gap-4 self-start rounded-lg border border-border bg-surface p-7">
-            <h2 className="text-h4 text-text">Where our support comes from</h2>
+            <h2 className="text-h4 text-text">{copy.header.asideHeading}</h2>
             <dl className="flex flex-col gap-3 border-t border-border pt-5">
               {groups.map((group) => (
                 <div
@@ -81,12 +78,14 @@ export default function SponsorsPage() {
                 </div>
               ))}
               <div className="flex items-baseline justify-between gap-4 border-t border-border pt-3">
-                <dt className="text-small font-semibold text-text">Total partners</dt>
+                <dt className="text-small font-semibold text-text">
+                  {copy.header.totalLabel}
+                </dt>
                 <dd className="tabular text-h3 text-accent">{totalSponsors}</dd>
               </div>
             </dl>
             <p className="text-caption text-text-muted">
-              Every tier is open for the {site.competition.year} season.
+              {fill(copy.header.asideNote, { year: site.competition.year })}
             </p>
           </aside>
         </div>
@@ -99,24 +98,19 @@ export default function SponsorsPage() {
           id="partners-heading"
           tone="light"
           eyebrow={site.straplines[1]}
-          title="Our partners"
+          title={copy.partners.title}
         />
 
         {!hasSponsors ? (
           /* Honest empty state. "Be the first" is a genuinely strong ask for a
              founding season — much stronger than a page of invented logos. */
           <div className="mt-12 rounded-lg border-2 border-dashed border-border-light bg-surface-light p-10">
-            <h3 className="text-h3 text-text-on-light">
-              This page is deliberately empty
-            </h3>
+            <h3 className="text-h3 text-text-on-light">{copy.partners.emptyTitle}</h3>
             <p className="mt-4 max-w-[62ch] text-body text-muted-on-light">
-              We would rather show you nothing than show you logos we have not earned.
-              KUFS is in its first season and is looking for the organisations who will
-              back the university&rsquo;s first Formula Student car — on the livery, on
-              the teamwear, and in our first Competition Design Report.
+              {copy.partners.emptyBody}
             </p>
-            <Button href={CTA.sponsor.href} variant="onLight" className="mt-6">
-              See the partnership tiers
+            <Button href={nav.cta.sponsor.href} variant="onLight" className="mt-6">
+              {copy.partners.emptyCta}
             </Button>
           </div>
         ) : null}
@@ -136,6 +130,8 @@ export default function SponsorsPage() {
                     key={sponsor.name}
                     sponsor={sponsor}
                     solo={group.sponsors.length === 1}
+                    sinceLabel={copy.partners.partnerSince}
+                    visitLabel={copy.partners.visitLabel}
                   />
                 ))}
               </ul>
@@ -162,8 +158,7 @@ export default function SponsorsPage() {
             <div>
               <TierHeading tier="inkind" />
               <p className="mt-3 max-w-[60ch] text-small text-muted-on-light">
-                Partners who contribute parts, materials, machining or expertise rather
-                than cash. Valued at market rate and placed at the equivalent tier.
+                {copy.partners.inKindNote}
               </p>
               <ul className="mt-6 flex flex-col divide-y divide-border-light border-y border-border-light">
                 {inKind.sponsors.map((sponsor) => (
@@ -202,15 +197,12 @@ export default function SponsorsPage() {
         <div className="flex flex-col items-start gap-6 rounded-lg border border-border bg-surface p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10">
           <div className="flex flex-col gap-3">
             <h2 id="sponsors-cta-heading" className="text-h3 text-text">
-              Your logo could be on the 2027 car
+              {fill(copy.cta.title, { year: site.competition.year })}
             </h2>
-            <p className="max-w-[56ch] text-body text-text-muted">
-              Cash, materials, machining time or expertise. We will tell you exactly what
-              each tier gets you and send a written report at the end of the season.
-            </p>
+            <p className="max-w-[56ch] text-body text-text-muted">{copy.cta.body}</p>
           </div>
-          <Button href={CTA.sponsor.href} size="lg" className="shrink-0">
-            {CTA.sponsor.label}
+          <Button href={nav.cta.sponsor.href} size="lg" className="shrink-0">
+            {nav.cta.sponsor.label}
           </Button>
         </div>
       </Section>
@@ -229,7 +221,17 @@ function TierHeading({ tier }: { tier: SponsorTier }) {
   );
 }
 
-function FeaturedCard({ sponsor, solo = false }: { sponsor: Sponsor; solo?: boolean }) {
+function FeaturedCard({
+  sponsor,
+  solo = false,
+  sinceLabel,
+  visitLabel,
+}: {
+  sponsor: Sponsor;
+  solo?: boolean;
+  sinceLabel: string;
+  visitLabel: string;
+}) {
   return (
     <li
       className={cn(
@@ -262,7 +264,7 @@ function FeaturedCard({ sponsor, solo = false }: { sponsor: Sponsor; solo?: bool
         <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1 pt-2">
           {sponsor.since ? (
             <p className="text-caption text-muted-on-light">
-              Partner since {sponsor.since}
+              {sinceLabel} {sponsor.since}
             </p>
           ) : null}
           <a
@@ -271,7 +273,7 @@ function FeaturedCard({ sponsor, solo = false }: { sponsor: Sponsor; solo?: bool
             rel="noopener noreferrer sponsored"
             className="text-caption font-semibold text-accent-on-light underline-offset-4 hover:underline"
           >
-            Visit {sponsor.name} <span aria-hidden>↗</span>
+            {fill(visitLabel, { name: sponsor.name })} <span aria-hidden>↗</span>
           </a>
         </div>
       </div>

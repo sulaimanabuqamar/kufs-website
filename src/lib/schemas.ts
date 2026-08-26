@@ -577,6 +577,707 @@ export type NewsPost = NewsFrontmatter & {
   body: string;
 };
 
+/* =========================================================================
+   content/copy/*.json — every user-visible word on the site
+   =========================================================================
+
+   These schemas exist so a committee lead can reword any page from /admin
+   without opening a code editor. They are the same pipeline as everything
+   else: Zod here, Tina fields compiled from it by tina/zod-to-tina.ts, plain
+   English labels in tina/overlays.ts.
+
+   WHY EVERY FIELD HAS A LENGTH LIMIT
+
+   A CMS that can put a paragraph in a button ships a broken layout. The
+   limits below are sized to what the design actually holds at 390px, which is
+   the width most of this site's traffic arrives at — not to a round number.
+   They are shown as help text in the panel, and they are the reason an editor
+   cannot break the layout by typing.
+
+   Measure before changing one. `heading` at 70 is two lines of `text-h1` at
+   390px; 90 is three and starts pushing the hero CTA below the fold.
+
+   WHAT IS DELIBERATELY NOT HERE
+
+   - Colours, fonts and spacing. The palette is contrast-verified by
+     check:contrast; a CMS that can set a heading to Racing Red on navy ships
+     2.12:1. A palette change is a developer request.
+   - Routes and URLs. Nav LABELS are editable below; `href` is an enum of the
+     routes that exist, so the panel cannot invent, rename or delete a page.
+   - Heading levels. An editor changes the words in an h2, never whether it is
+     an h2. That is what holds accessibility at 100.
+   ========================================================================= */
+
+/** Small all-caps label above a heading. One short phrase. */
+const eyebrow = z.string().min(1).max(40);
+
+/** h1/h2 text. 70 characters is two lines of text-h1 at 390px. */
+const heading = z.string().min(1).max(70);
+
+/** h3/h4 text, and card titles. Sits in narrower columns, but wraps more. */
+const subheading = z.string().min(1).max(90);
+
+/** The standfirst under a section heading. Two to three lines. */
+const lead = z.string().min(1).max(280);
+
+/** Body copy. Long enough for a real paragraph, short enough to stay scannable. */
+const paragraph = z.string().min(1).max(700);
+
+/**
+ * Button text.
+ *
+ * 32 is measured, not guessed: at 390px a `size="md"` button is 350px wide
+ * inside the gutter, less 40px of horizontal padding, and Barlow 600 at 16px
+ * averages ~9.7px per character — so 32 characters is the last count that
+ * stays on one line. "Download the prospectus (PDF)" is 29 and is the longest
+ * button on the site today. Anything past this wraps, and a two-line button
+ * next to a one-line button is the first thing that looks broken.
+ */
+const buttonLabel = z.string().min(1).max(32);
+
+/** Inline link text and small labels. */
+const linkLabel = z.string().min(1).max(48);
+
+/** Stat and table labels — these sit in fixed-width columns. */
+const microLabel = z.string().min(1).max(36);
+
+/**
+ * One short line: a nav description, a glossary term, a response time.
+ *
+ * Its own primitive rather than `microLabel.max(64)`, because Zod's `.max()`
+ * ADDS a rule instead of replacing one — chaining a longer max onto a shorter
+ * one leaves the shorter still enforced, and the field silently keeps the
+ * limit you thought you had widened.
+ */
+const shortLine = z.string().min(1).max(64);
+
+/** A caption under an image or a card. Wraps to two or three short lines. */
+const captionLine = z.string().min(1).max(140);
+
+/** <title>. Google truncates around 60. */
+const metaTitle = z.string().min(1).max(60);
+
+/** <meta description>. Google truncates around 160. */
+const metaDescription = z.string().min(1).max(160);
+
+/** Every page carries these two. */
+const metaSchema = z.object({
+  title: metaTitle,
+  description: metaDescription,
+});
+
+/** The standard section header: eyebrow, heading, optional standfirst. */
+const sectionHeadingSchema = z.object({
+  eyebrow: eyebrow,
+  title: heading,
+  lead: lead.nullish().default(null),
+});
+
+/** A titled block of body copy — feature cards, in-kind categories, benefits. */
+const titledBodySchema = z.object({
+  title: subheading,
+  body: paragraph,
+});
+
+/** A question and its answer. */
+const faqSchema = z.object({
+  question: subheading,
+  answer: paragraph,
+});
+
+/* -------------------------------------------------------------------------
+   common.json — header, footer, nav labels, forms, shared calls to action
+   ------------------------------------------------------------------------- */
+
+/**
+ * Nav LABELS are editable; the route is not.
+ *
+ * `href` is an enum of the routes that exist, so the panel cannot invent a
+ * page, rename a URL or delete `/become-a-sponsor`. src/lib/nav.ts still owns
+ * the route list and fails the build if a route loses its label, so the two
+ * cannot drift.
+ */
+export const PRIMARY_ROUTES = [
+  "/the-car",
+  "/team",
+  "/progress",
+  "/sponsors",
+  "/become-a-sponsor",
+  "/news",
+  "/join",
+] as const;
+
+export const SECONDARY_ROUTES = ["/press-kit", "/contact"] as const;
+
+const navItemSchema = z.object({
+  href: z.enum(PRIMARY_ROUTES),
+  label: linkLabel,
+  description: shortLine,
+});
+
+const secondaryNavItemSchema = z.object({
+  href: z.enum(SECONDARY_ROUTES),
+  label: linkLabel,
+});
+
+export const commonCopySchema = z.object({
+  nav: z.object({
+    primary: z.array(navItemSchema).length(PRIMARY_ROUTES.length),
+    secondary: z.array(secondaryNavItemSchema).length(SECONDARY_ROUTES.length),
+  }),
+  cta: z.object({
+    sponsor: buttonLabel,
+    join: buttonLabel,
+  }),
+  header: z.object({
+    skipToContent: linkLabel,
+    openMenu: linkLabel,
+    closeMenu: linkLabel,
+  }),
+  /**
+   * Sitewide SEO keywords. Editable words, but the derived ones — competition
+   * name, class, university — are injected by the layout from site.json so
+   * they cannot contradict the rest of the site.
+   */
+  seoKeywords: z.array(shortLine).min(1).max(12),
+  footer: z.object({
+    exploreHeading: microLabel,
+    getInvolvedHeading: microLabel,
+    /** "{name}. A student team at {university}." */
+    legalLine: lead,
+  }),
+  comingSoon: z.object({
+    badge: microLabel,
+    body: paragraph,
+    backLink: linkLabel,
+  }),
+  hero: z.object({
+    scrollHint: microLabel,
+  }),
+  countdown: z.object({
+    days: microLabel,
+    hours: microLabel,
+    minutes: microLabel,
+    seconds: microLabel,
+    happeningNow: subheading,
+    /** "{event} is under way at ..." */
+    happeningNowDetail: paragraph,
+    finished: subheading,
+    finishedDetail: paragraph,
+    /** Screen-reader summary. The digits themselves are aria-hidden. */
+    remainingSummary: lead,
+    loadingSummary: lead,
+  }),
+  /** Shared UI chrome used on more than one page. */
+  ui: z.object({
+    logoAlt: shortLine,
+    sponsorBarHeading: microLabel,
+    linkedinLabel: microLabel,
+    /** Milestone status chips. Keys are fixed; the words are not. */
+    statusDone: microLabel,
+    statusActive: microLabel,
+    statusUpcoming: microLabel,
+    /** Screen-reader text for the hero's loading progress. "{percent}" */
+    heroLoading: lead,
+  }),
+  /** The sponsorship tier comparison table. */
+  tierTable: z.object({
+    notIncluded: microLabel,
+    tbcLabel: microLabel,
+    tbcTooltip: lead,
+    /** "≈ USD {amount}" */
+    usdApprox: microLabel,
+    tableCaption: lead,
+    benefitColumnLabel: microLabel,
+    purposeRowLabel: microLabel,
+    placeSingular: microLabel,
+    placePlural: microLabel,
+  }),
+  /** Sponsorship and contact forms. Both use the same component. */
+  form: z.object({
+    nameLabel: microLabel,
+    organisationLabel: microLabel,
+    emailLabel: microLabel,
+    messageLabel: microLabel,
+    /** Honeypot field. Hidden from sighted users, read by screen readers. */
+    honeypotLabel: microLabel,
+    submitLabel: buttonLabel,
+    submittingLabel: buttonLabel,
+    /** Announced to screen readers while the request is in flight. */
+    submittingAnnouncement: lead,
+    sendAnotherLabel: buttonLabel,
+    successTitle: subheading,
+    /** "{window}" is replaced with the reply-time phrase below. */
+    successBody: paragraph,
+    errorTitle: subheading,
+    errorBody: paragraph,
+    replyPromise: lead,
+    mailtoNote: paragraph,
+    requiredNote: lead,
+    /**
+     * Validation messages.
+     *
+     * Editable because they are the words a visitor reads at the exact moment
+     * they are stuck, and "Tell us your name." reads very differently from
+     * "This field is required." Which field triggers which message is not
+     * editable — that is the validation rule, not the wording.
+     */
+    errors: z.object({
+      name: lead,
+      organisation: lead,
+      emailMissing: lead,
+      emailInvalid: lead,
+      /** "Choose a {topic}." — the select's own label, lowercased. */
+      topic: lead,
+      message: lead,
+    }),
+  }),
+});
+
+/* -------------------------------------------------------------------------
+   Page copy
+   ------------------------------------------------------------------------- */
+
+export const homeCopySchema = z.object({
+  meta: metaSchema,
+  hero: z.object({
+    /** Two lines so the second can take the accent colour. */
+    headlineLine1: heading,
+    headlineLine2: heading,
+    /** "{competition} {year} / {venue}" */
+    eyebrow: lead,
+    specArchitectureLabel: microLabel,
+    specTargetMassLabel: microLabel,
+    specHeadcountLabel: microLabel,
+  }),
+  whatIsFs: sectionHeadingSchema.extend({
+    /** "{competition} challenges university teams to..." */
+    body: paragraph,
+    judgingBody: paragraph,
+    shippingBody: paragraph,
+    /** Appended to site.programme.seasonOneLine. */
+    seasonLine: paragraph,
+    /** Labels for the three reference links. URLs live in site.json. */
+    videoLinkLabel: linkLabel,
+    officialLinkLabel: linkLabel,
+    resultsLinkLabel: linkLabel,
+    tbcLabel: microLabel,
+    tbcTooltip: lead,
+  }),
+  countdown: z.object({
+    eyebrow: eyebrow,
+    /** "{class}, organised by the {organiser}." */
+    note: lead,
+  }),
+  progress: sectionHeadingSchema.extend({
+    allLink: linkLabel,
+  }),
+  news: sectionHeadingSchema.extend({
+    allLink: linkLabel,
+  }),
+  sponsors: z.object({
+    eyebrow: eyebrow,
+    titleWithPartners: heading,
+    titleEmpty: heading,
+    leadWithPartners: lead,
+    leadEmpty: lead,
+    supportingHeading: subheading,
+    /** "{amount}" is the cheapest cash tier, read from tiers.json. */
+    entryLine: subheading,
+    entryLineUnknown: subheading,
+    entryBody: paragraph,
+    partnerSince: microLabel,
+    /** Alt text for a logo in the compact row. "{name} — {tier} partner" */
+    logoAlt: shortLine,
+  }),
+  recruitment: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    /** "{headcount} students across {subteams} subteams." */
+    body: paragraph,
+    teamLink: linkLabel,
+  }),
+});
+
+export const becomeASponsorCopySchema = z.object({
+  meta: metaSchema,
+  header: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    /** "...single-seater for {competition} {year}." */
+    body: paragraph,
+    tiersLink: buttonLabel,
+    contactLink: buttonLabel,
+  }),
+  process: z.object({
+    heading: subheading,
+    steps: z.array(titledBodySchema).min(1).max(5),
+    inKindNote: paragraph,
+  }),
+  reasons: sectionHeadingSchema.extend({
+    tbcLabel: microLabel,
+    tbcTooltip: lead,
+  }),
+  tiers: sectionHeadingSchema.extend({
+    inKindFootnote: paragraph,
+    liveryFootnote: paragraph,
+    currencyFootnote: paragraph,
+  }),
+  inKind: sectionHeadingSchema.extend({
+    body: paragraph,
+    categories: z.array(titledBodySchema).min(1).max(10),
+  }),
+  enquiry: sectionHeadingSchema.extend({
+    prospectusHeading: subheading,
+    prospectusAvailable: paragraph,
+    prospectusUnavailable: paragraph,
+    prospectusRequestLabel: buttonLabel,
+    prospectusRequestSubject: shortLine,
+    prospectusDownloadLabel: buttonLabel,
+    directHeading: subheading,
+    formHeading: subheading,
+    formNote: lead,
+    tierLabel: microLabel,
+    tierPlaceholder: linkLabel,
+    messagePlaceholder: lead,
+    /** Subject line on the sponsorship enquiry email. */
+    formSubject: shortLine,
+  }),
+});
+
+export const sponsorsCopySchema = z.object({
+  meta: metaSchema,
+  header: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    lead: lead,
+    asideHeading: subheading,
+    totalLabel: microLabel,
+    /** "Every tier is open for the {year} season." */
+    asideNote: lead,
+  }),
+  partners: z.object({
+    title: heading,
+    emptyTitle: subheading,
+    emptyBody: paragraph,
+    emptyCta: buttonLabel,
+    inKindNote: paragraph,
+    partnerSince: microLabel,
+    /** "Visit {name}" */
+    visitLabel: microLabel,
+  }),
+  cta: z.object({
+    title: heading,
+    body: paragraph,
+  }),
+});
+
+export const teamCopySchema = z.object({
+  meta: metaSchema,
+  about: z.object({
+    eyebrow: eyebrow,
+    /** "{organiser}" — what Formula Student is, for a reader who has never heard of it. */
+    fsBody: paragraph,
+    /** "KUFS represents {university} at {competition}, held at {venue}." */
+    kufsBody: paragraph,
+    asideHeading: subheading,
+    headcountLabel: microLabel,
+    subteamsLabel: microLabel,
+    disciplinesLabel: microLabel,
+    competingLabel: microLabel,
+  }),
+  values: z.object({
+    title: heading,
+  }),
+  roster: sectionHeadingSchema.extend({
+    operationsHeading: subheading,
+    operationsBody: paragraph,
+    engineeringHeading: subheading,
+    engineeringBody: paragraph,
+    vacantBadge: microLabel,
+    vacantBody: paragraph,
+    vacantLink: linkLabel,
+    advisorHeading: subheading,
+    joinLink: buttonLabel,
+  }),
+  cta: z.object({
+    title: heading,
+    body: paragraph,
+  }),
+});
+
+export const theCarCopySchema = z.object({
+  meta: metaSchema,
+  /**
+   * Status words for the eyebrow. Keys are fixed; the words are not.
+   *
+   * `inBuild` rather than `in-build`, which is the value in the car's JSON:
+   * TinaCMS requires field names to be alphanumeric with underscores, and a
+   * hyphen makes it refuse to load the config at all. The page maps between
+   * the two, which is one line and better than either renaming a content enum
+   * to suit a CMS or losing the field from the panel.
+   */
+  statusLabels: z.object({
+    concept: microLabel,
+    inBuild: microLabel,
+    testing: microLabel,
+    competing: microLabel,
+    retired: microLabel,
+  }),
+  header: z.object({
+    architectureLabel: microLabel,
+    targetMassLabel: microLabel,
+    buildLink: buttonLabel,
+    posterCaption: captionLine,
+  }),
+  spec: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    /** "{specified} of {total} rows have a value..." */
+    lead: paragraph,
+    /** Screen-reader caption. "Specification of the {name}." */
+    tableCaption: lead,
+    tbcLabel: microLabel,
+    tbcTooltip: lead,
+  }),
+  subsystems: sectionHeadingSchema.extend({
+    /** "Photography and CAD renders of the {system} package..." */
+    noImageNote: paragraph,
+  }),
+  gallery: sectionHeadingSchema.extend({
+    emptyBody: paragraph,
+    emptyCta: buttonLabel,
+  }),
+});
+
+export const progressCopySchema = z.object({
+  meta: metaSchema,
+  header: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    lead: lead,
+  }),
+  timeline: sectionHeadingSchema,
+  glossary: sectionHeadingSchema.extend({
+    terms: z
+      .array(
+        z.object({
+          /** The acronym as it appears in a milestone title, e.g. "DCS". */
+          abbr: z.string().min(1).max(12),
+          term: shortLine,
+          definition: paragraph,
+        }),
+      )
+      .min(1)
+      .max(30),
+  }),
+  status: z.object({
+    heading: subheading,
+    completeLabel: microLabel,
+    /** "Days to {event}" */
+    daysToLabel: microLabel,
+  }),
+  preliminaryNote: paragraph,
+  manufacturing: z.object({
+    heading: subheading,
+    label: shortLine,
+    note: paragraph,
+  }),
+  updateLabel: microLabel,
+  /** Shown where a milestone has no written update yet. */
+  noUpdate: z.object({
+    done: lead,
+    active: lead,
+    upcoming: lead,
+  }),
+  cta: z.object({
+    title: heading,
+    body: paragraph,
+  }),
+});
+
+export const newsCopySchema = z.object({
+  meta: metaSchema,
+  header: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    lead: lead,
+  }),
+  aside: z.object({
+    heading: subheading,
+    postsLabel: microLabel,
+    subscribeLabel: microLabel,
+    socialLabel: microLabel,
+  }),
+  listHeading: subheading,
+  emptyTitle: subheading,
+  emptyBody: paragraph,
+  draftBadge: microLabel,
+  /** The post page's own draft banner, which says more than the list badge. */
+  post: z.object({
+    draftBadge: microLabel,
+    draftNote: paragraph,
+    backLink: linkLabel,
+    olderLink: linkLabel,
+    newerLink: linkLabel,
+    ctaTitle: heading,
+    ctaBody: paragraph,
+  }),
+  rssLabel: linkLabel,
+});
+
+export const joinCopySchema = z.object({
+  meta: metaSchema,
+  header: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    /** "KUFS is {headcount} students across {subteams} subteams." */
+    body: paragraph,
+    rolesLink: buttonLabel,
+    teamLink: buttonLabel,
+    asideHeading: subheading,
+    headcountLabel: microLabel,
+    subteamsLabel: microLabel,
+    vacantLabel: microLabel,
+    experienceLabel: microLabel,
+    experienceValue: microLabel,
+  }),
+  gaps: sectionHeadingSchema.extend({
+    vacantBadge: microLabel,
+    /** "Nobody currently holds this. The {role} leads..." */
+    vacantBody: paragraph,
+    vacantSuited: paragraph,
+    thinBadge: microLabel,
+    thinBody: paragraph,
+    thinSuited: paragraph,
+  }),
+  audience: sectionHeadingSchema.extend({
+    body: paragraph,
+    staticEventsNote: paragraph,
+  }),
+  roles: sectionHeadingSchema.extend({
+    onSubteamLabel: microLabel,
+    lookingForLabel: microLabel,
+  }),
+  season: sectionHeadingSchema,
+  benefits: z.array(titledBodySchema).min(1).max(8),
+  faq: sectionHeadingSchema.extend({
+    items: z.array(faqSchema).min(1).max(12),
+  }),
+  apply: z.object({
+    title: heading,
+    body: paragraph,
+    emailLabel: buttonLabel,
+    /** Subject line of the application email. */
+    emailSubject: shortLine,
+    sponsorLink: buttonLabel,
+  }),
+});
+
+export const pressKitCopySchema = z.object({
+  meta: metaSchema,
+  header: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    lead: lead,
+  }),
+  comingSoon: paragraph,
+  lockups: sectionHeadingSchema.extend({
+    /** One caption per lockup, in the order they render. */
+    captions: z.array(captionLine).length(4),
+    clearSpaceNote: paragraph,
+  }),
+});
+
+export const contactCopySchema = z.object({
+  meta: metaSchema,
+  header: z.object({
+    eyebrow: eyebrow,
+    title: heading,
+    lead: lead,
+  }),
+  /**
+   * Enquiry routes. `key` selects which address the row points at — that
+   * mapping lives in the page, because an editor pointing "Press and media" at
+   * the sponsorship inbox is a routing decision, not a wording one.
+   */
+  routes: sectionHeadingSchema.extend({
+    answeredLabel: microLabel,
+    items: z
+      .array(
+        z.object({
+          key: z.enum(["sponsorship", "joining", "press", "general"]),
+          label: subheading,
+          blurb: paragraph,
+          responseTime: shortLine,
+        }),
+      )
+      .length(4),
+  }),
+  form: sectionHeadingSchema.extend({
+    heading: subheading,
+    note: lead,
+    messagePlaceholder: lead,
+    topicLabel: microLabel,
+    topicPlaceholder: linkLabel,
+    subject: shortLine,
+  }),
+  location: z.object({
+    heading: subheading,
+    teamLabel: microLabel,
+    basedAtLabel: microLabel,
+    city: shortLine,
+    generalLabel: microLabel,
+    followLabel: microLabel,
+  }),
+  sponsorNote: z.object({
+    title: subheading,
+    /** Split around the inline link, which is a route rather than a word. */
+    bodyBefore: lead,
+    linkLabel: linkLabel,
+    bodyAfter: lead,
+  }),
+  /** Reply-time phrase used by the form on this page. */
+  responseTime: shortLine,
+});
+
+export const notFoundCopySchema = z.object({
+  meta: metaSchema,
+  title: heading,
+  body: paragraph,
+  homeLink: buttonLabel,
+  contactLink: buttonLabel,
+});
+
+/* -------------------------------------------------------------------------
+   The copy registry
+   ------------------------------------------------------------------------- */
+
+/**
+ * Every copy file, keyed by the name it has on disk.
+ *
+ * One entry per page plus `common`, mirroring the site rather than the
+ * component tree — an editor with the live page open in another tab is looking
+ * for the page they can see, not for the component that renders it.
+ */
+export const COPY_SCHEMAS = {
+  common: commonCopySchema,
+  home: homeCopySchema,
+  "become-a-sponsor": becomeASponsorCopySchema,
+  sponsors: sponsorsCopySchema,
+  team: teamCopySchema,
+  "the-car": theCarCopySchema,
+  progress: progressCopySchema,
+  news: newsCopySchema,
+  join: joinCopySchema,
+  "press-kit": pressKitCopySchema,
+  contact: contactCopySchema,
+  "not-found": notFoundCopySchema,
+} as const;
+
+export type CopyKey = keyof typeof COPY_SCHEMAS;
+export type Copy<K extends CopyKey> = z.infer<(typeof COPY_SCHEMAS)[K]>;
+
 /* -------------------------------------------------------------------------
    Error reporting
    ------------------------------------------------------------------------- */

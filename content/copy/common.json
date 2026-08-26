@@ -1,0 +1,137 @@
+{
+  "nav": {
+    "primary": [
+      {
+        "href": "/the-car",
+        "label": "The Car",
+        "description": "The 2027 machine, system by system."
+      },
+      {
+        "href": "/team",
+        "label": "Team",
+        "description": "The students who design and build it."
+      },
+      {
+        "href": "/progress",
+        "label": "Progress",
+        "description": "Season timeline and build updates."
+      },
+      {
+        "href": "/sponsors",
+        "label": "Sponsors",
+        "description": "The partners who make it possible."
+      },
+      {
+        "href": "/become-a-sponsor",
+        "label": "Partner With Us",
+        "description": "Tiers, deliverables and how to start."
+      },
+      {
+        "href": "/news",
+        "label": "News",
+        "description": "Updates from the workshop and the paddock."
+      },
+      {
+        "href": "/join",
+        "label": "Join the Team",
+        "description": "Open roles across every subteam."
+      }
+    ],
+    "secondary": [
+      {
+        "href": "/press-kit",
+        "label": "Press Kit"
+      },
+      {
+        "href": "/contact",
+        "label": "Contact"
+      }
+    ]
+  },
+  "cta": {
+    "sponsor": "Become a Sponsor",
+    "join": "Join the Team"
+  },
+  "header": {
+    "skipToContent": "Skip to content",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "footer": {
+    "exploreHeading": "Explore",
+    "getInvolvedHeading": "Get involved",
+    "legalLine": "{name}. A student team at {university}."
+  },
+  "comingSoon": {
+    "badge": "Coming soon",
+    "body": "In the meantime, the fastest route in is a direct message or an email — we answer both.",
+    "backLink": "← Back to the home page"
+  },
+  "hero": {
+    "scrollHint": "Scroll"
+  },
+  "countdown": {
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "happeningNow": "Happening now",
+    "finished": "That's a wrap",
+    "happeningNowDetail": "{event} is under way at Silverstone. Follow the team for live updates from the paddock.",
+    "finishedDetail": "{event} is done. Our full write-up — what worked, what didn't, and what changes for next season — is in the news.",
+    "remainingSummary": "{days} days, {hours} hours and {minutes} minutes until {event}.",
+    "loadingSummary": "Loading the countdown to {event}."
+  },
+  "form": {
+    "nameLabel": "Your name",
+    "organisationLabel": "Organisation",
+    "emailLabel": "Email",
+    "messageLabel": "Message",
+    "honeypotLabel": "Company website",
+    "submitLabel": "Send enquiry",
+    "sendAnotherLabel": "Send another",
+    "successTitle": "Thank you — that has reached us.",
+    "successBody": "Someone from the team will reply {window}, from {email}. If you have not heard from us by then, write to that address directly and it will get chased.",
+    "errorTitle": "That did not send.",
+    "errorBody": "Nothing you typed has been lost — press send again, or email {email} directly.",
+    "replyPromise": "We reply {window}. You can also write to {email}.",
+    "mailtoNote": "This opens your email app with the message prefilled. If that does not work, write to {email}.",
+    "requiredNote": "All fields are required except the tier, which we are happy to advise on.",
+    "submittingLabel": "Sending…",
+    "submittingAnnouncement": "Sending your message.",
+    "errors": {
+      "name": "Tell us your name.",
+      "organisation": "Tell us which organisation you are writing from.",
+      "emailMissing": "We need an email address to reply to.",
+      "emailInvalid": "That does not look like an email address.",
+      "topic": "Choose a {topic}.",
+      "message": "Add a message, even a short one."
+    }
+  },
+  "seoKeywords": [
+    "Formula Student",
+    "student motorsport",
+    "engineering sponsorship",
+    "Silverstone"
+  ],
+  "ui": {
+    "logoAlt": "KUFS — Khalifa University Formula Student",
+    "sponsorBarHeading": "Our partners",
+    "linkedinLabel": "LinkedIn",
+    "statusDone": "Complete",
+    "statusActive": "In progress",
+    "statusUpcoming": "Upcoming",
+    "heroLoading": "Loading hero animation, {percent} percent."
+  },
+  "tierTable": {
+    "notIncluded": "Not included",
+    "tbcLabel": "TBC",
+    "tbcTooltip": "To be confirmed — the team is still setting this figure",
+    "usdApprox": "≈ USD {amount}",
+    "tableCaption": "Sponsorship tiers compared across eight benefits, with the annual amount for each.",
+    "benefitColumnLabel": "Benefit",
+    "purposeRowLabel": "What it is for",
+    "placeSingular": "place",
+    "placePlural": "places"
+  }
+}

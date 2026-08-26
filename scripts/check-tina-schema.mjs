@@ -47,6 +47,25 @@ const schemas = await jiti.import("./src/lib/schemas.ts");
 const overlays = await jiti.import("./tina/overlays.ts");
 
 /** Collection name -> [Zod schema, overlay]. Mirrors tina/config.ts. */
+const COPY_PAGES = [
+  "common",
+  "home",
+  "become-a-sponsor",
+  "sponsors",
+  "team",
+  "the-car",
+  "progress",
+  "news",
+  "join",
+  "press-kit",
+  "contact",
+  "not-found",
+];
+
+/** Copy overlays are exported as <camelCasePage>CopyOverlay. */
+const copyOverlayName = (page) =>
+  `${page.replace(/-([a-z])/g, (_, c) => c.toUpperCase())}CopyOverlay`;
+
 const COLLECTIONS = {
   site: [schemas.siteSchema, overlays.siteOverlay],
   sponsors: [schemas.sponsorSchema, overlays.sponsorOverlay],
@@ -56,6 +75,12 @@ const COLLECTIONS = {
   roles: [schemas.roleSchema, overlays.roleOverlay],
   cars: [schemas.carSchema, overlays.carOverlay],
   news: [schemas.newsFrontmatterSchema, overlays.newsOverlay],
+  ...Object.fromEntries(
+    COPY_PAGES.map((page) => [
+      `copy/${page}`,
+      [schemas.COPY_SCHEMAS[page], overlays[copyOverlayName(page)]],
+    ]),
+  ),
 };
 
 console.log("TinaCMS schema check\n");

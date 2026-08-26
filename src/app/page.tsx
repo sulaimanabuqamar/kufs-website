@@ -7,14 +7,12 @@ import { ProgressSnapshot } from "@/components/home/ProgressSnapshot";
 import { RecruitmentBand } from "@/components/home/RecruitmentBand";
 import { SponsorTiers } from "@/components/home/SponsorTiers";
 import { WhatIsFormulaStudent } from "@/components/home/WhatIsFormulaStudent";
-import site from "@/content/site";
+import { getCopy } from "@/lib/content";
 
 export const metadata: Metadata = {
   // Home overrides the title template so it does not read "X · KUFS".
-  title: {
-    absolute: `${site.longName} — ${site.competition.name} ${site.competition.year}`,
-  },
-  description: site.description,
+  title: { absolute: getCopy("home").meta.title },
+  description: getCopy("home").meta.description,
   alternates: { canonical: "/" },
 };
 

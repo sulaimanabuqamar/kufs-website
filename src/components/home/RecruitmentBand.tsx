@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
-import { CTA } from "@/lib/nav";
-import { getTeamStats } from "@/lib/content";
+import site from "@/content/site";
+import { getCopy, getNav, getTeamStats } from "@/lib/content";
+import { fill } from "@/lib/copy";
 import { ENGINEERING_SUBTEAMS } from "@/lib/schemas";
 
 /**
@@ -15,6 +16,8 @@ import { ENGINEERING_SUBTEAMS } from "@/lib/schemas";
  * not "am I interested" but "am I good enough yet".
  */
 export function RecruitmentBand() {
+  const copy = getCopy("home").recruitment;
+  const nav = getNav();
   const { headcount } = getTeamStats();
 
   return (
@@ -24,15 +27,16 @@ export function RecruitmentBand() {
     >
       <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex flex-col gap-4">
-          <p className="text-eyebrow uppercase opacity-80">Join the team</p>
+          <p className="text-eyebrow uppercase opacity-80">{copy.eyebrow}</p>
           <h2 id="join-heading" className="max-w-[20ch] text-h2">
-            You do not need experience. You need to turn up.
+            {copy.title}
           </h2>
           <p className="max-w-[58ch] text-lead opacity-90">
-            KUFS is {headcount} students across {ENGINEERING_SUBTEAMS.length} engineering
-            subteams and an operations division, building Khalifa University&rsquo;s first
-            Formula Student car. Engineers and non-engineers alike — three of the eight
-            scored events are design, cost and business.
+            {fill(copy.body, {
+              headcount,
+              subteams: ENGINEERING_SUBTEAMS.length,
+              university: site.university,
+            })}
           </p>
         </div>
 
@@ -43,18 +47,18 @@ export function RecruitmentBand() {
             the /80 and /90 body text 4.96:1 and 6.10:1 (over the 4.5:1 minimum). */}
         <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
           <Button
-            href={CTA.join.href}
+            href={nav.cta.join.href}
             size="lg"
             className="bg-bg text-text hover:bg-surface-raised"
           >
-            {CTA.join.label}
+            {nav.cta.join.label}
           </Button>
           <Button
             href="/team"
             size="lg"
             className="border border-accent-contrast/70 bg-transparent text-accent-contrast hover:bg-accent-contrast/10"
           >
-            Meet the team
+            {copy.teamLink}
           </Button>
         </div>
       </div>

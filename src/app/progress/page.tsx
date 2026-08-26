@@ -8,12 +8,16 @@ import { Button } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { StatusPill } from "@/components/ui/StatusPill";
 import site from "@/content/site";
-import { getMilestonesByPhase, getProgressSummary } from "@/lib/content";
-import { CTA } from "@/lib/nav";
+import {
+  getCopy,
+  getMilestonesByPhase,
+  getNav,
+  getProgressSummary,
+  getStatusLabels,
+} from "@/lib/content";
+import { fill } from "@/lib/copy";
 
-const TITLE = "Progress";
-const DESCRIPTION =
-  "The KUFS season timeline: design freeze, manufacture, assembly, testing and competition — with progress reported against every milestone, including the ones that slip.";
+const { title: TITLE, description: DESCRIPTION } = getCopy("progress").meta;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -43,6 +47,9 @@ const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
  * defeat the point of having the page at all.
  */
 export default function ProgressPage() {
+  const copy = getCopy("progress");
+  const statusLabels = getStatusLabels();
+  const nav = getNav();
   const groups = getMilestonesByPhase();
   const summary = getProgressSummary();
 
@@ -52,22 +59,18 @@ export default function ProgressPage() {
       <Section className="border-b border-border">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="flex max-w-[58ch] flex-col gap-5">
-            <p className="text-eyebrow uppercase text-accent">Season</p>
-            <h1 className="text-h1 text-text">The build, against the schedule</h1>
+            <p className="text-eyebrow uppercase text-accent">{copy.header.eyebrow}</p>
+            <h1 className="text-h1 text-text">{copy.header.title}</h1>
             <SpeedStripe variant="accent" />
-            <p className="text-lead text-text-muted">
-              We publish our milestone dates in advance and then report against them. That
-              includes the ones that slip — a partner deserves the real picture, not a
-              highlights reel.
-            </p>
+            <p className="text-lead text-text-muted">{copy.header.lead}</p>
           </div>
 
           <aside className="flex flex-col gap-4 self-start rounded-lg border border-border bg-surface p-7">
-            <h2 className="text-h4 text-text">Where we are</h2>
+            <h2 className="text-h4 text-text">{copy.status.heading}</h2>
             <dl className="flex flex-col gap-4 border-t border-border pt-5">
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Milestones complete
+                  {copy.status.completeLabel}
                 </dt>
                 <dd className="tabular text-h3 text-accent">
                   {summary.complete}
@@ -76,7 +79,9 @@ export default function ProgressPage() {
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Days to {site.competition.name} {site.competition.year}
+                  {fill(copy.status.daysToLabel, {
+                    event: `${site.competition.name} ${site.competition.year}`,
+                  })}
                 </dt>
                 <dd className="text-h3 text-accent">
                   <DaysUntil targetIso={site.competition.startsAt} />
@@ -112,9 +117,9 @@ export default function ProgressPage() {
       <Section labelledBy="timeline-heading">
         <SectionHeading
           id="timeline-heading"
-          eyebrow="Timeline"
-          title="Design to Silverstone"
-          lead="Five phases, from team setup to competition readiness. Each milestone carries a written update once there is something to report."
+          eyebrow={copy.timeline.eyebrow}
+          title={copy.timeline.title}
+          lead={copy.timeline.lead}
         />
 
         {/* Carried verbatim from the team's project timeline. The dates below
@@ -123,9 +128,7 @@ export default function ProgressPage() {
           role="note"
           className="mt-8 max-w-[72ch] rounded-lg border-l-2 border-l-accent bg-surface px-6 py-5 text-small text-text-muted"
         >
-          Please note: this timeline is preliminary and may be updated once the official
-          FSUK 2027 key dates and competition schedule are released by IMechE, expected in
-          early October.
+          {copy.preliminaryNote}
         </p>
 
         {/* The manufacturing window is a span, not a point — it runs from the
@@ -133,9 +136,9 @@ export default function ProgressPage() {
             milestones below, so it is rendered as a band rather than an item. */}
         <div className="mt-8 overflow-hidden rounded-lg border border-border">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 bg-surface-raised px-6 py-4">
-            <p className="text-h4 text-text">Manufacturing &amp; Procurement Window</p>
+            <p className="text-h4 text-text">{copy.manufacturing.heading}</p>
             <p className="tabular text-caption uppercase tracking-wider text-text-muted">
-              Concept freeze → first drive
+              {copy.manufacturing.label}
             </p>
           </div>
           <div aria-hidden className="flex h-2">
@@ -144,9 +147,7 @@ export default function ProgressPage() {
             <span className="w-[22%] bg-border" />
           </div>
           <p className="px-6 py-4 text-small text-text-muted">
-            Ordering, machining and fabrication run continuously across this span rather
-            than at a single date — roughly from the concept freeze on 30 October to first
-            drive on 31 March.
+            {copy.manufacturing.note}
           </p>
         </div>
 
@@ -185,7 +186,7 @@ export default function ProgressPage() {
                     <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-start">
                       <div className="flex flex-col gap-2">
                         <div className="flex flex-wrap items-center gap-3">
-                          <StatusPill status={milestone.status} />
+                          <StatusPill labels={statusLabels} status={milestone.status} />
                           <time
                             dateTime={milestone.date}
                             className="tabular text-small text-text-muted"
@@ -205,18 +206,14 @@ export default function ProgressPage() {
                       {milestone.update ? (
                         <div className="rounded-lg border-l-2 border-l-accent border-y border-r border-border bg-surface p-5">
                           <p className="text-caption font-semibold uppercase tracking-wider text-accent">
-                            Update
+                            {copy.updateLabel}
                           </p>
                           <p className="mt-2 text-small text-text">{milestone.update}</p>
                         </div>
                       ) : (
                         <div className="rounded-lg border border-dashed border-border p-5">
                           <p className="text-small text-text-muted">
-                            {milestone.status === "done"
-                              ? "Completed. Write-up still to come."
-                              : milestone.status === "active"
-                                ? "In progress — an update follows once this milestone closes."
-                                : "Not started yet."}
+                            {copy.noUpdate[milestone.status]}
                           </p>
                         </div>
                       )}
@@ -244,12 +241,12 @@ export default function ProgressPage() {
       <Section labelledBy="glossary-heading" className="border-t border-border">
         <SectionHeading
           id="glossary-heading"
-          eyebrow="Reference"
-          title="What the acronyms mean"
-          lead="Formula Student runs on documents, and the milestones above are named after them. Here is what each one is."
+          eyebrow={copy.glossary.eyebrow}
+          title={copy.glossary.title}
+          lead={copy.glossary.lead}
         />
         <div className="mt-12">
-          <Glossary />
+          <Glossary terms={copy.glossary.terms} />
         </div>
       </Section>
 
@@ -257,14 +254,11 @@ export default function ProgressPage() {
       <Section tight className="border-t border-border">
         <div className="flex flex-col items-start gap-6 rounded-lg border border-border bg-surface p-8 lg:flex-row lg:items-center lg:justify-between lg:p-10">
           <div className="flex flex-col gap-3">
-            <h2 className="text-h3 text-text">Back the next milestone</h2>
-            <p className="max-w-[56ch] text-body text-text-muted">
-              Every date on this page has a cost behind it — materials, machining, rig
-              time, freight. Partners are why they get hit.
-            </p>
+            <h2 className="text-h3 text-text">{copy.cta.title}</h2>
+            <p className="max-w-[56ch] text-body text-text-muted">{copy.cta.body}</p>
           </div>
-          <Button href={CTA.sponsor.href} size="lg" className="shrink-0">
-            {CTA.sponsor.label}
+          <Button href={nav.cta.sponsor.href} size="lg" className="shrink-0">
+            {nav.cta.sponsor.label}
           </Button>
         </div>
       </Section>
