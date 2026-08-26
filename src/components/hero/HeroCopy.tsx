@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
-import { heroCopy, type HERO_CHECKPOINTS } from "@/components/hero/heroContent";
-import { CTA } from "@/lib/nav";
+import { type HERO_CHECKPOINTS } from "@/components/hero/heroContent";
 import { cn } from "@/lib/cn";
 
 /**
@@ -41,16 +40,24 @@ const REVEAL_CLASSES: Record<keyof typeof HERO_CHECKPOINTS, string> = {
 
 export function HeroCopy({
   eyebrow,
+  headline,
   positioning,
   spec,
+  cta,
   revealed = false,
 }: {
-  /** Passed in from the server: these come from content/site.ts, which must
-   *  not be imported across the client boundary. */
+  /** Passed in from the server: every one of these comes from the content
+   *  layer, which must not be imported across the client boundary. */
   eyebrow: string;
+  /** Headline lines. The last one takes the accent colour. */
+  headline: readonly string[];
   positioning: string;
   /** Label/value pairs revealed at the last checkpoint. */
   spec: readonly { label: string; value: string }[];
+  cta: {
+    sponsor: { href: string; label: string };
+    join: { href: string; label: string };
+  };
   revealed?: boolean;
 }) {
   // When `revealed`, the hidden state is never applied at all.
@@ -67,9 +74,9 @@ export function HeroCopy({
         <p className="text-eyebrow uppercase text-accent">{eyebrow}</p>
 
         <h1 id="hero-heading" className="mt-4 text-display text-text">
-          {heroCopy.headline.map((line, index) => (
+          {headline.map((line, index) => (
             <span key={line} className="block">
-              {index === heroCopy.headline.length - 1 ? (
+              {index === headline.length - 1 ? (
                 <span className="text-accent">{line}</span>
               ) : (
                 line
@@ -96,11 +103,11 @@ export function HeroCopy({
             lands here and taps immediately must be able to; hiding the
             conversion path until 25% scroll would be a self-inflicted wound. */}
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Button href={CTA.sponsor.href} variant="primary" size="lg">
-            {CTA.sponsor.label}
+          <Button href={cta.sponsor.href} variant="primary" size="lg">
+            {cta.sponsor.label}
           </Button>
-          <Button href={CTA.join.href} variant="secondary" size="lg">
-            {CTA.join.label}
+          <Button href={cta.join.href} variant="secondary" size="lg">
+            {cta.join.label}
           </Button>
         </div>
 

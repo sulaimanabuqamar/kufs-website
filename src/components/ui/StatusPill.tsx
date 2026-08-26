@@ -8,11 +8,13 @@ import type { MilestoneStatus } from "@/lib/schemas";
  * would fail WCAG 1.4.1. The dot is decorative and hidden from assistive tech.
  */
 
-const STATUS_LABEL: Record<MilestoneStatus, string> = {
-  done: "Complete",
-  active: "In progress",
-  upcoming: "Upcoming",
-};
+/**
+ * Words from copy; which status maps to which word is not editable.
+ *
+ * Passed in rather than read here: this component is small enough to end up
+ * inside a client tree, and the content layer must not cross that boundary.
+ */
+export type StatusLabels = Record<MilestoneStatus, string>;
 
 const STATUS_STYLE: Record<MilestoneStatus, string> = {
   done: "text-status-done border-status-done/35 bg-status-done/10",
@@ -23,9 +25,11 @@ const STATUS_STYLE: Record<MilestoneStatus, string> = {
 export function StatusPill({
   status,
   className,
+  labels,
 }: {
   status: MilestoneStatus;
   className?: string;
+  labels: StatusLabels;
 }) {
   return (
     <span
@@ -43,7 +47,7 @@ export function StatusPill({
           status === "active" && "motion-safe:animate-pulse",
         )}
       />
-      {STATUS_LABEL[status]}
+      {labels[status]}
     </span>
   );
 }

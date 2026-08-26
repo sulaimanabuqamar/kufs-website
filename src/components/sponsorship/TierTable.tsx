@@ -1,4 +1,5 @@
 import { BENEFIT_ROWS, type SponsorshipTier } from "@/lib/schemas";
+import { fill } from "@/lib/copy";
 import { TIER_LABEL } from "@/lib/tiers";
 import { cn } from "@/lib/cn";
 
@@ -19,14 +20,14 @@ import { cn } from "@/lib/cn";
  * is where Racing Red is allowed to carry emphasis.
  */
 
-function BenefitValue({ value }: { value: string | false }) {
+function BenefitValue({ value, copy }: { value: string | false; copy: TierTableCopy }) {
   if (value === false) {
     return (
       <>
         <span aria-hidden className="text-muted-on-light/50">
           —
         </span>
-        <span className="sr-only">Not included</span>
+        <span className="sr-only">{copy.notIncluded}</span>
       </>
     );
   }
@@ -41,14 +42,19 @@ function BenefitValue({ value }: { value: string | false }) {
  * the dirham is pegged, so it does not move — and it is labelled approximate
  * because it is not fetched live and is not a quoted price.
  */
-function Amount({ amount, usd }: { amount: string | null; usd: number | null }) {
+function Amount({
+  amount,
+  usd,
+  copy,
+}: {
+  amount: string | null;
+  usd: number | null;
+  copy: TierTableCopy;
+}) {
   if (!amount) {
     return (
-      <abbr
-        title="To be confirmed — the team is still setting this figure"
-        className="no-underline"
-      >
-        TBC
+      <abbr title={copy.tbcTooltip} className="no-underline">
+        {copy.tbcLabel}
       </abbr>
     );
   }
@@ -57,7 +63,7 @@ function Amount({ amount, usd }: { amount: string | null; usd: number | null }) 
       {amount}
       {usd ? (
         <span className="ml-2 whitespace-nowrap text-caption font-normal text-muted-on-light">
-          ≈ USD {usd.toLocaleString("en-US")}
+          {fill(copy.usdApprox, { amount: usd.toLocaleString("en-US") })}
         </span>
       ) : null}
     </>
@@ -72,12 +78,27 @@ function usdEquivalent(amount: string | null, rate: number): number | null {
   return Math.round((Number(digits) * rate) / 100) * 100;
 }
 
+/** Every word this table renders. Passed in from the page. */
+export type TierTableCopy = {
+  notIncluded: string;
+  tbcLabel: string;
+  tbcTooltip: string;
+  usdApprox: string;
+  tableCaption: string;
+  benefitColumnLabel: string;
+  purposeRowLabel: string;
+  placeSingular: string;
+  placePlural: string;
+};
+
 export function TierTable({
   tiers,
   aedToUsd,
+  copy,
 }: {
   tiers: SponsorshipTier[];
   aedToUsd: number;
+  copy: TierTableCopy;
 }) {
   return (
     <>
@@ -91,13 +112,18 @@ export function TierTable({
             <header className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <h3 className="text-h3 text-text-on-light">{tier.name}</h3>
               <p className="tabular text-h4 text-accent-on-light">
-                <Amount amount={tier.amount} usd={usdEquivalent(tier.amount, aedToUsd)} />
+                <Amount
+                  copy={copy}
+                  amount={tier.amount}
+                  usd={usdEquivalent(tier.amount, aedToUsd)}
+                />
               </p>
             </header>
             <p className="mt-3 text-small text-muted-on-light">{tier.summary}</p>
             {tier.slots ? (
               <p className="mt-2 text-caption font-semibold uppercase tracking-wider text-accent-on-light">
-                {tier.slots} {tier.slots === 1 ? "place" : "places"} available
+                {tier.slots} {tier.slots === 1 ? copy.placeSingular : copy.placePlural}{" "}
+                available
               </p>
             ) : null}
 
@@ -108,7 +134,7 @@ export function TierTable({
                     {row.label}
                   </dt>
                   <dd className="text-small text-text-on-light">
-                    <BenefitValue value={tier.benefits[row.key]} />
+                    <BenefitValue copy={copy} value={tier.benefits[row.key]} />
                   </dd>
                 </div>
               ))}
@@ -120,14 +146,11 @@ export function TierTable({
       {/* ---- Full matrix: lg and up ---- */}
       <div className="hidden lg:block">
         <table className="w-full border-collapse text-left align-top">
-          <caption className="sr-only">
-            Sponsorship tiers compared across eight benefits, with the annual amount for
-            each.
-          </caption>
+          <caption className="sr-only">{copy.tableCaption}</caption>
           <thead>
             <tr>
               <th scope="col" className="w-[13rem] p-4 align-bottom">
-                <span className="sr-only">Benefit</span>
+                <span className="sr-only">{copy.benefitColumnLabel}</span>
               </th>
               {tiers.map((tier) => (
                 <th
@@ -143,13 +166,15 @@ export function TierTable({
                   </span>
                   <span className="tabular mt-1 block text-small font-semibold text-muted-on-light">
                     <Amount
+                      copy={copy}
                       amount={tier.amount}
                       usd={usdEquivalent(tier.amount, aedToUsd)}
                     />
                   </span>
                   {tier.slots ? (
                     <span className="mt-1 block text-caption text-muted-on-light">
-                      {tier.slots} {tier.slots === 1 ? "place" : "places"}
+                      {tier.slots}{" "}
+                      {tier.slots === 1 ? copy.placeSingular : copy.placePlural}
                     </span>
                   ) : null}
                 </th>
@@ -159,7 +184,7 @@ export function TierTable({
           <tbody>
             <tr>
               <th scope="row" className="p-4 align-top text-small text-muted-on-light">
-                What it is for
+                {copy.purposeRowLabel}
               </th>
               {tiers.map((tier) => (
                 <td
@@ -183,7 +208,7 @@ export function TierTable({
                     key={tier.tier}
                     className="p-4 align-top text-small text-text-on-light"
                   >
-                    <BenefitValue value={tier.benefits[row.key]} />
+                    <BenefitValue copy={copy} value={tier.benefits[row.key]} />
                   </td>
                 ))}
               </tr>

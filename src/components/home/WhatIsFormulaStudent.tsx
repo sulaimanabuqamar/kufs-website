@@ -1,6 +1,7 @@
 import { Section, SectionHeading } from "@/components/ui/Section";
 import site from "@/content/site";
-import { getTeamStats } from "@/lib/content";
+import { getCopy, getTeamStats } from "@/lib/content";
+import { fill } from "@/lib/copy";
 
 /**
  * The explainer.
@@ -11,6 +12,7 @@ import { getTeamStats } from "@/lib/content";
  * putting their name on.
  */
 export function WhatIsFormulaStudent() {
+  const copy = getCopy("home").whatIsFs;
   const { competition, stats } = site;
   const team = getTeamStats();
 
@@ -18,36 +20,27 @@ export function WhatIsFormulaStudent() {
     <Section labelledBy="fs-heading">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
         <div className="flex flex-col gap-6">
-          <SectionHeading
-            id="fs-heading"
-            eyebrow="What is Formula Student?"
-            title="Europe's largest student engineering competition."
-          />
+          <SectionHeading id="fs-heading" eyebrow={copy.eyebrow} title={copy.title} />
           <div className="flex flex-col gap-4 text-lead text-text-muted">
             <p>
-              {competition.name} challenges university teams to design, build, cost and
-              race a single-seat car against a rulebook written by the{" "}
-              {competition.organiser}.
+              {fill(copy.body, {
+                competition: competition.name,
+                organiser: competition.organiser,
+              })}
             </p>
-            <p>
-              Every team is judged twice over: once on the engineering — design defence,
-              cost report and business case, in front of practising industry engineers —
-              and once on track, over acceleration, skid pad, sprint and a 22 km endurance
-              run.
-            </p>
-            <p>
-              It is the closest thing an undergraduate gets to shipping a real product: a
-              fixed deadline, a real budget, a scrutineer who does not care how hard the
-              term was, and a car that either finishes or does not.
-            </p>
+            <p>{copy.judgingBody}</p>
+            <p>{copy.shippingBody}</p>
 
             {/* Season-one line. Stated plainly — being new is a fact, not an
                 apology, and a founding season is a real thing to offer. */}
             <p className="rounded-lg border-l-2 border-l-accent bg-surface px-6 py-5 text-text">
-              {site.programme.seasonOneLine} {team.headcount} students across{" "}
-              {team.disciplines} disciplines, building a{" "}
-              {site.vehicle.architecture.toLowerCase()} single-seater with a{" "}
-              {site.vehicle.targetMass} target mass.
+              {site.programme.seasonOneLine}{" "}
+              {fill(copy.seasonLine, {
+                headcount: team.headcount,
+                disciplines: team.disciplines,
+                architecture: site.vehicle.architecture.toLowerCase(),
+                targetMass: site.vehicle.targetMass,
+              })}
             </p>
 
             {/* The team's own reference set — genuinely useful to a sponsor or a
@@ -56,10 +49,10 @@ export function WhatIsFormulaStudent() {
               {[
                 {
                   href: site.links.whatIsFormulaStudentVideo,
-                  label: "What is Formula Student? (video)",
+                  label: copy.videoLinkLabel,
                 },
-                { href: site.links.officialFsuk, label: "Official Formula Student UK" },
-                { href: site.links.fsResults, label: "Results and statistics" },
+                { href: site.links.officialFsuk, label: copy.officialLinkLabel },
+                { href: site.links.fsResults, label: copy.resultsLinkLabel },
               ].map((link) => (
                 <li key={link.href}>
                   <a
@@ -84,11 +77,8 @@ export function WhatIsFormulaStudent() {
             >
               <p className="tabular text-h1 leading-none text-accent">
                 {stat.value ?? (
-                  <abbr
-                    title="To be confirmed — not published for the 2027 event yet"
-                    className="no-underline"
-                  >
-                    TBC
+                  <abbr title={copy.tbcTooltip} className="no-underline">
+                    {copy.tbcLabel}
                   </abbr>
                 )}
               </p>

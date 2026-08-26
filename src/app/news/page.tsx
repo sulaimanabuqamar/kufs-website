@@ -5,12 +5,10 @@ import Link from "next/link";
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { Card, StretchedLinkOverlay } from "@/components/ui/Card";
 import { Section } from "@/components/ui/Section";
-import { getNewsPosts } from "@/lib/content";
+import { getCopy, getNewsPosts } from "@/lib/content";
 import site from "@/content/site";
 
-const TITLE = "News";
-const DESCRIPTION =
-  "Build updates, competition reports and technical write-ups from Khalifa University Formula Student, written by the people who did the work.";
+const { title: TITLE, description: DESCRIPTION } = getCopy("news").meta;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -40,6 +38,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
  * Adding it now would be building for a problem we do not have.
  */
 export default function NewsIndexPage() {
+  const copy = getCopy("news");
   const posts = getNewsPosts();
 
   return (
@@ -47,40 +46,37 @@ export default function NewsIndexPage() {
       <Section className="border-b border-border">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="flex max-w-[58ch] flex-col gap-5">
-            <p className="text-eyebrow uppercase text-accent">Updates</p>
-            <h1 className="text-h1 text-text">From the workshop and the paddock</h1>
+            <p className="text-eyebrow uppercase text-accent">{copy.header.eyebrow}</p>
+            <h1 className="text-h1 text-text">{copy.header.title}</h1>
             <SpeedStripe variant="accent" />
-            <p className="text-lead text-text-muted">
-              Build updates, event reports and post-mortems. Written by the people who did
-              the work, including the parts that went wrong.
-            </p>
+            <p className="text-lead text-text-muted">{copy.header.lead}</p>
           </div>
 
           <aside className="flex flex-col gap-4 self-start rounded-lg border border-border bg-surface p-7">
-            <h2 className="text-h4 text-text">Follow along</h2>
+            <h2 className="text-h4 text-text">{copy.aside.heading}</h2>
             <dl className="flex flex-col gap-4 border-t border-border pt-5">
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Posts
+                  {copy.aside.postsLabel}
                 </dt>
                 <dd className="tabular text-h3 text-accent">{posts.length}</dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Subscribe
+                  {copy.aside.subscribeLabel}
                 </dt>
                 <dd className="text-body">
                   <a
                     href="/news/rss.xml"
                     className="font-semibold text-accent underline-offset-4 hover:underline"
                   >
-                    RSS feed
+                    {copy.rssLabel}
                   </a>
                 </dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Or on social
+                  {copy.aside.socialLabel}
                 </dt>
                 <dd className="flex flex-wrap gap-x-4 gap-y-1">
                   {site.socials.map((social) => (
@@ -103,15 +99,12 @@ export default function NewsIndexPage() {
 
       <Section labelledBy="posts-heading">
         <h2 id="posts-heading" className="sr-only">
-          All posts
+          {copy.listHeading}
         </h2>
 
         {posts.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-8">
-            <p className="max-w-[56ch] text-body text-text-muted">
-              No posts yet. Updates from the build start appearing here as the season gets
-              going.
-            </p>
+            <p className="max-w-[56ch] text-body text-text-muted">{copy.emptyBody}</p>
           </div>
         ) : (
           <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -135,7 +128,7 @@ export default function NewsIndexPage() {
                     </time>
                     {post.draft ? (
                       <span className="rounded-pill border border-status-upcoming/40 bg-status-upcoming/10 px-2 py-0.5 text-caption font-semibold text-status-upcoming">
-                        Placeholder
+                        {copy.draftBadge}
                       </span>
                     ) : null}
                   </div>

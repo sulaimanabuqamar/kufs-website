@@ -5,6 +5,7 @@ import { SiteFooter } from "@/components/layout/SiteFooter";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { A4_SPEED_URL, fontVariables, hasLicensedDisplayFont } from "@/lib/fonts";
 import site from "@/content/site";
+import { getCopy } from "@/lib/content";
 import { siteUrl } from "@/lib/env";
 
 import "./globals.css";
@@ -30,13 +31,10 @@ export const metadata: Metadata = {
   description: site.description,
   applicationName: site.longName,
   keywords: [
-    "Formula Student",
+    ...getCopy("common").seoKeywords,
     site.competition.name,
     site.competition.class,
     site.university,
-    "student motorsport",
-    "engineering sponsorship",
-    "Silverstone",
   ],
   authors: [{ name: site.longName, url: siteUrl() }],
   creator: site.longName,
@@ -95,7 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="#main"
           className="sr-only-focusable absolute left-4 top-4 z-50 rounded-md bg-accent px-4 py-2 font-semibold text-accent-contrast"
         >
-          Skip to content
+          {getCopy("common").header.skipToContent}
         </a>
 
         <SiteHeader />

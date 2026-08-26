@@ -6,7 +6,7 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { KufsLogo } from "@/components/brand/KufsLogo";
-import { CTA, PRIMARY_NAV, SECONDARY_NAV } from "@/lib/nav";
+import type { NavItem } from "@/lib/nav";
 import { useFocusTrap, useScrollLock } from "@/lib/useFocusTrap";
 
 /**
@@ -19,8 +19,30 @@ import { useFocusTrap, useScrollLock } from "@/lib/useFocusTrap";
  *
  * The panel is always in the DOM but `hidden` when closed, so the browser's
  * find-in-page and the accessibility tree both stay honest.
+ *
+ * Every word it renders arrives as a prop from SiteHeader, which is a server
+ * component. That is not ceremony: this is a client component, and importing
+ * the content layer here would pull Zod and `node:fs` into the browser bundle
+ * — the exact regression scripts/check-bundle.mjs exists to catch.
  */
-export function MobileNav() {
+export function MobileNav({
+  primary,
+  secondary,
+  cta,
+  openLabel,
+  closeLabel,
+  logoAlt,
+}: {
+  primary: NavItem[];
+  secondary: NavItem[];
+  cta: {
+    sponsor: { href: string; label: string };
+    join: { href: string; label: string };
+  };
+  openLabel: string;
+  closeLabel: string;
+  logoAlt: string;
+}) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const panelRef = useRef<HTMLDivElement>(null);
@@ -48,7 +70,7 @@ export function MobileNav() {
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? closeLabel : openLabel}
         onClick={() => setOpen((v) => !v)}
         className="inline-flex size-11 items-center justify-center rounded-md border border-border-strong text-text"
       >
@@ -92,13 +114,13 @@ export function MobileNav() {
       >
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-border px-5">
           {/* Drawer panel is --color-surface (navy): dark artwork. */}
-          <KufsLogo on="dark" width={132} />
+          <KufsLogo alt={logoAlt} on="dark" width={132} />
           <button
             type="button"
             onClick={close}
             className="inline-flex size-11 items-center justify-center rounded-md text-text-muted hover:text-text"
           >
-            <span className="sr-only">Close menu</span>
+            <span className="sr-only">{closeLabel}</span>
             <svg viewBox="0 0 24 24" aria-hidden focusable="false" className="size-5">
               <path
                 d="M6 6l12 12M18 6L6 18"
@@ -113,7 +135,7 @@ export function MobileNav() {
 
         <nav aria-label="Primary" className="flex-1 overflow-y-auto px-5 py-6">
           <ul className="flex flex-col gap-1">
-            {PRIMARY_NAV.map((item) => {
+            {primary.map((item) => {
               const current = pathname === item.href;
               return (
                 <li key={item.href}>
@@ -137,7 +159,7 @@ export function MobileNav() {
           <hr className="my-6 border-border" />
 
           <ul className="flex flex-col gap-1">
-            {SECONDARY_NAV.map((item) => (
+            {secondary.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}
@@ -155,11 +177,11 @@ export function MobileNav() {
             On a phone the nav list can be long enough to scroll, so the two
             conversion paths are anchored where a thumb already is. */}
         <div className="flex shrink-0 flex-col gap-3 border-t border-border p-5">
-          <Button href={CTA.sponsor.href} size="md" className="w-full">
-            {CTA.sponsor.label}
+          <Button href={cta.sponsor.href} size="md" className="w-full">
+            {cta.sponsor.label}
           </Button>
-          <Button href={CTA.join.href} size="md" variant="secondary" className="w-full">
-            {CTA.join.label}
+          <Button href={cta.join.href} size="md" variant="secondary" className="w-full">
+            {cta.join.label}
           </Button>
         </div>
       </div>

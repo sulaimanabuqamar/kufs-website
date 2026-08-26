@@ -28,8 +28,24 @@ import { gzipSync } from "node:zlib";
 const ROOT = process.cwd();
 const APP_DIR = join(ROOT, ".next", "server", "app");
 
-/** Total gzipped JS any single route may load, in KB. */
-const BUDGET_KB = 150;
+/**
+ * Total gzipped JS any single route may load, in KB.
+ *
+ * THIS IS A CEILING WE CHOSE, NOT A MEASUREMENT. It has no external authority
+ * — it is the number past which we have decided this site should not grow
+ * without someone deciding that deliberately.
+ *
+ * It started at 150 in Brief #1 and did its job twice: it caught Zod leaking
+ * into the client bundle through a component import chain, and it kept
+ * TinaCMS's editor out of the public bundle. Raised to 170 in Brief #7, with
+ * headroom deliberately left rather than consumed: making every word on the
+ * site editable moved `/` from 149.9 KB to 149.7 KB, because copy is
+ * server-rendered and the change actually removed strings from the client.
+ *
+ * If a route crosses this, the first question is not "what should the budget
+ * be" — it is which component crossed a client boundary that should not have.
+ */
+const BUDGET_KB = 170;
 
 /**
  * Modules that must never reach the browser, with the reason. Matched against

@@ -1,0 +1,24 @@
+{
+  "meta": {
+    "title": "Press Kit",
+    "description": "Logos, imagery and team facts for journalists and partners covering Khalifa University Formula Student."
+  },
+  "header": {
+    "eyebrow": "Media",
+    "title": "Logos, imagery and team facts",
+    "lead": "High-resolution car photography, the KUFS logo in every format, a one-page fact sheet and our media contact."
+  },
+  "comingSoon": "Approved photography and a fact sheet covering the team, the car and our competition history. The logo lockups below are already final — email us for anything else and we will send it directly.",
+  "lockups": {
+    "eyebrow": "Brand",
+    "title": "Logo lockups",
+    "lead": "Pick by background. The full-colour marks are for normal use; the single-colour marks are for small sizes and one-colour printing.",
+    "captions": [
+      "Full colour, dark backgrounds. The default.",
+      "Full colour with the tagline, dark backgrounds.",
+      "Single colour with the red streak, for small sizes and one-colour print.",
+      "Full colour with the tagline, white and off-white backgrounds."
+    ],
+    "clearSpaceNote": "Clear space: keep at least the height of the “K” free on all sides. Never place the light-background lockup on navy — the “KU” disappears. For anything else, or for vector originals, email us."
+  }
+}

@@ -64,6 +64,16 @@ jobs:
       - name: Check admin panel matches the content schemas
         run: pnpm check:tina
 
+      # Every user-visible word on the site is editable from /admin. This is
+      # what stops the next feature quietly reintroducing a hardcoded heading
+      # and turning the panel from "edit anything" into "edit the parts nobody
+      # has touched since August". The self-test runs first, because a green
+      # run from a check nobody has seen fail is not evidence of anything.
+      - name: Check no copy is hardcoded
+        run: |
+          node scripts/check-copy.mjs --self-test
+          pnpm check:copy
+
       # Also the content gate: every file under /content is parsed through its
       # Zod schema during the build, so a malformed sponsor or milestone fails
       # here rather than in production.

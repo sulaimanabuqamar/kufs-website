@@ -259,19 +259,19 @@ export default function StyleguidePage() {
             <code className="font-mono text-caption text-text-muted">
               on=&quot;dark&quot;
             </code>
-            <KufsLogo on="dark" width={240} />
+            <KufsLogo alt="KUFS" on="dark" width={240} />
           </div>
           <div className="flex flex-col gap-3 rounded-lg border border-border bg-surface p-6">
             <code className="font-mono text-caption text-text-muted">
               on=&quot;dark&quot; withTagline
             </code>
-            <KufsLogo on="dark" withTagline width={240} />
+            <KufsLogo alt="KUFS" on="dark" withTagline width={240} />
           </div>
           <div className="surface-light flex flex-col gap-3 rounded-lg border border-border-light bg-bg-light p-6 sm:col-span-2">
             <code className="font-mono text-caption text-muted-on-light">
               on=&quot;light&quot;
             </code>
-            <KufsLogo on="light" width={280} />
+            <KufsLogo alt="KUFS" on="light" width={280} />
           </div>
         </div>
       </Block>
@@ -339,7 +339,11 @@ export default function StyleguidePage() {
       <Block title="Status pills" note="Colour plus a text label, never colour alone.">
         <div className="flex flex-wrap gap-3">
           {MILESTONE_STATUSES.map((status) => (
-            <StatusPill key={status} status={status} />
+            <StatusPill
+              labels={{ done: "Complete", active: "In progress", upcoming: "Upcoming" }}
+              key={status}
+              status={status}
+            />
           ))}
         </div>
       </Block>

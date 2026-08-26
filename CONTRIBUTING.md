@@ -19,6 +19,7 @@ it goes live, and every version is kept.
 3. [One-time setup](#one-time-setup)
 4. [Making a change](#making-a-change)
 5. [Common jobs](#common-jobs)
+   - [Changing the words on a page](#changing-the-words-on-a-page)
    - [Add a sponsor](#add-a-sponsor)
    - [Update the roster for a new year](#update-the-roster-for-a-new-year)
    - [Add a news post](#add-a-news-post)
@@ -185,6 +186,80 @@ Only needed if `/admin` returns 404 and you want the panel back.
 
 To turn the panel off again, delete those two variables and redeploy. The website is
 unaffected.
+
+### Changing the words on a page
+
+Every visible word on this site is editable here — headings, paragraphs, button
+labels, form labels, the error messages, the empty states, even the text screen readers
+read out. You do not need a developer and you do not need to touch the code.
+
+1. Open the panel and pick the page from the list: **Home page**, **Become a Sponsor
+   page**, **Team page**, and so on. There is one entry per page on the site.
+   - Words that appear on _every_ page — the menu, the footer, the two buttons in the
+     header, the enquiry forms — are under **Shared wording** instead.
+2. Find the section by **what it says on the live site**, not by what a developer would
+   call it. The fields are named after what the reader sees: "Main heading", "Intro
+   paragraph", "\"See open roles\" button".
+3. Change the text and press **Save**.
+4. Wait one to two minutes for the rebuild, then refresh the live page. (See
+   [What happens when you press Save](#what-happens-when-you-press-save) — the delay is
+   normal.)
+
+**Tip:** keep the live page open in a second tab. The panel is laid out in the same
+order as the page, so scrolling both together is the fastest way to find something.
+
+#### Why a heading will not let you type more
+
+Headings, buttons and small labels have a **character limit**, shown under the box as
+"Up to 70 characters." Go over it and the panel refuses to save, with a red line saying
+how many characters you have used.
+
+This is not the panel being fussy. The limits are measured against what the design
+actually holds **on a phone**, which is where most people read this site:
+
+| Field           | Limit | What happens past it                                       |
+| --------------- | ----- | ---------------------------------------------------------- |
+| Button label    | 32    | Wraps to two lines, next to buttons that are one line      |
+| Heading         | 70    | Wraps to three lines and pushes the buttons below the fold |
+| Small label     | 36    | Overlaps the number beside it in the stat panels           |
+| Intro paragraph | 280   | Pushes the page content down past the first screen         |
+
+If you genuinely need more room than a limit allows, that is a design question — ask a
+developer rather than trying to squeeze the words. Changing a limit is one line, but it
+should be a decision someone makes on purpose.
+
+#### Words with a {something} in them
+
+Some fields contain a placeholder in curly brackets:
+
+```
+Every tier is open for the {year} season.
+KUFS is {headcount} students across {subteams} subteams.
+```
+
+Those get filled in automatically — `{year}` from the competition date, `{headcount}` by
+counting the roster. **Leave the brackets exactly as they are**, but you can move them
+around inside the sentence and rewrite everything else. "The {year} season is open at
+every tier" works just as well.
+
+The help text under each field lists which placeholders it accepts. Inventing a new one
+will fail the build, because there is nothing to fill it with.
+
+### What you cannot change here, and who to ask
+
+The panel deliberately does not expose these. If you need one, it is a developer request,
+not a broken panel:
+
+| You want to...                                             | Why it is not here                                                                                                                                                                          | Ask      |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| Change a colour, a font or the spacing                     | Every colour on the site is contrast-checked so text stays readable for people with low vision. A CMS that can set a heading to red on navy ships something that fails accessibility rules. | Web lead |
+| Add, remove or rename a page                               | The URL of `/become-a-sponsor` is in sponsor emails and decks. A panel that can delete it is a liability. You _can_ rename what the menu link says.                                         | Web lead |
+| Make a heading bigger, or turn a heading into a subheading | Heading levels are what screen readers use to navigate the page. Changing the words is safe; changing the structure is not.                                                                 | Web lead |
+| Move a section up or down the page                         | Section order is a design decision that was made per page for a reason.                                                                                                                     | Web lead |
+| Add a new section or a new field                           | The field has to exist in the content rules first, or the build rejects it.                                                                                                                 | Web lead |
+| Change where an enquiry type sends email                   | Pointing "Press and media" at the sponsorship inbox is a routing mistake nobody notices for weeks.                                                                                          | Web lead |
+
+Everything else — every word, every image, every sponsor, every milestone — is yours.
 
 ### Editing the panel itself
 

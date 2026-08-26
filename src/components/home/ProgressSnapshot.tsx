@@ -3,7 +3,9 @@ import Link from "next/link";
 import { Card } from "@/components/ui/Card";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { StatusPill } from "@/components/ui/StatusPill";
-import { getUpcomingMilestones } from "@/lib/content";
+import site from "@/content/site";
+import { getCopy, getUpcomingMilestones, getStatusLabels } from "@/lib/content";
+import { fill } from "@/lib/copy";
 
 /** Dates render identically on server and client — an explicit locale and
  *  time zone, never the machine's defaults. */
@@ -15,6 +17,8 @@ const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
 });
 
 export function ProgressSnapshot() {
+  const copy = getCopy("home").progress;
+  const statusLabels = getStatusLabels();
   const milestones = getUpcomingMilestones(3);
 
   return (
@@ -22,15 +26,15 @@ export function ProgressSnapshot() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
           id="progress-heading"
-          eyebrow="Progress"
-          title="Where the 2027 car is right now"
-          lead="We publish the build schedule and then report against it — including the parts that slip."
+          eyebrow={copy.eyebrow}
+          title={fill(copy.title, { year: site.competition.year })}
+          lead={copy.lead ?? undefined}
         />
         <Link
           href="/progress"
           className="shrink-0 rounded-sm text-small font-semibold text-accent underline-offset-4 hover:underline"
         >
-          Full timeline →
+          {copy.allLink}
         </Link>
       </div>
 
@@ -38,7 +42,7 @@ export function ProgressSnapshot() {
         {milestones.map((milestone) => (
           <Card as="li" key={milestone.title} className="gap-3 p-6">
             <div className="flex items-center justify-between gap-3">
-              <StatusPill status={milestone.status} />
+              <StatusPill labels={statusLabels} status={milestone.status} />
               <time
                 dateTime={milestone.date}
                 className="tabular text-caption text-text-muted"

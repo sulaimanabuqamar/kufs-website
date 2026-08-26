@@ -76,6 +76,7 @@ export function KufsLogo({
   priority = false,
   className,
   clearSpace = false,
+  alt,
 }: {
   /** The background this logo will sit on. Chooses the artwork. */
   on: "dark" | "light";
@@ -93,6 +94,14 @@ export function KufsLogo({
   priority?: boolean;
   className?: string;
   clearSpace?: boolean;
+  /**
+   * Editable alt text, read from copy by whichever SERVER component renders
+   * this. It is a prop rather than a `getCopy()` call because KufsLogo is
+   * rendered inside MobileNav, which is a client component — importing the
+   * content layer here pulls `server-only` and Zod across the boundary and
+   * fails the build. That is the guard working, not an obstacle.
+   */
+  alt: string;
 }) {
   const key =
     on === "light"
@@ -111,7 +120,7 @@ export function KufsLogo({
   return (
     <Image
       src={artwork.src}
-      alt="KUFS — Khalifa University Formula Student"
+      alt={alt}
       width={width}
       height={height}
       priority={priority}

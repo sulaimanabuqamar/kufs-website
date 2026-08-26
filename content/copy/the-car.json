@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "title": "The Car",
+    "description": "The 2027 Khalifa University Formula Student car, system by system — architecture, target mass and the subteams building each part of it."
+  },
+  "header": {
+    "architectureLabel": "Architecture",
+    "targetMassLabel": "Target mass",
+    "buildLink": "Follow the build",
+    "posterCaption": "Placeholder render — the car does not exist yet. Photography follows first drive, scheduled for {firstDrive}."
+  },
+  "spec": {
+    "eyebrow": "Specification",
+    "title": "The numbers",
+    "lead": "{specified} of {total} rows have a value. These are TARGETS and a working baseline from our benchmarking study — not measured specifications. The architecture is frozen on {freezeDate}, and anything not yet decided is marked TBC rather than estimated.",
+    "tableCaption": "Specification of the {name}. Values marked TBC have not been measured yet.",
+    "tbcLabel": "TBC",
+    "tbcTooltip": "To be confirmed — not measured yet"
+  },
+  "subsystems": {
+    "eyebrow": "Systems",
+    "title": "How it is put together",
+    "lead": "Five subteams, five briefs. Each of these is owned by students who defend it at competition.",
+    "noImageNote": "Photography and CAD renders of the {system} package are added as the build progresses."
+  },
+  "gallery": {
+    "eyebrow": "Gallery",
+    "title": "The car in the workshop",
+    "lead": null,
+    "emptyBody": "No photographs yet. The {name} is {status}, and this gallery fills up through manufacture, assembly and shakedown. The build updates are on the progress page in the meantime.",
+    "emptyCta": "See the build progress"
+  },
+  "statusLabels": {
+    "concept": "In concept",
+    "inBuild": "In build",
+    "testing": "In testing",
+    "competing": "Competing",
+    "retired": "Retired"
+  }
+}

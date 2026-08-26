@@ -4,11 +4,10 @@ import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import site from "@/content/site";
+import { getCopy } from "@/lib/content";
 import { formspreeEndpoint } from "@/lib/env";
 
-const TITLE = "Contact";
-const DESCRIPTION =
-  "How to reach Khalifa University Formula Student — sponsorship, joining the team, press and general enquiries, with the right address for each.";
+const { title: TITLE, description: DESCRIPTION } = getCopy("contact").meta;
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -38,41 +37,27 @@ type Route = {
 };
 
 export default function ContactPage() {
+  const copy = getCopy("contact");
   const endpoint = formspreeEndpoint();
+  const formCopy = getCopy("common").form;
 
-  const routes: Route[] = [
-    {
-      value: "sponsorship",
-      label: "Sponsorship and partnerships",
-      email: site.sponsorshipEmail,
-      blurb:
-        "Cash, materials, machining, software or logistics. Our partnerships lead answers these.",
-      responseTime: "within two working days",
-    },
-    {
-      value: "joining",
-      label: "Joining the team",
-      email: site.contactEmail,
-      blurb:
-        "Open roles across every subteam, engineering and business. No prior experience expected.",
-      responseTime: "within a week during term",
-    },
-    {
-      value: "press",
-      label: "Press and media",
-      email: site.contactEmail,
-      blurb:
-        "Interviews, imagery, and the team fact sheet. Tell us your deadline and we will work to it.",
-      responseTime: "within two working days",
-    },
-    {
-      value: "general",
-      label: "Something else",
-      email: site.contactEmail,
-      blurb: "Questions about the car, the competition, or working with the university.",
-      responseTime: "within a week",
-    },
-  ];
+  // The words come from copy; the ADDRESS each route points at does not.
+  // "Press and media" pointing at the sponsorship inbox is a routing mistake
+  // an editor cannot see the consequences of, so that mapping stays here.
+  const routeEmail: Record<(typeof copy.routes.items)[number]["key"], string> = {
+    sponsorship: site.sponsorshipEmail,
+    joining: site.contactEmail,
+    press: site.contactEmail,
+    general: site.contactEmail,
+  };
+
+  const routes: Route[] = copy.routes.items.map((item): Route => ({
+    value: item.key,
+    label: item.label,
+    email: routeEmail[item.key],
+    blurb: item.blurb,
+    responseTime: item.responseTime,
+  }));
 
   return (
     <>
@@ -80,39 +65,36 @@ export default function ContactPage() {
       <Section className="border-b border-border">
         <div className="grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
           <div className="flex max-w-[58ch] flex-col gap-5">
-            <p className="text-eyebrow uppercase text-accent">Get in touch</p>
-            <h1 className="text-h1 text-text">Talk to us</h1>
+            <p className="text-eyebrow uppercase text-accent">{copy.header.eyebrow}</p>
+            <h1 className="text-h1 text-text">{copy.header.title}</h1>
             <SpeedStripe variant="accent" />
-            <p className="text-lead text-text-muted">
-              Sponsorship, recruitment, press, or a question about the car. Pick the right
-              route below and the person who can actually answer will reply.
-            </p>
+            <p className="text-lead text-text-muted">{copy.header.lead}</p>
           </div>
 
           <aside className="flex flex-col gap-4 self-start rounded-lg border border-border bg-surface p-7">
-            <h2 className="text-h4 text-text">Where to find us</h2>
+            <h2 className="text-h4 text-text">{copy.location.heading}</h2>
             <dl className="flex flex-col gap-4 border-t border-border pt-5">
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  The team
+                  {copy.location.teamLabel}
                 </dt>
                 <dd className="text-body text-text">{site.longName}</dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Based at
+                  {copy.location.basedAtLabel}
                 </dt>
                 {/* TODO(contact): confirm the campus and building the team
                     workshop is in before launch. */}
                 <dd className="text-body text-text">
                   {site.university}
                   <br />
-                  Abu Dhabi, United Arab Emirates
+                  {copy.location.city}
                 </dd>
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  General enquiries
+                  {copy.location.generalLabel}
                 </dt>
                 <dd className="text-body">
                   <a
@@ -125,7 +107,7 @@ export default function ContactPage() {
               </div>
               <div>
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
-                  Follow the build
+                  {copy.location.followLabel}
                 </dt>
                 <dd className="flex flex-wrap gap-x-4 gap-y-1">
                   {site.socials.map((social) => (
@@ -150,9 +132,9 @@ export default function ContactPage() {
       <Section labelledBy="routes-heading" className="border-b border-border">
         <SectionHeading
           id="routes-heading"
-          eyebrow="Enquiry types"
-          title="Who answers what"
-          lead="Writing to the right address is the fastest way to get a reply. All four are monitored by a person on the team."
+          eyebrow={copy.routes.eyebrow}
+          title={copy.routes.title}
+          lead={copy.routes.lead ?? undefined}
         />
 
         <ul className="mt-12 grid gap-5 md:grid-cols-2">
@@ -174,7 +156,7 @@ export default function ContactPage() {
                 </a>
               </p>
               <p className="text-caption text-text-muted">
-                Typically answered {route.responseTime}.
+                {copy.routes.answeredLabel} {route.responseTime}.
               </p>
             </li>
           ))}
@@ -188,43 +170,41 @@ export default function ContactPage() {
             <SectionHeading
               id="message-heading"
               tone="light"
-              eyebrow="Or just write"
-              title="Send us a message"
-              lead="If you are not sure which route fits, use this and we will pass it to the right person."
+              eyebrow={copy.form.eyebrow}
+              title={copy.form.title}
+              lead={copy.form.lead ?? undefined}
             />
             <div className="rounded-lg border-2 border-border-light bg-surface-light p-6">
-              <h3 className="text-h4 text-text-on-light">Sponsorship enquiries</h3>
+              <h3 className="text-h4 text-text-on-light">{copy.sponsorNote.title}</h3>
               <p className="mt-2 text-small text-muted-on-light">
-                If you are here to discuss a partnership, the{" "}
+                {copy.sponsorNote.bodyBefore}{" "}
                 <a
                   href="/become-a-sponsor"
                   className="font-semibold text-accent-on-light underline underline-offset-2"
                 >
-                  Become a Sponsor
+                  {copy.sponsorNote.linkLabel}
                 </a>{" "}
-                page has the tiers, the deliverables and a dedicated form — it will get
-                you a more useful first reply.
+                {copy.sponsorNote.bodyAfter}
               </p>
             </div>
           </div>
 
           <div className="rounded-lg border-2 border-border-light bg-surface-light p-6 sm:p-8">
-            <h3 className="text-h4 text-text-on-light">Message the team</h3>
-            <p className="mt-2 mb-6 text-small text-muted-on-light">
-              All fields are required. We will route it to the right person.
-            </p>
+            <h3 className="text-h4 text-text-on-light">{copy.form.heading}</h3>
+            <p className="mt-2 mb-6 text-small text-muted-on-light">{copy.form.note}</p>
             <EnquiryForm
+              copy={formCopy}
               endpoint={endpoint}
               toEmail={site.contactEmail}
-              subject="Website enquiry — KUFS"
-              topicLabel="Enquiry type"
-              topicPlaceholder="Choose an enquiry type"
+              subject={copy.form.subject}
+              topicLabel={copy.form.topicLabel}
+              topicPlaceholder={copy.form.topicPlaceholder}
               topicRequired
               showOrganisation={false}
               topicOptions={routes.map((r) => ({ value: r.value, label: r.label }))}
               event="Join CTA"
-              responseTime="within two working days"
-              messagePlaceholder="What you would like to know."
+              responseTime={copy.responseTime}
+              messagePlaceholder={copy.form.messagePlaceholder}
             />
           </div>
         </div>

@@ -1,17 +1,16 @@
 /**
- * Hero copy and its scroll checkpoints, kept out of the component so the
- * words can be edited without touching animation code — and so the sequence,
- * model and poster variants are guaranteed to say exactly the same thing.
+ * The hero's scroll checkpoints.
  *
- * `at` values are scroll progress through the pinned track, 0..1. Under
+ * Values are scroll progress through the pinned track, 0..1. Under
  * reduced-motion, on mobile, and before hydration, every block renders
  * revealed — the checkpoints are an enhancement, never a gate on the content.
  *
- * NOTE: this module must not import content/site.ts. It is reachable from
- * HeroCopy, which renders inside the client-side HeroStage, and site.ts pulls
- * in the Zod-validated content layer. Anything that has to come from site
- * config (the eyebrow, the positioning statement) is passed down as a prop by
- * the server component instead. Enforced by scripts/check-bundle.mjs.
+ * THE WORDS ARE NOT HERE. They moved to content/copy/home.json when the site's
+ * copy became editable from /admin, and ScrollCarHero passes them down. This
+ * module must not import content/site.ts or the content layer: it is reachable
+ * from HeroCopy, which renders inside the client-side HeroStage, and pulling
+ * Zod across that boundary is the single largest regression available to this
+ * codebase. Enforced by scripts/check-bundle.mjs.
  */
 
 export const HERO_CHECKPOINTS = {
@@ -20,16 +19,3 @@ export const HERO_CHECKPOINTS = {
 } as const;
 
 export type HeroCheckpoint = keyof typeof HERO_CHECKPOINTS;
-
-export const heroCopy = {
-  // The brand tagline, split so the second line can take the accent.
-  headline: ["Engineered to race.", "Driven to lead."],
-  /** Revealed last, as the payoff for scrolling the hero.
-   *  Values are injected by ScrollCarHero from content/site.ts and the roster —
-   *  nothing here is written down twice. */
-  specLabels: {
-    architecture: "Vehicle",
-    targetMass: "Target mass",
-    headcount: "Students on the team",
-  },
-} as const;

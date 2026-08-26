@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "Our Sponsors",
+    "description": "The companies and organisations backing Khalifa University Formula Student, and what each of them contributes to the car."
+  },
+  "header": {
+    "eyebrow": "Partners",
+    "title": "The companies behind the car",
+    "lead": "Every component on this car exists because somebody backed it. These are the organisations that did, and what each of them contributes.",
+    "asideHeading": "Where our support comes from",
+    "totalLabel": "Total partners",
+    "asideNote": "Every tier is open for the {year} season."
+  },
+  "partners": {
+    "title": "Our partners",
+    "emptyTitle": "This page is deliberately empty",
+    "emptyBody": "We would rather show you nothing than show you logos we have not earned. KUFS is in its first season and is looking for the organisations who will back the university's first Formula Student car — on the livery, on the teamwear, and in our first Competition Design Report.",
+    "emptyCta": "See the partnership tiers",
+    "inKindNote": "Partners who contribute parts, materials, machining or expertise rather than cash. Valued at market rate and placed at the equivalent tier.",
+    "partnerSince": "Partner since",
+    "visitLabel": "Visit {name}"
+  },
+  "cta": {
+    "title": "Your logo could be on the {year} car",
+    "body": "Cash, materials, machining time or expertise. We will tell you exactly what each tier gets you and send a written report at the end of the season."
+  }
+}

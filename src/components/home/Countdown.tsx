@@ -1,6 +1,8 @@
 import { CountdownClock } from "@/components/home/CountdownClock";
 import { Section } from "@/components/ui/Section";
 import site from "@/content/site";
+import { getCopy } from "@/lib/content";
+import { fill } from "@/lib/copy";
 
 /**
  * Countdown band. Server component: it reads the target date from
@@ -8,6 +10,8 @@ import site from "@/content/site";
  * so the content layer stays server-side.
  */
 export function Countdown() {
+  const copy = getCopy("home").countdown;
+  const common = getCopy("common").countdown;
   const { name, year, venue, organiser, class: fsClass, startsAt } = site.competition;
 
   return (
@@ -18,7 +22,7 @@ export function Countdown() {
     >
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <div className="flex flex-col gap-3">
-          <p className="text-eyebrow uppercase text-accent">Next on the calendar</p>
+          <p className="text-eyebrow uppercase text-accent">{copy.eyebrow}</p>
           <h2 id="countdown-heading" className="text-h3 text-text">
             {/* ASCII separator, not a middle dot. h2 renders in the display
                 face, and A4 Speed maps U+0020-U+007E only — a "·" there falls
@@ -32,11 +36,15 @@ export function Countdown() {
             {venue}
           </h2>
           <p className="max-w-[46ch] text-small text-text-muted">
-            {fsClass}, organised by the {organiser}.
+            {fill(copy.note, { class: fsClass, organiser })}
           </p>
         </div>
 
-        <CountdownClock targetIso={startsAt} eventName={`${name} ${year}`} />
+        <CountdownClock
+          targetIso={startsAt}
+          eventName={`${name} ${year}`}
+          copy={common}
+        />
       </div>
     </Section>
   );

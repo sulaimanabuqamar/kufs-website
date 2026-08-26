@@ -97,7 +97,7 @@ export default function OpenGraphImage() {
             maxWidth: 900,
           }}
         >
-          Engineered to race. Driven to lead.
+          {site.tagline}
         </div>
       </div>
 

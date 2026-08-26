@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "Become a Sponsor",
+    "description": "Partner with Khalifa University Formula Student. Sponsorship tiers, deliverables, in-kind options and how to start a conversation."
+  },
+  "header": {
+    "eyebrow": "Founding partnership / Season one",
+    "title": "Be on the first car this university has ever built",
+    "body": "{longName} is building {university}'s first Formula Student car — a {architecture} single-seater for {competition} {year} at {venue}. There is exactly one season in which a company can be a founding partner of this programme, and this is it.",
+    "tiersLink": "See the tiers",
+    "contactLink": "Talk to us"
+  },
+  "process": {
+    "heading": "What happens when you get in touch",
+    "steps": [
+      {
+        "title": "We reply within two working days",
+        "body": "From a person on the partnerships team, not an autoresponder."
+      },
+      {
+        "title": "You get a written proposal",
+        "body": "Which tier fits, what your logo goes on, and what we will report back at the end of the season."
+      },
+      {
+        "title": "We agree it before you commit",
+        "body": "Nothing is invoiced until the deliverables are written down and you have signed them off, subject to university approval."
+      }
+    ],
+    "inKindNote": "In-kind support — parts, machining, materials, software — is worth as much to us as cash. Ask either way."
+  },
+  "reasons": {
+    "eyebrow": "Why KUFS",
+    "title": "What a partnership actually buys",
+    "lead": "Four things, and we would rather be specific about them than promise exposure. We have no results to trade on yet — so this is what we can actually offer.",
+    "tbcLabel": "TBC",
+    "tbcTooltip": "To be confirmed with the team"
+  },
+  "tiers": {
+    "eyebrow": "Packages",
+    "title": "Sponsorship tiers",
+    "lead": "Every tier is compared on the same eight things, so you can read across a row rather than hunt for what was left out. Not sure which fits? Tell us what you had in mind and we will advise.",
+    "inKindFootnote": "Benefits and recognition will be agreed according to the value, relevance and impact of the contribution, subject to university approval.",
+    "liveryFootnote": "Vehicle and logo placement is illustrative and subject to final livery design, university approval and competition regulations.",
+    "currencyFootnote": "Amounts are in UAE dirhams. Dollar equivalents are indicative only, at a fixed reference rate — the dirham is pegged, but these are not quoted prices."
+  },
+  "inKind": {
+    "eyebrow": "In-kind",
+    "title": "You do not have to write us a cheque",
+    "lead": "A large share of Formula Student sponsorship is parts, not cash — and it is often worth more to us than the equivalent money, because it comes with expertise attached.",
+    "body": "We value in-kind contributions at market rate and place you at the equivalent tier, with the same benefits. If you are not sure whether what you do is useful to us, ask — the answer is usually yes.",
+    "categories": [
+      {
+        "title": "Materials and vehicle components",
+        "body": "Steel, fasteners, composites, cells, motors, inverters — anything that ends up bolted to the car."
+      },
+      {
+        "title": "Manufacturing and machining services",
+        "body": "Welding, five-axis work, waterjet, sheet metal. Turnaround matters as much as capacity."
+      },
+      {
+        "title": "Software and engineering tools",
+        "body": "CAD, CFD, FEA, lap simulation, data acquisition and PCB tooling licences."
+      },
+      {
+        "title": "Equipment and testing support",
+        "body": "Dyno time, rig time, measurement equipment, or somewhere safe to run the car."
+      },
+      {
+        "title": "Transportation and logistics",
+        "body": "Freight from Abu Dhabi to Silverstone and back — one of our largest fixed costs."
+      },
+      {
+        "title": "Technical consultation and expertise",
+        "body": "Design review attendance, mentoring, or a day of an engineer's time. Often worth more than the equivalent cash."
+      }
+    ]
+  },
+  "enquiry": {
+    "eyebrow": "Next step",
+    "title": "Start the conversation",
+    "lead": "Tell us roughly what you have in mind and we will come back with a concrete proposal, usually within two working days.",
+    "prospectusHeading": "Sponsorship prospectus",
+    "prospectusUnavailable": "The written prospectus is being finalised for this season. Ask us for it and we will send it the moment it is ready — usually the same week.",
+    "prospectusRequestLabel": "Request the prospectus",
+    "prospectusDownloadLabel": "Download the prospectus (PDF)",
+    "directHeading": "Prefer to talk directly?",
+    "formHeading": "Sponsorship enquiry",
+    "formNote": "All fields are required except the tier, which we are happy to advise on.",
+    "tierLabel": "Tier of interest",
+    "tierPlaceholder": "Not sure yet — advise me",
+    "messagePlaceholder": "What you are interested in, and anything you would want from a partnership.",
+    "prospectusAvailable": "The full pack: tiers, deliverables, reach figures and last season's report.",
+    "prospectusRequestSubject": "Request: KUFS sponsorship prospectus",
+    "formSubject": "Sponsorship enquiry — KUFS"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "meta": {
+    "title": "Page not found",
+    "description": "That page could not be found on the KUFS website."
+  },
+  "title": "That page has gone missing",
+  "body": "It may have moved, or it may not be built yet — we are adding to this site through the season. The links below will get you back on track.",
+  "homeLink": "Back to the home page",
+  "contactLink": "Contact us"
+}

@@ -4,6 +4,7 @@ import { useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
+import { fill, segments } from "@/lib/copy";
 import { track, type TrackedEvent } from "@/lib/analytics";
 
 /**
@@ -34,7 +35,37 @@ import { track, type TrackedEvent } from "@/lib/analytics";
 
 export type EnquiryField = "name" | "organisation" | "email" | "topic" | "message";
 
+/** Every word this form renders. Passed in, because this is a client component. */
+export type EnquiryFormCopy = {
+  nameLabel: string;
+  organisationLabel: string;
+  emailLabel: string;
+  messageLabel: string;
+  honeypotLabel: string;
+  submitLabel: string;
+  submittingLabel: string;
+  submittingAnnouncement: string;
+  sendAnotherLabel: string;
+  successTitle: string;
+  successBody: string;
+  errorTitle: string;
+  errorBody: string;
+  replyPromise: string;
+  mailtoNote: string;
+  requiredNote: string;
+  errors: {
+    name: string;
+    organisation: string;
+    emailMissing: string;
+    emailInvalid: string;
+    topic: string;
+    message: string;
+  };
+};
+
 export type EnquiryFormProps = {
+  /** Read on the server by the page and handed down; see the note above. */
+  copy: EnquiryFormCopy;
   /** Formspree endpoint. null => mailto fallback. */
   endpoint: string | null;
   /** Where enquiries go. Shown to the user and used by the fallback. */
@@ -65,6 +96,7 @@ type Errors = Partial<Record<EnquiryField, string>>;
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function EnquiryForm({
+  copy,
   endpoint,
   toEmail,
   subject,
@@ -124,17 +156,18 @@ export function EnquiryForm({
 
   function validate(): Errors {
     const next: Errors = {};
-    if (!values.name.trim()) next.name = "Tell us your name.";
+    if (!values.name.trim()) next.name = copy.errors.name;
     if (showOrganisation && !values.organisation.trim()) {
-      next.organisation = "Tell us which organisation you are writing from.";
+      next.organisation = copy.errors.organisation;
     }
-    if (!values.email.trim()) next.email = "We need an email address to reply to.";
+    if (!values.email.trim()) next.email = copy.errors.emailMissing;
     else if (!EMAIL.test(values.email.trim())) {
-      next.email = "That does not look like an email address.";
+      next.email = copy.errors.emailInvalid;
     }
-    if (topicRequired && !values.topic)
-      next.topic = `Choose a ${topicLabel.toLowerCase()}.`;
-    if (!values.message.trim()) next.message = "Add a message, even a short one.";
+    if (topicRequired && !values.topic) {
+      next.topic = fill(copy.errors.topic, { topic: topicLabel.toLowerCase() });
+    }
+    if (!values.message.trim()) next.message = copy.errors.message;
     return next;
   }
 
@@ -228,15 +261,22 @@ export function EnquiryForm({
         )}
       >
         <h3 className={cn("text-h4", light ? "text-text-on-light" : "text-text")}>
-          Thank you — that has reached us.
+          {copy.successTitle}
         </h3>
         <p className={cn("text-small", muted)}>
-          Someone from the team will reply {responseTime}, from{" "}
-          <a href={`mailto:${toEmail}`} className={linkClass}>
-            {toEmail}
-          </a>
-          . If you have not heard from us by then, write to that address directly and it
-          will get chased.
+          {/* One editable sentence with the address linked inside it, rather
+              than two fields around a hole an editor cannot move. */}
+          {segments(copy.successBody).map((part, index) =>
+            typeof part === "string" ? (
+              part
+            ) : part.token === "email" ? (
+              <a key={index} href={`mailto:${toEmail}`} className={linkClass}>
+                {toEmail}
+              </a>
+            ) : (
+              responseTime
+            ),
+          )}
         </p>
         <Button
           variant={light ? "onLightSecondary" : "secondary"}
@@ -247,7 +287,7 @@ export function EnquiryForm({
             setStatus("idle");
           }}
         >
-          Send another
+          {copy.sendAnotherLabel}
         </Button>
       </div>
     );
@@ -281,7 +321,7 @@ export function EnquiryForm({
       {/* Announces validation and submission outcomes without stealing focus. */}
       <p aria-live="polite" className="sr-only">
         {status === "submitting"
-          ? "Sending your message."
+          ? copy.submittingAnnouncement
           : Object.keys(errors).length > 0
             ? `${Object.keys(errors).length} field${Object.keys(errors).length === 1 ? "" : "s"} need attention.`
             : ""}
@@ -289,7 +329,7 @@ export function EnquiryForm({
 
       {/* Honeypot. Hidden from sight and from assistive tech, not from bots. */}
       <div aria-hidden className="sr-only-focusable absolute h-px w-px overflow-hidden">
-        <label htmlFor={`${ids}-company_website`}>Company website</label>
+        <label htmlFor={`${ids}-company_website`}>{copy.honeypotLabel}</label>
         <input
           id={`${ids}-company_website`}
           name="company_website"
@@ -302,7 +342,7 @@ export function EnquiryForm({
       <div className={cn("grid gap-5", showOrganisation && "sm:grid-cols-2")}>
         <div className="flex flex-col gap-2">
           <label htmlFor={`${ids}-name`} className={label}>
-            Your name
+            {copy.nameLabel}
           </label>
           <input
             {...inputProps("name")}
@@ -316,7 +356,7 @@ export function EnquiryForm({
         {showOrganisation ? (
           <div className="flex flex-col gap-2">
             <label htmlFor={`${ids}-organisation`} className={label}>
-              Organisation
+              {copy.organisationLabel}
             </label>
             <input
               {...inputProps("organisation")}
@@ -332,7 +372,7 @@ export function EnquiryForm({
       <div className="grid gap-5 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <label htmlFor={`${ids}-email`} className={label}>
-            Email
+            {copy.emailLabel}
           </label>
           <input
             {...inputProps("email")}
@@ -366,7 +406,7 @@ export function EnquiryForm({
 
       <div className="flex flex-col gap-2">
         <label htmlFor={`${ids}-message`} className={label}>
-          Message
+          {copy.messageLabel}
         </label>
         <textarea
           {...inputProps("message")}
@@ -392,14 +432,19 @@ export function EnquiryForm({
               light ? "text-text-on-light" : "text-text",
             )}
           >
-            That did not send.
+            {copy.errorTitle}
           </p>
           <p className={cn("text-caption", muted)}>
-            {errorDetail} Nothing you typed has been lost — press send again, or email{" "}
-            <a href={`mailto:${toEmail}`} className={linkClass}>
-              {toEmail}
-            </a>{" "}
-            directly.
+            {errorDetail}{" "}
+            {segments(copy.errorBody).map((part, index) =>
+              typeof part === "string" ? (
+                part
+              ) : (
+                <a key={index} href={`mailto:${toEmail}`} className={linkClass}>
+                  {toEmail}
+                </a>
+              ),
+            )}
           </p>
         </div>
       ) : null}
@@ -411,26 +456,19 @@ export function EnquiryForm({
           size="lg"
           disabled={status === "submitting"}
         >
-          {status === "submitting" ? "Sending…" : "Send enquiry"}
+          {status === "submitting" ? copy.submittingLabel : copy.submitLabel}
         </Button>
         <p className={cn("text-caption", muted)}>
-          {endpoint ? (
-            <>
-              We reply {responseTime}. You can also write to{" "}
-              <a href={`mailto:${toEmail}`} className={linkClass}>
+          {segments(endpoint ? copy.replyPromise : copy.mailtoNote).map((part, index) =>
+            typeof part === "string" ? (
+              part
+            ) : part.token === "email" ? (
+              <a key={index} href={`mailto:${toEmail}`} className={linkClass}>
                 {toEmail}
               </a>
-              .
-            </>
-          ) : (
-            <>
-              This opens your email app with the message prefilled. If that does not work,
-              write to{" "}
-              <a href={`mailto:${toEmail}`} className={linkClass}>
-                {toEmail}
-              </a>
-              .
-            </>
+            ) : (
+              responseTime
+            ),
           )}
         </p>
       </div>

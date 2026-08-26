@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "Contact",
+    "description": "How to reach Khalifa University Formula Student — sponsorship, recruitment, press, or a question about the car."
+  },
+  "header": {
+    "eyebrow": "Get in touch",
+    "title": "Talk to us",
+    "lead": "Sponsorship, recruitment, press, or a question about the car. Pick the right route below and the person who can actually answer will reply."
+  },
+  "routes": {
+    "eyebrow": "Enquiry types",
+    "title": "Who answers what",
+    "lead": "Writing to the right address is the fastest way to get a reply. All four are monitored by a person on the team.",
+    "answeredLabel": "Typically answered",
+    "items": [
+      {
+        "key": "sponsorship",
+        "label": "Sponsorship and partnerships",
+        "blurb": "Cash, materials, machining, software or logistics. Our partnerships lead answers these.",
+        "responseTime": "within two working days"
+      },
+      {
+        "key": "joining",
+        "label": "Joining the team",
+        "blurb": "Open roles across every subteam, engineering and business. No prior experience expected.",
+        "responseTime": "within a week during term"
+      },
+      {
+        "key": "press",
+        "label": "Press and media",
+        "blurb": "Interviews, imagery, and the team fact sheet. Tell us your deadline and we will work to it.",
+        "responseTime": "within two working days"
+      },
+      {
+        "key": "general",
+        "label": "Something else",
+        "blurb": "Questions about the car, the competition, or working with the university.",
+        "responseTime": "within a week"
+      }
+    ]
+  },
+  "form": {
+    "eyebrow": "Or just write",
+    "title": "Send us a message",
+    "lead": "If you are not sure which route fits, use this and we will pass it to the right person.",
+    "messagePlaceholder": "What you would like to know.",
+    "topicLabel": "Enquiry type",
+    "topicPlaceholder": "Choose an enquiry type",
+    "heading": "Message the team",
+    "note": "All fields are required. We will route it to the right person.",
+    "subject": "Website enquiry — KUFS"
+  },
+  "location": {
+    "heading": "Where to find us",
+    "teamLabel": "The team",
+    "city": "Abu Dhabi, United Arab Emirates",
+    "generalLabel": "General enquiries",
+    "followLabel": "Follow the build",
+    "basedAtLabel": "Based at"
+  },
+  "sponsorNote": {
+    "title": "Sponsorship enquiries",
+    "bodyBefore": "If you are here to discuss a partnership, the",
+    "linkLabel": "Become a Sponsor",
+    "bodyAfter": "page has the tiers, the deliverables and a dedicated form — it will get you a more useful first reply."
+  },
+  "responseTime": "within two working days"
+}

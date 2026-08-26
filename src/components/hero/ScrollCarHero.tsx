@@ -1,7 +1,7 @@
 import { HeroStage } from "@/components/hero/HeroStage";
 import site from "@/content/site";
-import { getTeamStats } from "@/lib/content";
-import { heroCopy } from "@/components/hero/heroContent";
+import { getCopy, getNav, getTeamStats } from "@/lib/content";
+import { fill } from "@/lib/copy";
 
 /**
  * The hero, as the page sees it.
@@ -18,14 +18,18 @@ import { heroCopy } from "@/components/hero/heroContent";
 export function ScrollCarHero() {
   const { mode, frameCount, poster, modelPath } = site.hero;
   const { name, year, venue } = site.competition;
+  const copy = getCopy("home").hero;
+  const common = getCopy("common");
+  const nav = getNav();
   const stats = getTeamStats();
 
-  // Every figure comes from site.ts or the roster — nothing is written twice,
-  // and the headcount cannot drift from content/team.json.
+  // Every figure comes from site.json or the roster — nothing is written
+  // twice, and the headcount cannot drift from content/team.json. The labels
+  // beside them are editable; the values are not.
   const spec = [
-    { label: heroCopy.specLabels.architecture, value: site.vehicle.architecture },
-    { label: heroCopy.specLabels.targetMass, value: site.vehicle.targetMass },
-    { label: heroCopy.specLabels.headcount, value: String(stats.headcount) },
+    { label: copy.specArchitectureLabel, value: site.vehicle.architecture },
+    { label: copy.specTargetMassLabel, value: site.vehicle.targetMass },
+    { label: copy.specHeadcountLabel, value: String(stats.headcount) },
   ];
 
   return (
@@ -34,9 +38,13 @@ export function ScrollCarHero() {
       frameCount={frameCount}
       poster={poster}
       modelPath={modelPath}
-      eyebrow={`${name} ${year} · ${venue}`}
+      eyebrow={fill(copy.eyebrow, { competition: name, year, venue })}
+      headline={[copy.headlineLine1, copy.headlineLine2]}
       positioning={site.positioning}
       spec={spec}
+      cta={nav.cta}
+      scrollHint={common.hero.scrollHint}
+      heroLoading={common.ui.heroLoading}
     />
   );
 }

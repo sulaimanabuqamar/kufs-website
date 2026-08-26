@@ -1,0 +1,31 @@
+{
+  "meta": {
+    "title": "News",
+    "description": "Build updates, event reports and post-mortems from Khalifa University Formula Student — written by the people who did the work."
+  },
+  "header": {
+    "eyebrow": "Updates",
+    "title": "From the workshop and the paddock",
+    "lead": "Build updates, event reports and post-mortems. Written by the people who did the work, including the parts that went wrong."
+  },
+  "emptyTitle": "No posts yet",
+  "emptyBody": "Updates from the build start appearing here as the season gets going. Follow us on social in the meantime — that is where the day-to-day goes.",
+  "draftBadge": "Placeholder",
+  "rssLabel": "RSS feed",
+  "aside": {
+    "heading": "Follow along",
+    "postsLabel": "Posts",
+    "subscribeLabel": "Subscribe",
+    "socialLabel": "Or on social"
+  },
+  "listHeading": "All posts",
+  "post": {
+    "draftBadge": "Placeholder post",
+    "draftNote": "Seeded content so the news pages render in a real state. The figures and events below are illustrative and have not happened. This post is excluded from search engines, the sitemap and the home page.",
+    "backLink": "← All news",
+    "olderLink": "← Older",
+    "newerLink": "Newer →",
+    "ctaTitle": "Stories like this need a car",
+    "ctaBody": "Everything on this site is built by students and paid for by partners. If your organisation can help, we would like to hear from you."
+  }
+}

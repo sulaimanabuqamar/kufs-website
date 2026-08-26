@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "The Team",
+    "description": "The students who design, build and race Khalifa University's first Formula Student car — across engineering and operations."
+  },
+  "about": {
+    "eyebrow": "About KUFS",
+    "fsBody": "Formula Student is the largest student engineering competition in Europe: university teams design, build, cost and race a single-seat car against a rulebook written by the {organiser}. It is judged twice over — once on the engineering, in design, cost and business presentations in front of practising industry engineers, and once on track, over acceleration, skid pad, sprint and a 22 km endurance run.",
+    "kufsBody": "KUFS represents {university} at {competition}, held at {venue}. We are a student team: every part on the car is specified, designed, manufactured and signed off by the people listed further down this page.",
+    "asideHeading": "The team at a glance",
+    "headcountLabel": "Students on the team",
+    "subteamsLabel": "Engineering subteams",
+    "disciplinesLabel": "Disciplines represented",
+    "competingLabel": "Competing at"
+  },
+  "values": {
+    "title": "What we stand for"
+  },
+  "roster": {
+    "eyebrow": "The roster",
+    "title": "Who builds the car",
+    "lead": null,
+    "operationsHeading": "Operations",
+    "operationsBody": "The people who fund the programme, run it, and tell the world about it. Three of the eight events scored at Formula Student are static — design, cost and business — so this is not the support act.",
+    "engineeringHeading": "Engineering",
+    "engineeringBody": "Eight subteams covering the whole car, from the frame to the high-voltage system. Several of them are one or two people — this is a first-year team, and there is room.",
+    "vacantBadge": "Vacant — recruiting",
+    "vacantBody": "We are looking for someone to take this on. It is one of the most consequential open positions on the team.",
+    "vacantLink": "Read the role",
+    "advisorHeading": "Faculty advisor",
+    "joinLink": "See what joining involves"
+  },
+  "cta": {
+    "title": "There is a seat for you here",
+    "body": "This is a first-year team building a first car. Several subteams are one or two people, and every one of them has room. No prior experience is assumed."
+  }
+}

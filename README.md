@@ -24,24 +24,25 @@ pnpm install
 pnpm dev            # http://localhost:3000
 ```
 
-| Command                    | What it does                                                        |
-| -------------------------- | ------------------------------------------------------------------- |
-| `pnpm dev`                 | Dev server                                                          |
-| `pnpm build`               | Production build (also validates every file in `/content`)          |
-| `pnpm start`               | Serve the production build                                          |
-| `pnpm lint`                | ESLint                                                              |
-| `pnpm typecheck`           | `tsc --noEmit`                                                      |
-| `pnpm format`              | Prettier, write                                                     |
-| `pnpm format:check`        | Prettier, check only (this is what CI runs)                         |
-| `pnpm render:frames`       | Re-bake the hero image sequence and poster                          |
-| `pnpm assets:placeholders` | Regenerate placeholder sponsor logos, portraits and news covers     |
-| `pnpm check:bundle`        | Fail if `/` exceeds its JS budget or leaks a server-only dependency |
-| `pnpm check:hero`          | Assert the hero's mobile / reduced-motion / desktop behaviour       |
-| `pnpm check:contrast`      | Re-measure every contrast ratio claimed in `tokens.css`             |
-| `pnpm check:brand`         | Runtime audit: Racing Red placement, logo backgrounds, alt text     |
-| `pnpm check:perf`          | Enforce the LCP / CLS / accessibility budgets                       |
-| `pnpm font:subset`         | Convert and subset the headline face to WOFF2                       |
-| `pnpm screens`             | Screenshot every page at 390 / 768 / 1440                           |
+| Command                    | What it does                                                             |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `pnpm dev`                 | Dev server                                                               |
+| `pnpm build`               | Production build (also validates every file in `/content`)               |
+| `pnpm start`               | Serve the production build                                               |
+| `pnpm lint`                | ESLint                                                                   |
+| `pnpm typecheck`           | `tsc --noEmit`                                                           |
+| `pnpm format`              | Prettier, write                                                          |
+| `pnpm format:check`        | Prettier, check only (this is what CI runs)                              |
+| `pnpm render:frames`       | Re-bake the hero image sequence and poster                               |
+| `pnpm assets:placeholders` | Regenerate placeholder sponsor logos, portraits and news covers          |
+| `pnpm check:bundle`        | Fail if `/` exceeds its JS budget or leaks a server-only dependency      |
+| `pnpm check:copy`          | Fail if a user-visible string is hardcoded instead of in `/content/copy` |
+| `pnpm check:hero`          | Assert the hero's mobile / reduced-motion / desktop behaviour            |
+| `pnpm check:contrast`      | Re-measure every contrast ratio claimed in `tokens.css`                  |
+| `pnpm check:brand`         | Runtime audit: Racing Red placement, logo backgrounds, alt text          |
+| `pnpm check:perf`          | Enforce the LCP / CLS / accessibility budgets                            |
+| `pnpm font:subset`         | Convert and subset the headline face to WOFF2                            |
+| `pnpm screens`             | Screenshot every page at 390 / 768 / 1440                                |
 
 `check:bundle` needs a build first. `check:hero` needs a build **and** a running
 `pnpm start`.
@@ -415,10 +416,20 @@ Fast 4G is roughly what a real visitor on campus wifi or a decent mobile signal 
 Slow 4G with a 4× CPU penalty is a deliberately pessimistic floor — not the median
 visitor, but the worst one we still want to serve well.
 
-**JavaScript: under 150 KB gzipped on every route**, enforced by `pnpm check:bundle`,
+**JavaScript: under 170 KB gzipped on every route**, enforced by `pnpm check:bundle`,
 which checks all thirteen prerendered routes rather than just the home page. Nearly all
 of it is the React 19 + Next 16 App Router baseline; first-party application code is a
-few KB.
+few KB. `/` currently measures **149.7 KB**.
+
+**That 170 is a ceiling we chose, not a measurement.** It has no external authority — it
+is the number past which this site should not grow without someone deciding that
+deliberately. It started at 150 and earned its keep twice: it caught Zod leaking into the
+client bundle through an import chain, and it kept TinaCMS's editor out of the public
+bundle entirely. It was raised to 170 in Brief #7 with the headroom left unspent rather
+than consumed.
+
+When a route crosses it, the first question is not "what should the budget be" — it is
+which component crossed a client boundary that should not have.
 
 Accessibility commitments, all verified: keyboard operable throughout, one visible
 focus treatment sitewide at ≥3:1, AA contrast on every text pairing, correct landmark
@@ -448,6 +459,36 @@ Git-based: every save is a commit to this repository, so content stays as files,
 Zod schemas still validate it, and there is no database anywhere in the system.
 [CONTRIBUTING.md](CONTRIBUTING.md#the-admin-panel) documents it for editors; this is
 the architecture.
+
+**Every visible word is editable, not just the data.** Headings, paragraphs, button
+labels, form labels and validation messages, empty states, FAQ answers, glossary
+definitions, page metadata and alt text all live in `content/copy/*.json` — one file per
+page, plus `common.json` for the header, footer, nav labels and forms. 447 fields,
+every one of them annotated with plain-English help text in `tina/overlays.ts`.
+
+Copy is server-rendered, so this cost nothing: `/` went from 149.9 KB to **149.7 KB**
+gzipped, because moving the hero's headline into content took two strings _out_ of the
+client bundle.
+
+**Length limits are enforced in the panel, not just at build time.** Every heading,
+button and label carries a `.max()` in its Zod schema, sized to what the design holds at
+390px. `tina/zod-to-tina.ts` compiles those into field-level validation, so an editor
+who pastes a paragraph into a button gets a red line while they are typing rather than a
+failed deploy several minutes later. `parseOrThrow` is still the backstop for anything
+edited by hand.
+
+**What is deliberately NOT editable**, and enforced rather than merely avoided: design
+tokens (the palette is contrast-verified — a CMS that can set a heading to Racing Red on
+navy ships 2.12:1); routes and URLs (nav _labels_ are editable, `href` is an enum of the
+routes that exist); heading levels and semantic structure; and anything that would let an
+edit break the layout, which is what the length limits are for.
+
+**`pnpm check:copy`** walks the TypeScript AST of every file under `src/app` and
+`src/components` and fails on a user-visible string literal that is not in an allowlist.
+Without it the next feature quietly reintroduces hardcoded copy and the panel stops being
+complete. It has a `--self-test` that plants a hardcoded heading and asserts the check
+catches it; CI runs the self-test first, because a green run from a check nobody has seen
+fail is not evidence of anything.
 
 **Zod is the single source of truth, structurally.** The Tina fields are not written
 anywhere — `tina/zod-to-tina.ts` compiles them from `src/lib/schemas.ts` through Zod
@@ -543,14 +584,13 @@ Read this before the next milestone.
 4. **No mono light-background logo.** The brand assets include two mono lockups, both
    for dark grounds. There is no light-ground mono artwork and inverting one ourselves
    would be inventing a lockup. Ask the design lead if one is needed.
-5. **Placeholder sponsors, roster and news.** Every name in `content/` is invented
-   placeholder data. It must be replaced before launch — see the blocking-content list
-   below.
-6. **The JS budget has little headroom.** Around 150 KB on the heaviest routes, nearly
-   all framework. Any new client-side library will breach it; `check:bundle` will catch
-   that, but the fix will be architectural.
-7. **`/the-car`, `/progress`, `/news` and part of `/press-kit` are coming-soon states.**
-   They are routed, indexed and useful, but not built out.
+5. **No sponsors and no published news yet.** `sponsors.json` is deliberately empty and
+   both news posts are drafts. The roster, tiers, milestones and car spec are real.
+6. **The JS budget has headroom again.** Around 150 KB on the heaviest routes against a
+   170 KB ceiling, nearly all framework. A new client-side library would still eat most
+   of the gap; `check:bundle` will catch it, but the fix will be architectural.
+7. **Part of `/press-kit` is a coming-soon state.** Photography and the fact sheet are
+   outstanding; the logo lockups are final.
 
 ## Content the team must supply before launch
 

@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { Card, StretchedLinkOverlay } from "@/components/ui/Card";
 import { Section, SectionHeading } from "@/components/ui/Section";
-import { getLatestNews } from "@/lib/content";
+import { getCopy, getLatestNews } from "@/lib/content";
 
 const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
   day: "numeric",
@@ -13,6 +13,7 @@ const DATE_FORMAT = new Intl.DateTimeFormat("en-GB", {
 });
 
 export function LatestNews() {
+  const copy = getCopy("home").news;
   const posts = getLatestNews(3);
   if (posts.length === 0) return null;
 
@@ -21,15 +22,15 @@ export function LatestNews() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <SectionHeading
           id="news-heading"
-          eyebrow="News"
-          title="From the workshop"
-          lead="Build updates, event reports and the occasional post-mortem."
+          eyebrow={copy.eyebrow}
+          title={copy.title}
+          lead={copy.lead ?? undefined}
         />
         <Link
           href="/news"
           className="shrink-0 rounded-sm text-small font-semibold text-accent underline-offset-4 hover:underline"
         >
-          All news →
+          {copy.allLink}
         </Link>
       </div>
 

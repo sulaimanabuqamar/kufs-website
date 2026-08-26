@@ -4,7 +4,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { NavLink } from "@/components/layout/NavLink";
 import { KufsLogo } from "@/components/brand/KufsLogo";
 import { Button } from "@/components/ui/Button";
-import { CTA, PRIMARY_NAV } from "@/lib/nav";
+import { getCopy, getNav } from "@/lib/content";
 import site from "@/content/site";
 
 /**
@@ -17,12 +17,19 @@ import site from "@/content/site";
  * making on a mobile-first site.
  */
 export function SiteHeader() {
+  // Server component: the nav labels and the drawer's copy are read here and
+  // handed to MobileNav as plain props, so the content layer (and Zod with it)
+  // never crosses the client boundary. Enforced by scripts/check-bundle.mjs.
+  const nav = getNav();
+  const copy = getCopy("common");
+  const logoAlt = copy.ui.logoAlt;
+
   return (
     <header className="sticky top-0 z-30 border-b border-border/80 bg-bg/80 backdrop-blur-md">
       <div className="page-container flex h-16 items-center justify-between gap-4">
         <Link href="/" className="shrink-0 rounded-sm" aria-label={`${site.name} — home`}>
           {/* Dark-background artwork: the header sits on --color-bg. */}
-          <KufsLogo on="dark" width={180} priority />
+          <KufsLogo alt={logoAlt} on="dark" width={180} priority />
         </Link>
 
         {/* The nav appears at lg, not md. Seven items plus a 180px logo and the
@@ -30,7 +37,7 @@ export function SiteHeader() {
             drawer covers everything below that. */}
         <nav aria-label="Primary" className="hidden lg:block">
           <ul className="flex items-center gap-1">
-            {PRIMARY_NAV.map((item) => (
+            {nav.primary.map((item) => (
               <li key={item.href}>
                 <NavLink href={item.href}>{item.label}</NavLink>
               </li>
@@ -49,11 +56,18 @@ export function SiteHeader() {
               passed through className loses to it and the button stays visible
               at every width. At 390px that pushed the menu trigger off-screen. */}
           <span className="hidden sm:block">
-            <Button href={CTA.sponsor.href} size="sm">
-              {CTA.sponsor.label}
+            <Button href={nav.cta.sponsor.href} size="sm">
+              {nav.cta.sponsor.label}
             </Button>
           </span>
-          <MobileNav />
+          <MobileNav
+            primary={nav.primary}
+            secondary={nav.secondary}
+            cta={nav.cta}
+            openLabel={copy.header.openMenu}
+            closeLabel={copy.header.closeMenu}
+            logoAlt={logoAlt}
+          />
         </div>
       </div>
     </header>

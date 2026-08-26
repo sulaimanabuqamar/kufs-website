@@ -25,7 +25,8 @@
     "check:font-licence": "node scripts/check-font-licence.mjs",
     "check:glyphs": "node scripts/check-glyphs.mjs",
     "dev:cms": "tinacms dev -c \"next dev\"",
-    "check:tina": "node scripts/check-tina-schema.mjs"
+    "check:tina": "node scripts/check-tina-schema.mjs",
+    "check:copy": "node scripts/check-copy.mjs"
   },
   "dependencies": {
     "gray-matter": "^4.0.3",

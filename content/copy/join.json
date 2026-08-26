@@ -1,0 +1,101 @@
+{
+  "meta": {
+    "title": "Join the Team",
+    "description": "Open roles across every KUFS subteam — engineering and business. No prior experience assumed, any year of study."
+  },
+  "header": {
+    "eyebrow": "Recruitment",
+    "title": "You do not need experience. You need to turn up.",
+    "body": "KUFS is {headcount} students building {university}'s first Formula Student car. That is a small team for a whole vehicle, which means the gaps below are real and whoever fills them will own something that matters.",
+    "rolesLink": "See open roles",
+    "teamLink": "Meet the team",
+    "asideHeading": "Recruitment at a glance",
+    "headcountLabel": "On the team today",
+    "subteamsLabel": "Subteams recruiting",
+    "vacantLabel": "Leadership roles vacant",
+    "experienceLabel": "Experience required",
+    "experienceValue": "None"
+  },
+  "gaps": {
+    "eyebrow": "Where we need people most",
+    "title": "The honest gaps",
+    "lead": "Rather than list generic openings, here is exactly where the team is thin right now.",
+    "vacantBadge": "Vacant leadership role",
+    "vacantBody": "Nobody currently holds this. The {role} leads the electrical side of the car — the accumulator, the tractive system and the safety case that goes with them — and works alongside the CTO Mechanical. It is the single most consequential open position on the team.",
+    "vacantSuited": "Suited to an electrical or energy engineering student who wants genuine ownership rather than a task list.",
+    "thinBadge": "One person deep",
+    "thinBody": "{subteam} is carried by a single student. A whole subsystem of the car depends on one person's availability, which is not a position any team wants to be in before its first competition.",
+    "thinSuited": "Joining here means owning a real part of the car from your first term."
+  },
+  "audience": {
+    "eyebrow": "Who we are looking for",
+    "title": "Engineers and non-engineers, equally",
+    "lead": null,
+    "staticEventsNote": "Three of the eight scored events at {competition} are static — Design, Cost, and the Business Plan Presentation. They are judged on documentation, commercial reasoning and how well you present, not on lap time.",
+    "body": "Formula Student teams reliably over-recruit mechanical engineers and under-recruit everyone else. We are saying this plainly because it is the most useful thing on this page: if you study business, marketing, finance, communications or design, you are not a nice-to-have here. You are the reason the car gets funded, the reason anyone hears about it, and a third of the points available at competition."
+  },
+  "roles": {
+    "eyebrow": "Open roles",
+    "title": "Where we need people",
+    "lead": "This list is what we are actually recruiting for right now.",
+    "onSubteamLabel": "on this subteam",
+    "lookingForLabel": "What we look for"
+  },
+  "season": {
+    "eyebrow": "The season",
+    "title": "What you would be joining",
+    "lead": "The build schedule you would be working to. Recruitment opens at the start of the autumn term, ahead of the manufacturing push."
+  },
+  "benefits": [
+    {
+      "title": "You build real hardware",
+      "body": "Not a coursework model. A part you specified gets machined, fitted, and either works at Silverstone or does not. Very few graduates have that on a CV."
+    },
+    {
+      "title": "You travel to compete",
+      "body": "The team goes to Silverstone for Formula Student UK. Scrutineering, the paddock, a week alongside a hundred other university teams."
+    },
+    {
+      "title": "You meet industry directly",
+      "body": "Design judges are practising engineers. Our partners run workshops, attend reviews and see your work. Several members have been hired off the back of it."
+    },
+    {
+      "title": "You learn to ship against a deadline",
+      "body": "The competition date does not move. Learning to make decisions with incomplete information and a fixed date is the single most transferable thing here."
+    }
+  ],
+  "faq": {
+    "eyebrow": "Before you apply",
+    "title": "Questions",
+    "lead": null,
+    "items": [
+      {
+        "question": "How much time does it take?",
+        "answer": "Realistically 6–10 hours a week through term, more in the weeks before manufacturing deadlines and competition. We would rather you commit to less and turn up reliably than promise more and disappear."
+      },
+      {
+        "question": "What year do I need to be in?",
+        "answer": "Any. First years are welcome and encouraged — you get three more seasons than someone joining in their final year, and the people running the team now mostly joined in first year."
+      },
+      {
+        "question": "Do I need prior experience?",
+        "answer": "No. Nobody arrives knowing how to lay up a monocoque or calibrate an engine. We teach it. What we cannot teach is turning up, so that is what we select for."
+      },
+      {
+        "question": "I am not an engineer. Is there a place for me?",
+        "answer": "Yes, and we need you more than we need another CFD applicant. Sponsorship, marketing, media and cost control are scored events and hard constraints — a car nobody funded does not get built."
+      },
+      {
+        "question": "When can I apply?",
+        "answer": "Recruitment opens at the start of the autumn term each year. Applications outside that window are still read — if we have a gap, we will come back to you."
+      }
+    ]
+  },
+  "apply": {
+    "title": "Applications open each October",
+    "body": "Send us a short email telling us what you study and which subteam interests you. That is the whole application — we will take it from there.",
+    "emailLabel": "Email us to apply",
+    "sponsorLink": "I want to sponsor instead",
+    "emailSubject": "Joining KUFS"
+  }
+}
