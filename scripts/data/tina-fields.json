@@ -130,13 +130,7 @@
       "title",
       "update"
     ],
-    "roles": [
-      "description",
-      "lookingFor",
-      "openings",
-      "subteam",
-      "title"
-    ],
+    "roles": ["description", "lookingFor", "openings", "subteam", "title"],
     "cars": [
       "gallery",
       "gallery.alt",
@@ -183,13 +177,7 @@
       "excerpt",
       "title"
     ],
-    "newsletter": [
-      "draft",
-      "intro",
-      "issue",
-      "month",
-      "year"
-    ],
+    "newsletter": ["draft", "intro", "issue", "month", "year"],
     "copy/common": [
       "affiliations",
       "affiliations.competingLine",
