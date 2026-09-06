@@ -33,6 +33,12 @@ import raw from "./site.json";
  * NEXT_PUBLIC_SITE_URL, falling back to the deployment's own VERCEL_URL on
  * previews — see `src/lib/env.ts`. Change it there, not here.
  *
+ * It is nonetheless set to the REAL live origin. It used to read
+ * `https://kufs.ku.ac.ae`, a domain that has never existed — the custom domain
+ * has not been requested from university IT yet. A fallback only surfaces when
+ * the environment variable is missing, which is precisely the moment nobody is
+ * watching, so it must be a URL that resolves.
+ *
  * ---------------------------------------------------------------------------
  * `competition.startsAt`
  * ---------------------------------------------------------------------------
@@ -83,11 +89,37 @@ import raw from "./site.json";
  * real CAD export) to use a GLB instead, then re-run `pnpm render:frames`.
  *
  * ---------------------------------------------------------------------------
- * STILL TO CONFIRM
+ * `contactEmail` / `sponsorshipEmail` / `sponsorship.enquiryEmail`
  * ---------------------------------------------------------------------------
- * - `contactEmail` / `sponsorshipEmail`: confirm the team actually monitors
- *   these addresses.
- * - `socials[]`: these are the expected handle formats, not verified accounts.
+ * INTERIM PERSONAL ADDRESS. All three are one personal Gmail account. They
+ * replaced `kufs@ku.ac.ae` and `partnerships.kufs@ku.ac.ae`, which were
+ * guesses at a KU address format and were never confirmed to reach anyone.
+ *
+ * This must be replaced with a team address on a KUFS-controlled domain before
+ * public launch: a personal address stops working for the team the moment that
+ * person graduates, and it puts one member's inbox on every page. It is on the
+ * handover checklist in README.md.
+ *
+ * The address is rendered entity-encoded everywhere it appears, so it is not
+ * sitting in the HTML for an address harvester to regex out — see
+ * `src/lib/obfuscateEmail.ts`.
+ *
+ * ---------------------------------------------------------------------------
+ * `socials[]`
+ * ---------------------------------------------------------------------------
+ * CONFIRMED ACCOUNTS ONLY. This list previously held three entries invented
+ * from the expected handle format: an Instagram account that was not ours
+ * (`@kufsracing`), a LinkedIn page, and a YouTube channel that did not exist.
+ * They were live in the footer of every page.
+ *
+ * Instagram and LinkedIn are now the team's real accounts. YouTube is gone and
+ * comes back only when a channel exists. Adding one is a single entry here or
+ * in /admin under Site settings.
+ *
+ * Do not paste a link copied from the Instagram or LinkedIn app: "Copy link"
+ * appends a share-tracking identifier tied to the phone that copied it, and
+ * the schema rejects any href carrying a query string or fragment for exactly
+ * that reason.
  */
 const site: SiteConfig = parseOrThrow(siteSchema, raw, "content/site.json");
 

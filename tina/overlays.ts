@@ -234,6 +234,37 @@ export const newsOverlay: Overlay = {
   ...imageOverlay("cover", "Cover image"),
 };
 
+/**
+ * A newsletter issue.
+ *
+ * The subteam sections are NOT here: they are the `##` headings in the body,
+ * validated against the roster when the site builds. The panel edits the body
+ * as rich text like a news post, and a heading that is not a subteam name
+ * fails the build with the file and the heading named.
+ */
+export const newsletterOverlay: Overlay = {
+  issue: {
+    label: "Issue number",
+    description: 'Sequential, starting at 1. Shown as "Issue 4".',
+  },
+  month: {
+    label: "Month",
+    description: "1 to 12. The file must be named <year>-<month>.mdx to match.",
+  },
+  year: { label: "Year" },
+  intro: {
+    component: "textarea",
+    label: "Editor's introduction",
+    description:
+      "A short paragraph opening the issue. Also used as the search-result description and the RSS summary, so keep it plain — no formatting. 500 characters maximum.",
+  },
+  draft: {
+    label: "Keep as a draft",
+    description:
+      "While this is on, the issue is invisible to search engines, absent from the newsletter RSS feed and not listed publicly. Turn it off to publish.",
+  },
+};
+
 /* -------------------------------------------------------------------------
    Page copy
    -------------------------------------------------------------------------
@@ -762,6 +793,50 @@ export const newsCopyOverlay: Overlay = {
   "post.newerLink": { label: "Next post" },
   "post.ctaTitle": { label: "Closing panel heading" },
   "post.ctaBody": { label: "Closing panel paragraph" },
+};
+
+export const newsletterCopyOverlay: Overlay = {
+  ...META_OVERLAY,
+  header: { label: "Top of the page" },
+  "header.eyebrow": { label: "Small label above the heading" },
+  "header.title": { label: "Main heading" },
+  "header.lead": { label: "Intro paragraph" },
+  aside: { label: "Side panel" },
+  "aside.heading": { label: "Panel heading" },
+  "aside.issuesLabel": { label: '"Issues published" label' },
+  "aside.subscribeLabel": { label: '"Subscribe" label' },
+  "aside.latestLabel": { label: '"Latest issue" label' },
+  listHeading: {
+    label: "List heading (spoken)",
+    description: "Not shown on screen; read aloud by screen readers.",
+  },
+  issueLabel: {
+    label: "How an issue is named",
+    description: "Use {issue} for the issue number.",
+  },
+  contributorsLabel: { label: '"Reporting this month" label' },
+  contributorCount: {
+    label: "Count of contributing subteams",
+    description: "Use {count} and {total}.",
+  },
+  emptyTitle: { label: "Heading when there are no issues" },
+  emptyBody: { label: "Text when there are no issues" },
+  emptyCta: { label: "Button when there are no issues" },
+  draftBadge: { label: "Badge on a draft in the list" },
+  rssLabel: { label: "RSS link wording" },
+  issue: { label: "A single issue's page" },
+  "issue.draftBadge": { label: "Draft badge" },
+  "issue.draftNote": { label: "Draft explanation" },
+  "issue.backLink": { label: "Back to the list" },
+  "issue.contentsHeading": { label: '"In this issue" heading' },
+  "issue.introHeading": {
+    label: "Introduction heading (spoken)",
+    description: "Not shown on screen; read aloud by screen readers.",
+  },
+  "issue.olderLink": { label: "Previous issue" },
+  "issue.newerLink": { label: "Next issue" },
+  "issue.ctaTitle": { label: "Closing panel heading" },
+  "issue.ctaBody": { label: "Closing panel paragraph" },
 };
 
 export const joinCopyOverlay: Overlay = {

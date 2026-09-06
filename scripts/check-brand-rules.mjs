@@ -38,7 +38,7 @@ const { values: argv } = parseArgs({
     paths: {
       type: "string",
       default:
-        "/,/become-a-sponsor,/sponsors,/team,/join,/contact,/the-car,/progress,/news,/press-kit",
+        "/,/become-a-sponsor,/sponsors,/team,/join,/contact,/the-car,/progress,/news,/newsletter,/press-kit",
     },
   },
   allowPositionals: true,

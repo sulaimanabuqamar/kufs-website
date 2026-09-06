@@ -25,7 +25,7 @@
     {
       "title": "Steering",
       "subteam": "Steering",
-      "description": "Rack, column, wheel and the geometry that connects them. Currently a one-person subteam, which makes this one of the largest gaps on the car.",
+      "description": "Rack, column, wheel and the geometry that connects them. A small subteam owning a subsystem end to end, with every design decision still open.",
       "lookingFor": [
         "Mechanical design interest; no prior experience expected",
         "Happy to own a subsystem end to end",
@@ -36,7 +36,7 @@
     {
       "title": "Suspension",
       "subteam": "Suspension",
-      "description": "Wishbones, uprights, springs and dampers, and the kinematics that decide how the car behaves. Also a one-person subteam right now.",
+      "description": "Wishbones, uprights, springs and dampers, and the kinematics that decide how the car behaves. The subsystem the car's handling is judged on.",
       "lookingFor": [
         "Interest in vehicle dynamics",
         "Comfortable with CAD and hand calculations",

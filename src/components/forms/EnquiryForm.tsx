@@ -5,6 +5,7 @@ import { useId, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { fill, segments } from "@/lib/copy";
+import { entityDecode, mailtoAnchorHtml } from "@/lib/obfuscateEmail";
 import { track, type TrackedEvent } from "@/lib/analytics";
 
 /**
@@ -68,8 +69,18 @@ export type EnquiryFormProps = {
   copy: EnquiryFormCopy;
   /** Formspree endpoint. null => mailto fallback. */
   endpoint: string | null;
-  /** Where enquiries go. Shown to the user and used by the fallback. */
-  toEmail: string;
+  /**
+   * Where enquiries go, entity-encoded by the server component that renders
+   * this form.
+   *
+   * ENCODED, not plain, because every prop handed to a client component is
+   * serialised into the page's own HTML in the React payload. Passing the
+   * address in the clear would put a literal copy of it in the source of both
+   * pages that carry this form, which is exactly what the obfuscation in
+   * src/lib/obfuscateEmail.ts exists to prevent — the rendered links would be
+   * encoded and the payload two hundred lines below them would not.
+   */
+  toEmailEncoded: string;
   /** Subject line prefix for the email / Formspree subject. */
   subject: string;
   /** Label for the select. */
@@ -98,7 +109,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export function EnquiryForm({
   copy,
   endpoint,
-  toEmail,
+  toEmailEncoded,
   subject,
   topicLabel,
   topicOptions,
@@ -184,7 +195,9 @@ export function EnquiryForm({
     ]
       .filter(Boolean)
       .join("\n");
-    return `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    // Decoded here, at the moment of use. This path only runs on a click with
+    // JavaScript enabled; the printed links below carry the no-JS guarantee.
+    return `mailto:${entityDecode(toEmailEncoded)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -270,9 +283,15 @@ export function EnquiryForm({
             typeof part === "string" ? (
               part
             ) : part.token === "email" ? (
-              <a key={index} href={`mailto:${toEmail}`} className={linkClass}>
-                {toEmail}
-              </a>
+              <span
+                key={index}
+                dangerouslySetInnerHTML={{
+                  __html: mailtoAnchorHtml({
+                    email: entityDecode(toEmailEncoded),
+                    className: linkClass,
+                  }),
+                }}
+              />
             ) : (
               responseTime
             ),
@@ -440,9 +459,15 @@ export function EnquiryForm({
               typeof part === "string" ? (
                 part
               ) : (
-                <a key={index} href={`mailto:${toEmail}`} className={linkClass}>
-                  {toEmail}
-                </a>
+                <span
+                  key={index}
+                  dangerouslySetInnerHTML={{
+                    __html: mailtoAnchorHtml({
+                      email: entityDecode(toEmailEncoded),
+                      className: linkClass,
+                    }),
+                  }}
+                />
               ),
             )}
           </p>
@@ -463,9 +488,15 @@ export function EnquiryForm({
             typeof part === "string" ? (
               part
             ) : part.token === "email" ? (
-              <a key={index} href={`mailto:${toEmail}`} className={linkClass}>
-                {toEmail}
-              </a>
+              <span
+                key={index}
+                dangerouslySetInnerHTML={{
+                  __html: mailtoAnchorHtml({
+                    email: entityDecode(toEmailEncoded),
+                    className: linkClass,
+                  }),
+                }}
+              />
             ) : (
               responseTime
             ),

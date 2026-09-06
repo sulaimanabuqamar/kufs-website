@@ -56,6 +56,7 @@ const COPY_PAGES = [
   "the-car",
   "progress",
   "news",
+  "newsletter",
   "join",
   "press-kit",
   "contact",
@@ -75,6 +76,7 @@ const COLLECTIONS = {
   roles: [schemas.roleSchema, overlays.roleOverlay],
   cars: [schemas.carSchema, overlays.carOverlay],
   news: [schemas.newsFrontmatterSchema, overlays.newsOverlay],
+  newsletter: [schemas.newsletterFrontmatterSchema, overlays.newsletterOverlay],
   ...Object.fromEntries(
     COPY_PAGES.map((page) => [
       `copy/${page}`,

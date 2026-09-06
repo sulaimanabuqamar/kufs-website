@@ -91,8 +91,24 @@ Follow these in order. Someone who has never deployed anything can do this.
    | `CNAME` | `kufs` | `cname.vercel-dns.com` |
 
    Then add `kufs.ku.ac.ae` in Vercel → Settings → Domains, and update
-   `NEXT_PUBLIC_SITE_URL` to match. Until then the `.vercel.app` URL is the live site
-   and everything works.
+   `NEXT_PUBLIC_SITE_URL` to match. Until then <https://kufs-website.vercel.app> is the
+   live site and everything works. That origin is also the fallback in
+   `content/site.json` → `url`, so a build with no environment variable set still emits
+   canonical tags that resolve.
+
+#### Hosting plan — Hobby for now, review before launch
+
+**Decision: stay on Vercel's free Hobby plan.** Nothing to do today. It costs nothing,
+it comfortably serves the traffic a first-year team's site gets, and paid plans get
+evaluated nearer the public launch.
+
+**This is a launch-blocker to review, not a today problem.** Vercel's Hobby plan is
+intended for **non-commercial** projects, and a site carrying **paid sponsor logos** —
+which is the entire purpose of `/sponsors` and `/become-a-sponsor` — sits outside that.
+The moment a sponsor pays for placement on this site, the deployment needs to be on a
+plan that permits commercial use. Settle it **before** the first sponsor logo goes live,
+not after: it is a billing decision with a signed sponsor waiting on it, and it is much
+easier to make while nobody is depending on the answer.
 
 Environment variables. **All are optional** — the site builds and runs with none of
 them set. See `.env.example`.
@@ -220,8 +236,62 @@ content/
 ├── milestones.json  { milestones: [ { title, date, status, description, ... } ] }
 ├── roles.json       { roles: [ { title, subteam, description, lookingFor[] } ] }
 ├── cars/<year>.json the season's car: spec table, subsystems, gallery
-└── news/*.mdx       frontmatter: title, date, author, excerpt, cover
+├── affiliations.json { affiliations: [ { name, permissionConfirmed, logo, url, ... } ] }
+├── news/*.mdx       frontmatter: title, date, author, excerpt, cover
+└── newsletter/*.mdx one issue per month, named <year>-<month>.mdx
 ```
+
+### Contact configuration
+
+`content/site.json` carries three addresses — `contactEmail`, `sponsorshipEmail` and
+`sponsorship.enquiryEmail` — and all three are currently the same personal Gmail
+account.
+
+> **This is an interim personal address. Replace it with a team address on a
+> KUFS-controlled domain before public launch.**
+>
+> It replaced `kufs@ku.ac.ae` and `partnerships.kufs@ku.ac.ae`, which were guesses at a
+> KU address format and were never confirmed to reach anyone — an unmonitored inbox on
+> a sponsorship page is worse than no address at all. A personal address is better than
+> a wrong one, and worse than a team one: **it stops working for the team the moment
+> that person graduates**, and until then it puts one member's inbox on every page of a
+> public site. It is on the [handover checklist](#content-the-team-must-supply-before-launch).
+
+The address is **never written into the HTML in plain text.** Every place it appears —
+the footer, `/contact`, `/join`, `/become-a-sponsor` and both enquiry forms — renders it
+through `<ObfuscatedEmail>`, which emits the `mailto:` href and the visible text as HTML
+numeric character references. The link works with JavaScript disabled, screen readers
+announce the ordinary address, and a scraper running an email regex over the page source
+matches nothing. The full reasoning, and the honest limit of what it protects against,
+is at the top of `src/lib/obfuscateEmail.ts`.
+
+### Third-party logos
+
+`content/affiliations.json` holds the organisations KUFS is affiliated with — Khalifa
+University, Formula Student and the IMechE. **These are other people's trademarks, and
+the rules are not the same as for our own brand assets or for a sponsor who has asked us
+to display their logo.**
+
+An entry renders only when **both** of these are true:
+
+1. `permissionConfirmed: true` — the organisation has confirmed we may use their mark.
+2. A `logo` file is actually present.
+
+**Today no entry meets both, so the logo strip does not render at all** — there is no
+empty box and no placeholder. What does render is a plain sentence in the footer,
+"Competing in Formula Student UK 2027, organised by the Institution of Mechanical
+Engineers (IMechE)", which names the affiliation without using anyone's mark and so
+needs nobody's permission.
+
+| Organisation           | Permission       | Logo file  | What is needed                                                                                                                                                              |
+| ---------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Khalifa University** | ✅ Granted       | ❌ Missing | The official file from KU's brand office. Ask specifically for the lockup issued to **student organisations** — usually not the plain university mark. Do not download one. |
+| **Formula Student**    | ❌ Not confirmed | ❌ Missing | Written confirmation that a competing team may display the mark, and in what form. Their competitor branding guidance governs it.                                           |
+| **IMechE**             | ❌ Not confirmed | ❌ Missing | As above. Teams may generally state that they compete; using the event logo is more constrained.                                                                            |
+
+> **Do not commit a logo the organisation has not supplied**, and do not lift one from a
+> search result or off a web page. A wrong-version mark used without permission is a
+> trademark problem, not a design problem.
 
 Notes:
 
@@ -570,10 +640,12 @@ the `/news/[slug]` route exists — see below).
 
 Read this before the next milestone.
 
-1. **Both news posts are placeholders**, flagged `draft: true`. They render on `/news`
-   and their own routes behind a visible banner, and that one flag keeps them out of the
-   sitemap, out of the RSS feed, off the home page, and marked `noindex`. As a result the
-   home page currently shows no news section at all — correct, since nothing is published.
+1. **There is no news and no newsletter yet.** `content/news/` and
+   `content/newsletter/` are both empty, and both sections render an honest empty state
+   rather than a seeded placeholder. The home page therefore shows no news section at
+   all, which is correct while nothing is published. When posts and issues do exist, the
+   `draft: true` flag keeps one out of the sitemap, out of its RSS feed, off the home
+   page and marked `noindex` — one flag, both sections, no second mechanism.
 2. **A4 Speed is not the live headline face.** The font file is on the design lead's
    machine and wired up, but it is deliberately not deployed: the free licence covers
    personal use only, and this site carries sponsor logos. Barlow Condensed Bold Italic —
@@ -584,8 +656,12 @@ Read this before the next milestone.
 4. **No mono light-background logo.** The brand assets include two mono lockups, both
    for dark grounds. There is no light-ground mono artwork and inverting one ourselves
    would be inventing a lockup. Ask the design lead if one is needed.
-5. **No sponsors and no published news yet.** `sponsors.json` is deliberately empty and
-   both news posts are drafts. The roster, tiers, milestones and car spec are real.
+5. **No sponsors, and no affiliation logos.** `sponsors.json` is deliberately empty.
+   `content/affiliations.json` has all three entries — Khalifa University, Formula
+   Student, IMechE — and **none of them render**, because rendering requires both
+   confirmed permission and a supplied logo file. See
+   [Third-party logos](#third-party-logos). The roster, tiers, milestones and car spec
+   are real.
 6. **The JS budget has headroom again.** Around 150 KB on the heaviest routes against a
    170 KB ceiling, nearly all framework. A new client-side library would still eat most
    of the gap; `check:bundle` will catch it, but the fix will be architectural.
@@ -597,23 +673,27 @@ Read this before the next milestone.
 Most of what used to be here has been filled in from the team's own documents. What
 remains is genuinely unknown — nothing below is guessed at anywhere on the site.
 
-| What                                                    | Where                                                  | Who can close it                                                                                                                                              |
-| ------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **FSUK 2027 competition dates**                         | `content/site.ts` → `competition.startsAt`             | IMechE publishes them; expected **early October 2026**. Check the [key dates page](https://www.imeche.org/events/formula-student/team-information/key-dates). |
-| **FSUK spectator / industry-visitor attendance**        | `content/site.ts` → `stats`                            | IMechE, once the 2027 event is published. Renders TBC until then.                                                                                             |
-| **Every car specification except the baseline targets** | `content/cars/2027.json`                               | CTO Mechanical and the subteam leads, after architecture down-select (30 Sep) and concept freeze (30 Oct).                                                    |
-| **Real team email addresses**                           | `content/site.ts` → `contactEmail`, `sponsorshipEmail` | President / Secretary. The current `@ku.ac.ae` addresses are assumed formats, not confirmed inboxes.                                                          |
-| **Confirmed social handles**                            | `content/site.ts` → `socials`                          | Marketing / Media / Outreach.                                                                                                                                 |
-| **Formspree endpoint**                                  | Vercel env, `NEXT_PUBLIC_FORMSPREE_ENDPOINT`           | Whoever owns the team's shared account. Until set, both forms fall back to `mailto:`.                                                                         |
-| **Sponsorship prospectus PDF**                          | `public/downloads/`, then `prospectusAvailable: true`  | Sponsorship & Finance.                                                                                                                                        |
-| **Confirmed sponsors and their logos**                  | `content/sponsors.json` + `public/sponsors/`           | Sponsorship & Finance, once a partner signs.                                                                                                                  |
-| **Team headshots**                                      | `public/team/` + `photo` in `content/team.json`        | Marketing / Media / Outreach. Cards show a monogram until then.                                                                                               |
-| **Milestone updates and photos**                        | `content/milestones.json` → `update`, `photo`          | Subteam leads, as each milestone closes.                                                                                                                      |
-| **News posts**                                          | `content/news/`                                        | Marketing / Media / Outreach. The folder is empty — the placeholder posts were removed.                                                                       |
-| **Campus / workshop address**                           | `src/app/contact/page.tsx`                             | Secretary.                                                                                                                                                    |
-| **Vector logo originals (SVG/AI)**                      | `public/brand/`                                        | Design lead. Current files are high-resolution PNG slices of the team's exports.                                                                              |
-| **A4 Speed commercial licence certificate (USD 12)**    | `src/assets/fonts/LICENCE-A4SPEED.txt`                 | Marketing / Media / Outreach. The font is wired up and gated; the certificate is the only thing missing — see [Licensing](#licensing).                        |
-| **The car's CAD export**                                | `public/models/`, then `pnpm render:frames`            | CTO Mechanical, after concept freeze.                                                                                                                         |
+| What                                                    | Where                                                                                | Who can close it                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **FSUK 2027 competition dates**                         | `content/site.json` → `competition.startsAt`                                         | IMechE. **Checked 6 September 2026: still not published** — the key dates page covers 2026 only. Expected **early October 2026**; re-check the [key dates page](https://www.imeche.org/events/formula-student/team-information/key-dates) then. The placeholder 14 July 2027 stands until it is. |
+| **FSUK spectator / industry-visitor attendance**        | `content/site.ts` → `stats`                                                          | IMechE, once the 2027 event is published. Renders TBC until then.                                                                                                                                                                                                                                |
+| **Every car specification except the baseline targets** | `content/cars/2027.json`                                                             | CTO Mechanical and the subteam leads, after architecture down-select (30 Sep) and concept freeze (30 Oct).                                                                                                                                                                                       |
+| **A team email address on a KUFS-controlled domain**    | `content/site.json` → `contactEmail`, `sponsorshipEmail`, `sponsorship.enquiryEmail` | President / Secretary. **All three are currently one member's personal Gmail** — an interim stand-in that stops working for the team when that person graduates. See [Contact configuration](#contact-configuration).                                                                            |
+| **A YouTube channel, if one is wanted**                 | `content/site.json` → `socials`                                                      | Marketing / Media / Outreach. Instagram and LinkedIn are confirmed and live. The unverified YouTube entry was removed; adding one back is a single entry in the panel.                                                                                                                           |
+| **Khalifa University logo file**                        | `content/affiliations.json` + `public/affiliations/`                                 | Ask KU's brand office for the **student-organisation lockup**. Permission is already granted; only the artwork is missing. See [Third-party logos](#third-party-logos).                                                                                                                          |
+| **Formula Student / IMechE logo permission**            | `content/affiliations.json`                                                          | Written confirmation from IMechE that a competing team may display the marks, and in what form. Until then both stay `permissionConfirmed: false` and neither renders.                                                                                                                           |
+| **Hosting plan decision**                               | Vercel → Settings                                                                    | President / Sponsorship & Finance. Hobby is non-commercial; paid sponsor logos are not. Settle before the first sponsor goes live — see [Hosting plan](#hosting-plan--hobby-for-now-review-before-launch).                                                                                       |
+| **Formspree endpoint**                                  | Vercel env, `NEXT_PUBLIC_FORMSPREE_ENDPOINT`                                         | Whoever owns the team's shared account. Until set, both forms fall back to `mailto:`.                                                                                                                                                                                                            |
+| **Sponsorship prospectus PDF**                          | `public/downloads/`, then `prospectusAvailable: true`                                | Sponsorship & Finance.                                                                                                                                                                                                                                                                           |
+| **Confirmed sponsors and their logos**                  | `content/sponsors.json` + `public/sponsors/`                                         | Sponsorship & Finance, once a partner signs.                                                                                                                                                                                                                                                     |
+| **Team headshots**                                      | `public/team/` + `photo` in `content/team.json`                                      | Marketing / Media / Outreach. Cards show a monogram until then.                                                                                                                                                                                                                                  |
+| **Milestone updates and photos**                        | `content/milestones.json` → `update`, `photo`                                        | Subteam leads, as each milestone closes.                                                                                                                                                                                                                                                         |
+| **News posts**                                          | `content/news/`                                                                      | Marketing / Media / Outreach. The folder is empty — the placeholder posts were removed.                                                                                                                                                                                                          |
+| **Newsletter issues**                                   | `content/newsletter/`                                                                | Marketing / Media / Outreach assembles; each subteam lead writes their own section. Empty until the first real issue — see the recipe in CONTRIBUTING.md.                                                                                                                                        |
+| **Campus / workshop address**                           | `src/app/contact/page.tsx`                                                           | Secretary.                                                                                                                                                                                                                                                                                       |
+| **Vector logo originals (SVG/AI)**                      | `public/brand/`                                                                      | Design lead. Current files are high-resolution PNG slices of the team's exports.                                                                                                                                                                                                                 |
+| **A4 Speed commercial licence certificate (USD 12)**    | `src/assets/fonts/LICENCE-A4SPEED.txt`                                               | Marketing / Media / Outreach. The font is wired up and gated; the certificate is the only thing missing — see [Licensing](#licensing).                                                                                                                                                           |
+| **The car's CAD export**                                | `public/models/`, then `pnpm render:frames`                                          | CTO Mechanical, after concept freeze.                                                                                                                                                                                                                                                            |
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for how to make each of these changes.
 

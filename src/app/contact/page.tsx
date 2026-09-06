@@ -3,9 +3,11 @@ import type { Metadata } from "next";
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { Section, SectionHeading } from "@/components/ui/Section";
+import { ObfuscatedEmail } from "@/components/ui/ObfuscatedEmail";
 import site from "@/content/site";
 import { getCopy } from "@/lib/content";
 import { formspreeEndpoint } from "@/lib/env";
+import { entityEncode } from "@/lib/obfuscateEmail";
 
 const { title: TITLE, description: DESCRIPTION } = getCopy("contact").meta;
 
@@ -24,8 +26,11 @@ export const metadata: Metadata = {
  * different people, and making the visitor guess is how enquiries get lost —
  * or worse, how a sponsorship email sits unread in a general inbox for a week.
  *
- * Every route is also printed as a plain mailto, so the page is useful even if
- * the form is unavailable and even if JavaScript never runs.
+ * Every route is also printed as a real mailto link, so the page is useful
+ * even if the form is unavailable and even if JavaScript never runs. The
+ * addresses are entity-encoded against harvesting — see
+ * src/lib/obfuscateEmail.ts — which is a rendering detail and changes neither
+ * of those properties.
  */
 
 type Route = {
@@ -84,8 +89,10 @@ export default function ContactPage() {
                 <dt className="text-caption uppercase tracking-wider text-text-muted">
                   {copy.location.basedAtLabel}
                 </dt>
-                {/* TODO(contact): confirm the campus and building the team
-                    workshop is in before launch. */}
+                {/* BLOCKED ON THE TEAM: which campus and building the
+                    workshop is in. Until it is confirmed this deliberately
+                    shows only the university and the city, which are both
+                    true — it does not name a building we are unsure of. */}
                 <dd className="text-body text-text">
                   {site.university}
                   <br />
@@ -97,12 +104,10 @@ export default function ContactPage() {
                   {copy.location.generalLabel}
                 </dt>
                 <dd className="text-body">
-                  <a
-                    href={`mailto:${site.contactEmail}`}
+                  <ObfuscatedEmail
+                    email={site.contactEmail}
                     className="font-semibold text-accent underline-offset-4 hover:underline"
-                  >
-                    {site.contactEmail}
-                  </a>
+                  />
                 </dd>
               </div>
               <div>
@@ -146,14 +151,11 @@ export default function ContactPage() {
               <h3 className="text-h4 text-text">{route.label}</h3>
               <p className="text-small text-text-muted">{route.blurb}</p>
               <p className="mt-auto pt-3">
-                <a
-                  href={`mailto:${route.email}?subject=${encodeURIComponent(
-                    `${route.label} — KUFS`,
-                  )}`}
+                <ObfuscatedEmail
+                  email={route.email}
+                  subject={`${route.label} — KUFS`}
                   className="text-small font-semibold text-accent underline-offset-4 hover:underline"
-                >
-                  {route.email}
-                </a>
+                />
               </p>
               <p className="text-caption text-text-muted">
                 {copy.routes.answeredLabel} {route.responseTime}.
@@ -195,7 +197,7 @@ export default function ContactPage() {
             <EnquiryForm
               copy={formCopy}
               endpoint={endpoint}
-              toEmail={site.contactEmail}
+              toEmailEncoded={entityEncode(site.contactEmail)}
               subject={copy.form.subject}
               topicLabel={copy.form.topicLabel}
               topicPlaceholder={copy.form.topicPlaceholder}

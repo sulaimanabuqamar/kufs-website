@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-import { getPublishedNews } from "@/lib/content";
+import { getPublishedNews, getPublishedNewsletter } from "@/lib/content";
 import { siteUrl } from "@/lib/env";
 import { ALL_ROUTES } from "@/lib/nav";
 
@@ -8,7 +8,8 @@ import { ALL_ROUTES } from "@/lib/nav";
  * Routes come from src/lib/nav.ts — the same list the header and footer read —
  * so a page cannot be navigable but missing from the sitemap.
  *
- * News articles are appended from the published posts. DRAFTS ARE EXCLUDED:
+ * News articles and newsletter issues are appended from their published
+ * lists. DRAFTS ARE EXCLUDED:
  * the seeded placeholder posts are visible on the site behind a banner, but
  * they must not be submitted to search engines. The same `draft` flag drives
  * their exclusion here, from the home page, and their noindex robots tag.
@@ -42,5 +43,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...pages, ...articles];
+  // Issues are dated to the first of their month; they are not edited after
+  // publication, so "yearly" is honest rather than optimistic.
+  const issues: MetadataRoute.Sitemap = getPublishedNewsletter().map((issue) => ({
+    url: `${origin}/newsletter/${issue.slug}`,
+    lastModified: new Date(`${issue.slug}-01T00:00:00Z`),
+    changeFrequency: "yearly",
+    priority: 0.6,
+  }));
+
+  return [...pages, ...articles, ...issues];
 }

@@ -7,20 +7,25 @@ import matter from "gray-matter";
 import site from "@/content/site";
 import { CTA_HREF, PRIMARY_ROUTES, SECONDARY_ROUTES, type NavItem } from "@/lib/nav";
 import {
+  affiliationsSchema,
   carSchema,
   milestonesSchema,
   MILESTONE_PHASES,
   rolesSchema,
   tiersSchema,
   newsFrontmatterSchema,
+  newsletterFrontmatterSchema,
   parseOrThrow,
   COPY_SCHEMAS,
   type Copy,
   type CopyKey,
   sponsorsSchema,
   teamSchema,
+  type Affiliation,
   type Milestone,
   type NewsPost,
+  type NewsletterIssue,
+  type NewsletterSection,
   type Sponsor,
   type SponsorTier,
   ENGINEERING_SUBTEAMS,
@@ -216,6 +221,37 @@ export function getSponsorsByTier(): { tier: SponsorTier; sponsors: Sponsor[] }[
 }
 
 /* -------------------------------------------------------------------------
+   Affiliations
+   ------------------------------------------------------------------------- */
+
+/** Every entry, including the ones that may not be shown. For docs and checks. */
+export const getAllAffiliations = once((): Affiliation[] =>
+  parseOrThrow(
+    affiliationsSchema,
+    readList("affiliations.json", "affiliations"),
+    "content/affiliations.json",
+  ),
+);
+
+/**
+ * The affiliations that may actually be displayed.
+ *
+ * TWO conditions, both required, and this is the only place they are checked:
+ *
+ *   1. `permissionConfirmed` — the organisation has confirmed we may use their
+ *      mark. These are third-party trademarks, not our own brand assets.
+ *   2. A logo file. Permission is not artwork; an entry can have the first and
+ *      not the second, which is exactly where Khalifa University sits today.
+ *
+ * With neither condition met by any entry, this returns an empty array and
+ * `<AffiliationStrip>` renders nothing at all — not an empty box and not a
+ * placeholder. The site says the true thing in words instead.
+ */
+export const getAffiliations = once((): Affiliation[] =>
+  getAllAffiliations().filter((a) => a.permissionConfirmed && a.logo),
+);
+
+/* -------------------------------------------------------------------------
    Team
    ------------------------------------------------------------------------- */
 
@@ -317,6 +353,194 @@ export function getAdjacentPosts(slug: string): {
 
 export function getLatestNews(count = 3): NewsPost[] {
   return getPublishedNews().slice(0, count);
+}
+
+/* -------------------------------------------------------------------------
+   Newsletter
+   ------------------------------------------------------------------------- */
+
+const NEWSLETTER_DIR = join(CONTENT_DIR, "newsletter");
+
+/** "Chassis & Driver Ergonomics" -> "chassis-driver-ergonomics". */
+function subteamAnchor(subteam: string): string {
+  return subteam
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+/**
+ * Split an issue body into one section per contributing subteam.
+ *
+ * THE SECTIONS ARE THE `##` HEADINGS. An issue is written as plain MDX with a
+ * level-two heading per subteam and that subteam's report underneath it. The
+ * alternative — a `sections:` array in the frontmatter with the prose inside
+ * YAML — is worse to write, worse to review as a diff, and would have put
+ * paragraphs of MDX inside a string.
+ *
+ * THE HEADINGS ARE VALIDATED AGAINST THE ROSTER'S OWN SUBTEAM LIST, which is
+ * the point of doing it this way. `ENGINEERING_SUBTEAMS` is the same list
+ * `content/team.json` validates its roles against and the same list /team and
+ * /join group by. There is no second copy of the subteam names anywhere in the
+ * newsletter, so renaming a subteam is one edit and cannot leave an issue
+ * heading pointing at a subteam that no longer exists — the build fails
+ * instead, naming the file and the heading.
+ *
+ * A SUBTEAM THAT DID NOT CONTRIBUTE IS ABSENT. Nothing is rendered in its
+ * place. Eight "no update this month" rows makes a quiet month look like a
+ * dead team, which is the opposite of what a newsletter is for; a reader
+ * counts what is there, not what is missing.
+ */
+function parseSections(body: string, source: string): NewsletterSection[] {
+  const HEADING = /^##[ \t]+(.+?)[ \t]*$/gm;
+
+  const matches = [...body.matchAll(HEADING)];
+  const preamble = body.slice(0, matches[0]?.index ?? body.length).trim();
+  if (preamble) {
+    throw new Error(
+      `\n\n${source}: text appears before the first subteam heading.\n\n` +
+        `The editorial introduction belongs in the frontmatter, as \`intro\`.\n` +
+        `Everything in the body must sit under a "## <Subteam>" heading.\n`,
+    );
+  }
+  if (matches.length === 0) {
+    throw new Error(
+      `\n\n${source}: the issue has no subteam sections.\n\n` +
+        `Add at least one "## <Subteam>" heading with that subteam's report\n` +
+        `underneath it. Valid subteams:\n` +
+        ENGINEERING_SUBTEAMS.map((s) => `  ## ${s}`).join("\n") +
+        `\n`,
+    );
+  }
+
+  const sections = matches.map((match, index) => {
+    const name = match[1].trim();
+    const subteam = ENGINEERING_SUBTEAMS.find((s) => s === name);
+    if (!subteam) {
+      throw new Error(
+        `\n\n${source}: "## ${name}" is not one of the team's subteams.\n\n` +
+          `Section headings are matched against the roster, so they cannot\n` +
+          `drift from it. Use exactly one of:\n` +
+          ENGINEERING_SUBTEAMS.map((s) => `  ## ${s}`).join("\n") +
+          `\n\nUse "###" for a subheading inside a subteam's section.\n`,
+      );
+    }
+
+    const start = match.index + match[0].length;
+    const end = matches[index + 1]?.index ?? body.length;
+    const text = body.slice(start, end).trim();
+    if (!text) {
+      throw new Error(
+        `\n\n${source}: "## ${name}" has a heading but no report under it.\n\n` +
+          `A subteam that did not contribute this month should be left out\n` +
+          `entirely rather than given an empty section.\n`,
+      );
+    }
+
+    return { subteam, id: subteamAnchor(subteam), body: text };
+  });
+
+  const seen = new Set<string>();
+  for (const section of sections) {
+    if (seen.has(section.subteam)) {
+      throw new Error(
+        `\n\n${source}: "## ${section.subteam}" appears twice.\n\n` +
+          `Each subteam gets one section per issue. Merge the two.\n`,
+      );
+    }
+    seen.add(section.subteam);
+  }
+
+  // Canonical order, not the order they were typed, so every issue reads in
+  // the same sequence as /team and /join and a reader learns where to look.
+  return sections.sort(
+    (a, b) =>
+      ENGINEERING_SUBTEAMS.indexOf(a.subteam) - ENGINEERING_SUBTEAMS.indexOf(b.subteam),
+  );
+}
+
+/**
+ * Every issue, newest first, INCLUDING drafts.
+ *
+ * Exactly the arrangement /news uses, and deliberately the same one rather
+ * than a second mechanism: drafts are listed and readable behind a visible
+ * banner, `getPublishedNewsletter()` excludes them, the sitemap and the feed
+ * read the published list, and the issue route marks a draft `noindex`.
+ *
+ * The directory may legitimately not exist. There are no issues yet, git does
+ * not track empty directories, and "no issues yet" is the honest state of a
+ * newsletter that has not published its first one — it must not fail a build.
+ */
+export const getNewsletterIssues = once((): NewsletterIssue[] => {
+  if (!existsSync(NEWSLETTER_DIR)) return [];
+
+  const files = readdirSync(NEWSLETTER_DIR).filter((f) => f.endsWith(".mdx"));
+
+  const issues = files.map((file) => {
+    const slug = file.replace(/\.mdx$/, "");
+    const source = `content/newsletter/${file}`;
+    const raw = readFileSync(join(NEWSLETTER_DIR, file), "utf8");
+    const { data, content } = matter(raw);
+    const frontmatter = parseOrThrow(
+      newsletterFrontmatterSchema,
+      data,
+      `${source} (frontmatter)`,
+    );
+
+    // The filename is the URL, so it has to agree with the frontmatter rather
+    // than merely look like it does. `2026-10.mdx` carrying month 11 would
+    // publish an issue at a URL naming the wrong month.
+    const expected = `${frontmatter.year}-${String(frontmatter.month).padStart(2, "0")}`;
+    if (slug !== expected) {
+      throw new Error(
+        `\n\n${source} is named for a different month than its frontmatter.\n\n` +
+          `  frontmatter: year ${frontmatter.year}, month ${frontmatter.month}` +
+          ` -> ${expected}.mdx\n` +
+          `  filename:    ${file}\n\n` +
+          `The filename is the URL. Rename the file, or fix the frontmatter.\n`,
+      );
+    }
+
+    return {
+      ...frontmatter,
+      slug,
+      sections: parseSections(content, source),
+    } satisfies NewsletterIssue;
+  });
+
+  const duplicate = issues.find(
+    (issue, i) => issues.findIndex((o) => o.issue === issue.issue) !== i,
+  );
+  if (duplicate) {
+    throw new Error(
+      `\n\nTwo newsletter issues are both numbered ${duplicate.issue}.\n` +
+        `Issue numbers are sequential and unique. Check content/newsletter/.\n`,
+    );
+  }
+
+  // Newest first. Slugs are zero-padded "YYYY-MM", so this sorts by date.
+  return issues.sort((a, b) => b.slug.localeCompare(a.slug));
+});
+
+/** Issues that are not drafts. Use this anywhere an issue is being promoted. */
+export const getPublishedNewsletter = once((): NewsletterIssue[] =>
+  getNewsletterIssues().filter((issue) => !issue.draft),
+);
+
+export function getIssueBySlug(slug: string): NewsletterIssue | undefined {
+  return getNewsletterIssues().find((issue) => issue.slug === slug);
+}
+
+/** Previous and next by date, for the issue footer. Mirrors getAdjacentPosts. */
+export function getAdjacentIssues(slug: string): {
+  previous: NewsletterIssue | undefined;
+  next: NewsletterIssue | undefined;
+} {
+  const issues = getNewsletterIssues();
+  const index = issues.findIndex((i) => i.slug === slug);
+  if (index === -1) return { previous: undefined, next: undefined };
+  // Newest-first, so "next" is the newer issue.
+  return { previous: issues[index + 1], next: issues[index - 1] };
 }
 
 /* -------------------------------------------------------------------------

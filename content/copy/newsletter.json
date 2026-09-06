@@ -1,0 +1,37 @@
+{
+  "meta": {
+    "title": "Newsletter",
+    "description": "The monthly KUFS newsletter: each subteam reports its own findings, decisions and progress on Khalifa University's first Formula Student car."
+  },
+  "header": {
+    "eyebrow": "Monthly",
+    "title": "What each subteam actually did",
+    "lead": "Once a month, every subteam writes up its own work — what was designed, what was tested, what was decided and what did not go to plan. This is the engineering record of the season, written by the people doing it."
+  },
+  "aside": {
+    "heading": "About the newsletter",
+    "issuesLabel": "Issues published",
+    "subscribeLabel": "Subscribe",
+    "latestLabel": "Latest issue"
+  },
+  "listHeading": "All issues",
+  "issueLabel": "Issue {issue}",
+  "contributorsLabel": "Reporting this month",
+  "contributorCount": "{count} of {total} subteams",
+  "emptyTitle": "No issues yet",
+  "emptyBody": "The first issue goes out when the subteams have something real to report. We would rather publish nothing than pad an issue with activity that did not happen — a newsletter that says nothing in its first month teaches everyone to skip the second. Follow the season on the progress page until then.",
+  "emptyCta": "See the season timeline",
+  "draftBadge": "Draft",
+  "rssLabel": "Newsletter RSS",
+  "issue": {
+    "draftBadge": "Draft issue",
+    "draftNote": "This issue has not been published. It is visible here so the team can read it back before it goes out, it is not listed anywhere public, and search engines are told to ignore it.",
+    "backLink": "All issues",
+    "contentsHeading": "In this issue",
+    "introHeading": "From the editor",
+    "olderLink": "Previous issue",
+    "newerLink": "Next issue",
+    "ctaTitle": "Follow the build",
+    "ctaBody": "Every issue is written by the students doing the work. If you want to be part of it, or to back it, both doors are open."
+  }
+}

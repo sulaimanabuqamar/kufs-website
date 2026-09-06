@@ -130,7 +130,13 @@
       "title",
       "update"
     ],
-    "roles": ["description", "lookingFor", "openings", "subteam", "title"],
+    "roles": [
+      "description",
+      "lookingFor",
+      "openings",
+      "subteam",
+      "title"
+    ],
     "cars": [
       "gallery",
       "gallery.alt",
@@ -177,7 +183,17 @@
       "excerpt",
       "title"
     ],
+    "newsletter": [
+      "draft",
+      "intro",
+      "issue",
+      "month",
+      "year"
+    ],
     "copy/common": [
+      "affiliations",
+      "affiliations.competingLine",
+      "affiliations.heading",
       "comingSoon",
       "comingSoon.backLink",
       "comingSoon.badge",
@@ -520,6 +536,39 @@
       "post.draftNote",
       "post.newerLink",
       "post.olderLink",
+      "rssLabel"
+    ],
+    "copy/newsletter": [
+      "aside",
+      "aside.heading",
+      "aside.issuesLabel",
+      "aside.latestLabel",
+      "aside.subscribeLabel",
+      "contributorCount",
+      "contributorsLabel",
+      "draftBadge",
+      "emptyBody",
+      "emptyCta",
+      "emptyTitle",
+      "header",
+      "header.eyebrow",
+      "header.lead",
+      "header.title",
+      "issue",
+      "issue.backLink",
+      "issue.contentsHeading",
+      "issue.ctaBody",
+      "issue.ctaTitle",
+      "issue.draftBadge",
+      "issue.draftNote",
+      "issue.introHeading",
+      "issue.newerLink",
+      "issue.olderLink",
+      "issueLabel",
+      "listHeading",
+      "meta",
+      "meta.description",
+      "meta.title",
       "rssLabel"
     ],
     "copy/join": [

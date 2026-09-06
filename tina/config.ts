@@ -5,6 +5,7 @@ import {
   carSchema,
   milestoneSchema,
   newsFrontmatterSchema,
+  newsletterFrontmatterSchema,
   roleSchema,
   siteSchema,
   sponsorSchema,
@@ -20,6 +21,7 @@ import {
   homeCopyOverlay,
   joinCopyOverlay,
   newsCopyOverlay,
+  newsletterCopyOverlay,
   notFoundCopyOverlay,
   pressKitCopyOverlay,
   progressCopyOverlay,
@@ -28,6 +30,7 @@ import {
   theCarCopyOverlay,
   milestoneOverlay,
   newsOverlay,
+  newsletterOverlay,
   roleOverlay,
   siteOverlay,
   sponsorOverlay,
@@ -112,6 +115,7 @@ const COPY_COLLECTIONS = [
   { name: "the-car", label: "The Car page", overlay: theCarCopyOverlay },
   { name: "progress", label: "Progress page", overlay: progressCopyOverlay },
   { name: "news", label: "News page", overlay: newsCopyOverlay },
+  { name: "newsletter", label: "Newsletter page", overlay: newsletterCopyOverlay },
   { name: "join", label: "Join the Team page", overlay: joinCopyOverlay },
   { name: "press-kit", label: "Press Kit page", overlay: pressKitCopyOverlay },
   { name: "contact", label: "Contact page", overlay: contactCopyOverlay },
@@ -309,6 +313,35 @@ export default defineConfig({
                 .replace(/[^a-z0-9]+/g, "-")
                 .replace(/^-|-$/g, "")
                 .slice(0, 60),
+          },
+        },
+      },
+      {
+        name: "newsletter",
+        label: "Newsletter issues",
+        path: "content/newsletter",
+        format: "mdx",
+        fields: [
+          ...fieldsFromZod(newsletterFrontmatterSchema, newsletterOverlay),
+          {
+            type: "rich-text",
+            name: "body",
+            label: "Issue",
+            isBody: true,
+            description:
+              'One "Heading 2" per contributing subteam, spelled exactly as the ' +
+              "roster spells it, with that subteam's report underneath. Leave a " +
+              "subteam out entirely if it did not contribute this month. Use " +
+              '"Heading 3" for subheadings inside a section.',
+          },
+        ],
+        ui: {
+          // The filename IS the month, and the build refuses an issue whose
+          // filename and frontmatter disagree — so it is derived from the two
+          // fields that decide it rather than typed.
+          filename: {
+            slugify: (values: { year?: number; month?: number }) =>
+              `${values?.year ?? "0000"}-${String(values?.month ?? 1).padStart(2, "0")}`,
           },
         },
       },

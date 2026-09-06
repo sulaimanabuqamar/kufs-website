@@ -1,0 +1,25 @@
+{
+  "affiliations": [
+    {
+      "name": "Khalifa University",
+      "permissionConfirmed": true,
+      "url": "https://www.ku.ac.ae",
+      "relationship": "The university KUFS represents.",
+      "pending": "The official logo file from KU's brand office. Ask for the lockup issued to student organisations, which is usually not the plain university mark. Do not substitute a version downloaded from the web. Permission is already granted, so this entry renders the moment the correct file is committed and its path filled in."
+    },
+    {
+      "name": "Formula Student",
+      "permissionConfirmed": false,
+      "url": "https://www.imeche.org/events/formula-student",
+      "relationship": "The competition KUFS is entering in 2027.",
+      "pending": "Written confirmation that a competing team may display the Formula Student mark, and in which form. Their competitor branding guidance governs this. Until it is confirmed, the affiliation is stated in words only — the plain-text line under the strip does that and needs nobody's permission."
+    },
+    {
+      "name": "Institution of Mechanical Engineers",
+      "permissionConfirmed": false,
+      "url": "https://www.imeche.org",
+      "relationship": "The organiser of Formula Student UK.",
+      "pending": "Written confirmation that a competing team may display the IMechE mark, and in which form. Same guidance as the Formula Student entry, and the same fallback: the affiliation is stated in words."
+    }
+  ]
+}

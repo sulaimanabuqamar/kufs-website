@@ -32,6 +32,11 @@
         "description": "Updates from the workshop and the paddock."
       },
       {
+        "href": "/newsletter",
+        "label": "Newsletter",
+        "description": "Monthly reports from every subteam."
+      },
+      {
         "href": "/join",
         "label": "Join the Team",
         "description": "Open roles across every subteam."
@@ -66,6 +71,10 @@
     "badge": "Coming soon",
     "body": "In the meantime, the fastest route in is a direct message or an email — we answer both.",
     "backLink": "← Back to the home page"
+  },
+  "affiliations": {
+    "heading": "Affiliations",
+    "competingLine": "Competing in {competition} {year}, organised by the {organiser}."
   },
   "hero": {
     "scrollHint": "Scroll"

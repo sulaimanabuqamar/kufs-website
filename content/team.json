@@ -145,6 +145,28 @@
       ]
     },
     {
+      "name": "Zixing Zhang",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Aerodynamics"
+        }
+      ]
+    },
+    {
+      "name": "Anish Bernald John",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Aerodynamics"
+        }
+      ]
+    },
+    {
       "name": "Yuvan Anoop Whabi",
       "year": "Sophomore",
       "major": "Mechanical Engineering",
@@ -167,6 +189,39 @@
       ]
     },
     {
+      "name": "Mohammed Mahmoud",
+      "year": "Junior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Chassis & Driver Ergonomics"
+        }
+      ]
+    },
+    {
+      "name": "Sai Devarakonda",
+      "year": "Junior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Chassis & Driver Ergonomics"
+        }
+      ]
+    },
+    {
+      "name": "Abdulla Alhammadi",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Chassis & Driver Ergonomics"
+        }
+      ]
+    },
+    {
       "name": "Suneet Rohra",
       "year": "Freshman",
       "major": "Aerospace Engineering",
@@ -178,7 +233,84 @@
       ]
     },
     {
+      "name": "Shahim Al Shudeifat",
+      "year": "Sophomore",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Steering"
+        }
+      ]
+    },
+    {
+      "name": "Shahed Habboush",
+      "year": "Junior",
+      "major": "Applied Mathematics",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Steering"
+        }
+      ]
+    },
+    {
+      "name": "Dana Alhammadi",
+      "year": "Junior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Steering"
+        }
+      ]
+    },
+    {
       "name": "Muhammad Talha",
+      "year": "Junior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Suspension"
+        }
+      ]
+    },
+    {
+      "name": "Ahmed Hassan",
+      "year": "Junior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Suspension"
+        }
+      ]
+    },
+    {
+      "name": "Mohamed Fouad",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Suspension"
+        }
+      ]
+    },
+    {
+      "name": "Abdullah Al-Mashhadany",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Suspension"
+        }
+      ]
+    },
+    {
+      "name": "Adam Ashraf Abdelmaqsoud",
       "year": "Junior",
       "major": "Mechanical Engineering",
       "roles": [
@@ -211,6 +343,39 @@
       ]
     },
     {
+      "name": "Ameen Akhmedov",
+      "year": "Junior",
+      "major": "Physics",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Throttle & Braking Systems"
+        }
+      ]
+    },
+    {
+      "name": "Danie Jiju Mathew",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Throttle & Braking Systems"
+        }
+      ]
+    },
+    {
+      "name": "Mohamed Elsherif",
+      "year": "Sophomore",
+      "major": "Electrical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Throttle & Braking Systems"
+        }
+      ]
+    },
+    {
       "name": "Asmaa Abdelfattah",
       "year": "Junior",
       "major": "Aerospace Engineering",
@@ -222,7 +387,62 @@
       ]
     },
     {
-      "name": "Mohammed Khaled",
+      "name": "Bashayer Alyammahi",
+      "year": "Senior",
+      "major": "Computer Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Powertrain & Drivetrain"
+        }
+      ]
+    },
+    {
+      "name": "Malika Shehada",
+      "year": "Junior",
+      "major": "Aerospace Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Powertrain & Drivetrain"
+        }
+      ]
+    },
+    {
+      "name": "Charmaine Soriano",
+      "year": "Sophomore",
+      "major": "Chemical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Powertrain & Drivetrain"
+        }
+      ]
+    },
+    {
+      "name": "Andrei Misalev",
+      "year": "Junior",
+      "major": "Chemical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Powertrain & Drivetrain"
+        }
+      ]
+    },
+    {
+      "name": "Sarah Alhammadi",
+      "year": "Senior",
+      "major": "Mechanical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Powertrain & Drivetrain"
+        }
+      ]
+    },
+    {
+      "name": "Mohamed Khalid",
       "year": "Senior",
       "major": "Electrical Engineering",
       "roles": [
@@ -255,6 +475,39 @@
       ]
     },
     {
+      "name": "Firas Abdul Rahman Al Eter",
+      "year": "Junior",
+      "major": "Electrical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "High Voltage"
+        }
+      ]
+    },
+    {
+      "name": "Mohammed Abdelazim Massad",
+      "year": "Junior",
+      "major": "Electrical Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "High Voltage"
+        }
+      ]
+    },
+    {
+      "name": "Abdur Rafay Tariq",
+      "year": "Freshman",
+      "major": "Energy Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "High Voltage"
+        }
+      ]
+    },
+    {
       "name": "Yazeed Nawasreh",
       "year": "Junior",
       "major": "Computer Science",
@@ -266,9 +519,53 @@
       ]
     },
     {
+      "name": "Tarek Al Hafez",
+      "year": "Senior",
+      "major": "Computer Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Low Voltage & Controls"
+        }
+      ]
+    },
+    {
       "name": "Abdullah Haider",
       "year": "Sophomore",
       "major": "Energy Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Low Voltage & Controls"
+        }
+      ]
+    },
+    {
+      "name": "Shahad Rikas",
+      "year": "Sophomore",
+      "major": "Computer Science",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Low Voltage & Controls"
+        }
+      ]
+    },
+    {
+      "name": "Osama Elmahdy",
+      "year": "Junior",
+      "major": "Computer Engineering",
+      "roles": [
+        {
+          "division": "Engineering",
+          "title": "Low Voltage & Controls"
+        }
+      ]
+    },
+    {
+      "name": "Fatima Alsabahe",
+      "year": "Sophomore",
+      "major": "Computer Engineering",
       "roles": [
         {
           "division": "Engineering",

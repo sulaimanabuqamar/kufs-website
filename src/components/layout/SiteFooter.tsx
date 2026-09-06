@@ -1,7 +1,9 @@
 import Link from "next/link";
 
+import { AffiliationStrip } from "@/components/layout/AffiliationStrip";
 import { SponsorBar } from "@/components/layout/SponsorBar";
 import { KufsLogo } from "@/components/brand/KufsLogo";
+import { ObfuscatedEmail } from "@/components/ui/ObfuscatedEmail";
 import site from "@/content/site";
 import { getCopy, getNav } from "@/lib/content";
 import { fill } from "@/lib/copy";
@@ -15,6 +17,7 @@ export function SiteFooter() {
   return (
     <footer className="mt-auto border-t border-border bg-surface/40">
       <SponsorBar />
+      <AffiliationStrip />
 
       <div className="page-container grid gap-10 py-14 md:grid-cols-[1.4fr_1fr_1fr]">
         <div className="flex flex-col gap-4">
@@ -71,12 +74,10 @@ export function SiteFooter() {
               </li>
             ))}
             <li>
-              <a
-                href={`mailto:${site.contactEmail}`}
+              <ObfuscatedEmail
+                email={site.contactEmail}
                 className="rounded-sm text-small text-text-muted underline-offset-4 hover:text-text hover:underline"
-              >
-                {site.contactEmail}
-              </a>
+              />
             </li>
           </ul>
         </nav>

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { SmoothHashScroll } from "@/components/SmoothHashScroll";
 import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { Button } from "@/components/ui/Button";
+import { ObfuscatedEmailButton } from "@/components/ui/ObfuscatedEmail";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import { StatusPill } from "@/components/ui/StatusPill";
 import site from "@/content/site";
@@ -315,15 +316,13 @@ export default function JoinPage() {
               both buttons take explicit on-accent treatment. Measured on
               --color-accent: solid navy label 7.29:1, the /70 border 4.02:1. */}
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row">
-            <Button
-              href={`mailto:${site.contactEmail}?subject=${encodeURIComponent(
-                copy.apply.emailSubject,
-              )}`}
+            <ObfuscatedEmailButton
+              email={site.contactEmail}
+              subject={copy.apply.emailSubject}
+              label={copy.apply.emailLabel}
               size="lg"
               className="bg-bg text-text hover:bg-surface-raised"
-            >
-              {copy.apply.emailLabel}
-            </Button>
+            />
             <Button
               href={nav.cta.sponsor.href}
               size="lg"

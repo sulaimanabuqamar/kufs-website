@@ -5,24 +5,19 @@
   "tagline": "ENGINEERED TO RACE. DRIVEN TO LEAD.",
   "positioning": "KUFS is the official Formula Student team of Khalifa University. We design, build, and compete with passion, precision, and purpose.",
   "description": "KUFS is the official Formula Student team of Khalifa University, Abu Dhabi. We are building the university's first electric Formula Student car for Formula Student UK 2027 at Silverstone.",
-  "url": "https://kufs.ku.ac.ae",
-  "contactEmail": "kufs@ku.ac.ae",
-  "sponsorshipEmail": "partnerships.kufs@ku.ac.ae",
+  "url": "https://kufs-website.vercel.app",
+  "contactEmail": "sulaiman.abuqamar@gmail.com",
+  "sponsorshipEmail": "sulaiman.abuqamar@gmail.com",
   "socials": [
     {
       "label": "Instagram",
-      "href": "https://instagram.com/kufsracing",
-      "handle": "@kufsracing"
+      "href": "https://www.instagram.com/kufs.ae",
+      "handle": "@kufs.ae"
     },
     {
       "label": "LinkedIn",
       "href": "https://www.linkedin.com/company/khalifa-university-formula-student",
       "handle": "Khalifa University Formula Student"
-    },
-    {
-      "label": "YouTube",
-      "href": "https://www.youtube.com/@kufsracing",
-      "handle": "@kufsracing"
     }
   ],
   "competition": {
@@ -97,7 +92,7 @@
   "sponsorship": {
     "prospectusPath": "/downloads/kufs-sponsorship-prospectus.pdf",
     "prospectusAvailable": false,
-    "enquiryEmail": "partnerships.kufs@ku.ac.ae",
+    "enquiryEmail": "sulaiman.abuqamar@gmail.com",
     "reasons": [
       {
         "title": "Founding partner of a programme, not a logo on a mature car",

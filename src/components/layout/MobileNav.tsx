@@ -63,8 +63,11 @@ export function MobileNav({
     }
   }, [pathname]);
 
+  // Paired with the `hidden xl:block` desktop nav in SiteHeader — these two
+  // breakpoints must move together, or a width exists showing both navs or
+  // neither.
   return (
-    <div className="lg:hidden">
+    <div className="xl:hidden">
       <button
         ref={triggerRef}
         type="button"

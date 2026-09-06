@@ -52,6 +52,7 @@ const NAV = [
   { label: "Sponsors", path: "/sponsors" },
   { label: "Partner With Us", path: "/become-a-sponsor" },
   { label: "News", path: "/news" },
+  { label: "Newsletter", path: "/newsletter" },
   { label: "Join the Team", path: "/join" },
 ];
 

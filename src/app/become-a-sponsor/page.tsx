@@ -5,11 +5,13 @@ import { SpeedStripe } from "@/components/brand/SpeedStripe";
 import { EnquiryForm } from "@/components/forms/EnquiryForm";
 import { TierTable } from "@/components/sponsorship/TierTable";
 import { Button } from "@/components/ui/Button";
+import { ObfuscatedEmail, ObfuscatedEmailButton } from "@/components/ui/ObfuscatedEmail";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import site from "@/content/site";
 import { getCopy, getTeamStats, getTiers } from "@/lib/content";
 import { fill } from "@/lib/copy";
 import { formspreeEndpoint } from "@/lib/env";
+import { entityEncode } from "@/lib/obfuscateEmail";
 import { SPONSOR_TIERS, TIER_LABEL } from "@/lib/tiers";
 
 const { title: TITLE, description: DESCRIPTION } = getCopy("become-a-sponsor").meta;
@@ -248,15 +250,13 @@ export default function BecomeASponsorPage() {
                   <p className="mt-2 text-small text-muted-on-light">
                     {copy.enquiry.prospectusUnavailable}
                   </p>
-                  <Button
-                    href={`mailto:${sponsorship.enquiryEmail}?subject=${encodeURIComponent(
-                      copy.enquiry.prospectusRequestSubject,
-                    )}`}
+                  <ObfuscatedEmailButton
+                    email={sponsorship.enquiryEmail}
+                    subject={copy.enquiry.prospectusRequestSubject}
+                    label={copy.enquiry.prospectusRequestLabel}
                     variant="onLightSecondary"
                     className="mt-5"
-                  >
-                    {copy.enquiry.prospectusRequestLabel}
-                  </Button>
+                  />
                 </>
               )}
             </div>
@@ -264,12 +264,10 @@ export default function BecomeASponsorPage() {
             <div className="text-small text-muted-on-light">
               <p>
                 {copy.enquiry.directHeading}{" "}
-                <a
-                  href={`mailto:${sponsorship.enquiryEmail}`}
+                <ObfuscatedEmail
+                  email={sponsorship.enquiryEmail}
                   className="font-semibold text-accent-on-light underline underline-offset-2"
-                >
-                  {sponsorship.enquiryEmail}
-                </a>
+                />
               </p>
             </div>
           </div>
@@ -282,7 +280,7 @@ export default function BecomeASponsorPage() {
             <EnquiryForm
               copy={formCopy}
               endpoint={endpoint}
-              toEmail={sponsorship.enquiryEmail}
+              toEmailEncoded={entityEncode(sponsorship.enquiryEmail)}
               subject={copy.enquiry.formSubject}
               topicLabel={copy.enquiry.tierLabel}
               topicPlaceholder={copy.enquiry.tierPlaceholder}

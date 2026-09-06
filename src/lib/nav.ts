@@ -26,6 +26,7 @@ export const PRIMARY_ROUTES = [
   "/sponsors",
   "/become-a-sponsor",
   "/news",
+  "/newsletter",
   "/join",
 ] as const;
 

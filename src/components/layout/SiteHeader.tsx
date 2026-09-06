@@ -32,10 +32,23 @@ export function SiteHeader() {
           <KufsLogo alt={logoAlt} on="dark" width={180} priority />
         </Link>
 
-        {/* The nav appears at lg, not md. Seven items plus a 180px logo and the
-            CTA need roughly 1000px; at 768 they overflowed the viewport. The
-            drawer covers everything below that. */}
-        <nav aria-label="Primary" className="hidden lg:block">
+        {/* The nav appears at xl, not lg, and this has now moved twice for the
+            same reason: each new page makes the row wider.
+
+            Brief #3 moved it md -> lg, when seven items plus a 180px logo and
+            the CTA needed roughly 1000px and overflowed at 768. Adding
+            /newsletter made it eight, which measures 1050px of content — that
+            fits from about 1120px, and at 1024 it pushed the page into
+            horizontal scroll. Rather than sit 96px above the lg breakpoint it
+            is on, it moves to xl, which leaves 83px of slack at 1280.
+
+            The slack matters because the LABELS ARE EDITABLE from /admin. A
+            committee lead who renames "News" to something longer must not be
+            able to break the header, and the margin here is what absorbs that.
+
+            The drawer covers everything below xl and carries the same routes,
+            so nothing becomes unreachable. */}
+        <nav aria-label="Primary" className="hidden xl:block">
           <ul className="flex items-center gap-1">
             {nav.primary.map((item) => (
               <li key={item.href}>

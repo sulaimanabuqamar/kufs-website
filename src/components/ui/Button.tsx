@@ -65,9 +65,31 @@ type NativeButtonProps = CommonProps & { href?: undefined } & Omit<
 
 export type ButtonProps = AnchorProps | NativeButtonProps;
 
+/**
+ * The resolved class list for a button, exposed so the one element that cannot
+ * be a `<Button>` still looks exactly like one.
+ *
+ * That element is the obfuscated `mailto:` button in
+ * src/components/ui/ObfuscatedEmail.tsx: its href has to reach the HTML as
+ * character references, which means emitting the anchor as raw HTML rather
+ * than as JSX. Sharing this function is what stops the two drifting apart the
+ * next time a variant changes.
+ */
+export function buttonClasses({
+  variant = "primary",
+  size = "md",
+  className,
+}: {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+} = {}): string {
+  return cn(BASE, VARIANTS[variant], SIZES[size], className);
+}
+
 export function Button(props: ButtonProps) {
   const { variant = "primary", size = "md", className, children } = props;
-  const classes = cn(BASE, VARIANTS[variant], SIZES[size], className);
+  const classes = buttonClasses({ variant, size, className });
 
   if (props.href !== undefined) {
     const { variant: _v, size: _s, className: _c, children: _ch, ...rest } = props;

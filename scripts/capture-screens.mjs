@@ -21,7 +21,8 @@ const { values: argv } = parseArgs({
     widths: { type: "string", default: "390,768,1440" },
     paths: {
       type: "string",
-      default: "/,/become-a-sponsor,/sponsors,/team,/join,/contact,/styleguide",
+      default:
+        "/,/the-car,/team,/progress,/sponsors,/become-a-sponsor,/news,/newsletter,/join,/press-kit,/contact,/styleguide",
     },
     full: { type: "boolean", default: false },
   },

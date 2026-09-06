@@ -23,9 +23,11 @@ it goes live, and every version is kept.
    - [Add a sponsor](#add-a-sponsor)
    - [Update the roster for a new year](#update-the-roster-for-a-new-year)
    - [Add a news post](#add-a-news-post)
+   - [Publish a newsletter issue](#publish-a-newsletter-issue)
    - [Update the season timeline](#update-the-season-timeline)
    - [Change open roles](#change-open-roles)
    - [Change team facts, emails or the competition date](#change-team-facts)
+   - [Change the social links](#change-the-social-links)
    - [Replace the car in the hero](#replace-the-car-in-the-hero)
 6. [What the checks mean when they fail](#what-the-checks-mean)
 7. [Handover checklist for the outgoing committee](#handover-checklist)
@@ -472,6 +474,101 @@ The three most recent posts appear on the home page automatically.
 > Add `draft: true` under `author` to keep a post visible locally but out of the live
 > site until you are ready.
 
+### Publish a newsletter issue
+
+**Folder:** `content/newsletter/` — one file per month, named `<year>-<month>.mdx`, e.g.
+`content/newsletter/2026-10.mdx`. **Panel:** Newsletter issues.
+
+The newsletter is **not** `/news`. `/news` is for one-off announcements — a result, a
+launch, a signed partner. The newsletter is the monthly record in which **each subteam
+reports its own work**. They have separate pages and separate RSS feeds because they
+have separate readers.
+
+There are two jobs here, and they belong to different people.
+
+---
+
+#### If you are a subteam lead: write your section
+
+You are writing **one section**, not the whole issue. Send it to the marketing lead, or
+paste it straight into the file under your subteam's heading.
+
+Your section starts with a level-two heading that is **your subteam's name, spelled
+exactly as the roster spells it**:
+
+```mdx
+## Suspension
+
+We finished the kinematics model and validated it against the rig measurement. Camber
+gain came out 0.3° short of target through the first 30 mm of travel.
+
+### What did not work
+
+The first upright design failed at 1.4× the load case. It is being redesigned around a
+thicker bearing boss — the analysis is in the shared drive.
+
+### Next month
+
+Wishbone tube sizing, and a decision on rod ends.
+```
+
+Four rules:
+
+- **`##` is your subteam name and nothing else.** It becomes the heading and the jump
+  link at the top of the issue. If it does not exactly match a subteam on the roster,
+  the build fails and names the file and the heading — so a subteam that gets renamed
+  can never leave an old name behind in an issue.
+- **Use `###` for subheadings inside your section**, as above. `##` would start a new
+  subteam section.
+- **Write what actually happened**, including what did not work. That is the point of
+  the newsletter and it is what a judge, a sponsor and a prospective member all want.
+  Nobody needs a paragraph saying the month went well.
+- **If you have nothing to report, send nothing.** Do not write "no update this month".
+
+#### If you are the marketing lead: assemble and publish the issue
+
+1. **Create the file.** `content/newsletter/<year>-<month>.mdx`, e.g. `2026-10.mdx`. In
+   the panel, choose Newsletter issues → Create — the filename is generated from the
+   year and month you enter, so it cannot disagree with them. Editing the file directly,
+   note that **the filename must match the frontmatter**; the build refuses an issue
+   named for a different month than it claims to be.
+
+2. **Fill in the frontmatter and write the introduction.**
+
+   ```mdx
+   ---
+   issue: 4
+   month: 10
+   year: 2026
+   intro: "Concept freeze month. Three subteams closed out their architecture decisions and the chassis jig went up in the workshop."
+   ---
+   ```
+
+   `issue` is sequential and must be unique — the build refuses two issues with the same
+   number. `intro` is plain text, no formatting: it is also used as the search-result
+   description and the RSS summary, where markup would be wrong. Keep it under 500
+   characters.
+
+3. **Paste each subteam's section in.** Order does not matter — sections are re-ordered
+   into the same sequence the subteams appear in on `/team`, so every issue reads the
+   same way.
+
+4. **Leave out the subteams who did not contribute.** Do not add an empty section or a
+   "no update this month" line for them. Eight of those makes a quiet month look like a
+   dead team; a reader counts what is there. The issue page and the index both show
+   which subteams reported, so a short issue is honest rather than broken. The build
+   refuses a heading with nothing under it.
+
+5. **Publish.** Add `draft: true` under `year` while you are still collecting sections —
+   the issue is then readable at its own URL for the team to check, behind a visible
+   banner, but it is not listed publicly, not in the RSS feed and not indexed by search
+   engines. Delete the line to publish. This is the same flag, and the same behaviour,
+   as a draft news post.
+
+> **Nothing is seeded.** `content/newsletter/` is empty and `/newsletter` shows an
+> honest "no issues yet" state. That is correct until the first real issue exists —
+> please do not add a placeholder issue to make the page look populated.
+
 ### Update the season timeline
 
 **File:** `content/milestones.json` (a `{ "milestones": [ ... ] }` wrapper — see above)
@@ -510,16 +607,49 @@ role's block when it is filled.
 
 ### Change team facts
 
-**File:** `content/site.json`
+**File:** `content/site.json` — or **Site settings** in the panel, which is easier.
 
-This one is TypeScript rather than JSON, but you only ever change the text between
-quotes. It holds the team name, tagline, email addresses, social links, the competition
-date, the four values, and the headline statistics.
+It holds the team name, tagline, email addresses, social links, the competition date,
+the four values, and the headline statistics. The notes that cannot live in a JSON file
+are in `content/site.ts` directly above the loader — read them before changing a value
+you are unsure about.
 
-Anything marked `TODO` is waiting on a real number from the team. **Where a statistic is
-not confirmed, it is deliberately set to `null` and shows as "TBC" on the site.** Please
-do not replace those with estimates — a sponsor who finds out a number was invented will
-not come back.
+**Where a statistic is not confirmed it is deliberately `null`, and shows as "TBC" on
+the site.** Please do not replace those with estimates — a sponsor who finds out a
+number was invented will not come back.
+
+> **The contact address is a personal one, for now.** All three email fields point at a
+> single personal Gmail account. That is a stand-in: it must be replaced with a team
+> address on a KUFS-controlled domain before launch, because a personal address stops
+> working for the team the moment that person graduates. It is on the handover checklist.
+
+### Change the social links
+
+**Panel:** Site settings → Social links. **File:** `content/site.json` → `socials`.
+
+Each entry is a label, a URL and a handle. There are two today, Instagram and LinkedIn,
+and they are the team's real accounts.
+
+**Only add an account that actually exists.** A social link is a claim that the account
+is ours. This list previously shipped three entries that were invented from the expected
+handle format — an Instagram account that belonged to somebody else, and a YouTube
+channel that had never been created — and they sat in the footer of every page for
+weeks. If a YouTube channel is created later, adding it is one entry here.
+
+> ### Do not paste a link copied from the app
+>
+> "Copy link" in Instagram or LinkedIn does not give you the plain profile URL. It
+> appends a **share-tracking identifier tied to the phone that copied it**:
+>
+> ```
+> https://www.instagram.com/kufs.ae?igsi=MThvcDg4aTU4cGI5MQ==
+>                                    ^^^^^^^^^^^^^^^^^^^^^^^^ delete this
+> ```
+>
+> Published, that puts one person's tracking token in the footer of every page on a
+> public site. **The build will refuse it** — any social URL carrying a `?` or a `#` is
+> rejected with an explanation — so you cannot ship one by accident. Delete everything
+> from the `?` onwards and keep the bare profile URL. It goes to exactly the same place.
 
 ### Replace the car in the hero
 
@@ -585,8 +715,18 @@ For the outgoing committee, at the end of your term.
       returns 404 and **the website carries on working normally** — every piece of
       content is still in `content/` and still editable by hand, so this is an
       inconvenience rather than an emergency.
-- [ ] Confirm the team email addresses in `content/site.json` still reach someone who has
-      not graduated.
+- [ ] **Replace the contact address with a team address on a KUFS-controlled domain.**
+      All three email fields in `content/site.json` currently point at one member's
+      personal Gmail. This is the item that breaks silently: the address keeps accepting
+      mail after they graduate, and nobody on the team can read it.
+- [ ] Chase the **Khalifa University logo file** from KU's brand office — ask for the
+      lockup issued to student organisations. Permission is granted; only the artwork is
+      missing, and the affiliations strip stays hidden until it arrives.
+- [ ] Chase **IMechE** on whether a competing team may display the Formula Student and
+      IMechE marks, and in what form.
+- [ ] **Review the hosting plan.** Vercel's Hobby plan is for non-commercial projects,
+      and this site carries paid sponsor logos. Settle it before the first sponsor goes
+      live.
 - [ ] Update the roster in `content/team.json`.
 - [ ] Update the competition date and year in `content/site.json`.
 - [ ] Walk them through this document, and through one real change end to end.
@@ -601,14 +741,16 @@ enquiry arriving at an inbox nobody opens is worse than no website.
 
 ```
 content/           ← everything you will normally edit
-  site.json           team name, emails, competition date, values, statistics
+  site.json           team name, emails, socials, competition date, values, statistics
   site.ts             loads site.json and checks it — no values live here
+  affiliations.json   KU / Formula Student / IMechE — logos, and whether we may use them
   sponsors.json       who backs us
   team.json           the roster
   milestones.json     the season timeline
   roles.json          open positions for /join
   tiers.json          sponsorship packages and what each includes
-  news/*.mdx          news posts
+  news/*.mdx          news posts — one-off announcements
+  newsletter/*.mdx    the monthly newsletter — one file per issue
 
 public/            ← images and files served as-is
   brand/              KUFS logos. Do not edit these without the design lead.
