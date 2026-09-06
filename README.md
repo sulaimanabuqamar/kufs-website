@@ -59,9 +59,18 @@ Follow these in order. Someone who has never deployed anything can do this.
 
    Push all history; do not squash.
 
-2. **Protect `main`.** GitHub → Settings → Branches → Add rule for `main`:
-   require a pull request, and require the **CI** workflow to pass. This is what stops
-   a broken content edit reaching the live site.
+2. **Protect `main`.** GitHub → Settings → Branches → Add rule for `main`. Enable
+   **linear history**, and block **force pushes** and **deletions**. Apply the rules to
+   administrators too.
+
+   **Do not require a pull request, and do not add required status checks.** Both of
+   them reject the commit the admin panel makes when someone presses Save — a required
+   status check gates the push itself, so it deadlocks anything that commits directly to
+   the deployment branch. CI still runs on every push and reports afterwards; what
+   actually stops a broken content edit reaching the live site is Vercel's own build,
+   which validates every content file against the Zod schemas and simply does not
+   promote a deploy that fails. The reasoning is written up in
+   [CONTRIBUTING.md → What still guards `main`](CONTRIBUTING.md#what-still-guards-main).
 
 3. **Connect Vercel.** <https://vercel.com/new> → import the repository. The Next.js
    preset is detected automatically; accept every default. Do not override the build

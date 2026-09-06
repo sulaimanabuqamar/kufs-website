@@ -18,7 +18,9 @@ it goes live, and every version is kept.
 2. [The admin panel](#the-admin-panel) — editing without touching any code
 3. [One-time setup](#one-time-setup)
 4. [Making a change](#making-a-change)
-5. [Common jobs](#common-jobs)
+5. [What still guards `main`](#what-still-guards-main) — and why the pull request
+   requirement was removed
+6. [Common jobs](#common-jobs)
    - [Changing the words on a page](#changing-the-words-on-a-page)
    - [Add a sponsor](#add-a-sponsor)
    - [Update the roster for a new year](#update-the-roster-for-a-new-year)
@@ -29,9 +31,9 @@ it goes live, and every version is kept.
    - [Change team facts, emails or the competition date](#change-team-facts)
    - [Change the social links](#change-the-social-links)
    - [Replace the car in the hero](#replace-the-car-in-the-hero)
-6. [What the checks mean when they fail](#what-the-checks-mean)
-7. [Handover checklist for the outgoing committee](#handover-checklist)
-8. [Where everything lives](#where-everything-lives)
+7. [What the checks mean when they fail](#what-the-checks-mean)
+8. [Handover checklist for the outgoing committee](#handover-checklist)
+9. [Where everything lives](#where-everything-lives)
 
 ---
 
@@ -81,11 +83,19 @@ This is the part that surprises people, so read it once:
    end for the same files described in the rest of this document. There is no separate
    database. Nothing is stored inside the CMS.
 3. Vercel notices the commit and **rebuilds the site**.
-4. **About one to two minutes later**, the live site shows your change.
+4. **Around a minute later**, the live site shows your change.
 
 **The delay is normal.** If you refresh the site five seconds after saving and nothing
-has changed, nothing is broken — the rebuild has not finished. Wait two minutes and
+has changed, nothing is broken — the rebuild has not finished. Wait a minute or two and
 refresh again. Do not press Save repeatedly; each press queues another rebuild.
+
+> **Measured, not estimated.** A content commit landing on `main` was visible on the
+> live site **49 seconds later** (6 September 2026). That is the whole of steps 3 and 4:
+> Vercel noticing the commit, rebuilding the site, and serving the new page. Allow two
+> minutes before assuming something is wrong.
+>
+> The separate CI run takes about **seven minutes**, which is _longer than the deploy_ —
+> see [What still guards `main`](#what-still-guards-main) for why that matters.
 
 ### Adding a sponsor
 
@@ -317,7 +327,10 @@ do here affects the live site. Press `Ctrl+C` in the terminal to stop it.
 
 ## Making a change
 
-Never edit the `main` branch directly — branch protection will stop you anyway.
+**Use a branch for code changes.** `main` no longer refuses a direct push — it had to
+stop refusing, so that the admin panel could save at all — so nothing will physically
+stop you. A branch still gets you a preview link and a green tick before anything is
+live, which is the whole point. See [What still guards `main`](#what-still-guards-main).
 
 ```bash
 # 1. Start from the latest version
@@ -348,6 +361,104 @@ Two things happen automatically:
 
 When the checks are green and someone has looked at the preview, click **Merge**. The
 live site updates within about a minute.
+
+> Approvals are **not** required, so you can merge your own pull request. The value of
+> the pull request is the preview link and the checks, not the ceremony.
+
+---
+
+## What still guards `main`
+
+`main` used to require a pull request. **It no longer does, and this section explains
+why, and what is left.**
+
+### Why the pull request requirement was removed
+
+The admin panel commits **straight to the branch the site deploys from**, which is
+`main`. That is how TinaCMS works: there is no database, and Save means "make a commit".
+A branch that requires a pull request rejects that commit outright, and GitHub answers
+with:
+
+```
+remote: error: GH006: Protected branch update failed for refs/heads/main.
+```
+
+So the choice was between an admin panel that works and a pull request requirement, and
+the panel won. **A committee member editing a sponsor blurb is not going to open a pull
+request**, and a panel whose Save button always fails is worse than no panel.
+
+### Why the required status checks had to go as well
+
+This is the part that is not obvious. Dropping the pull request rule **was not enough**.
+A "required status check" on a protected branch is a gate on the _push_, not a report on
+it — and it produced the same rejection with a different reason:
+
+```
+remote: error: GH006: Protected branch update failed for refs/heads/main.
+remote: - 2 of 2 required status checks have not succeeded: 1 failing.
+```
+
+It is a deadlock for anything that commits directly: **the commit cannot land until the
+checks have passed, and the checks cannot run until the commit has landed.** A human can
+escape it by pushing to a branch first, letting CI run there, and then pushing the same
+commit to `main`. The panel cannot — it only ever writes to the deployment branch. So
+the two checks were removed from branch protection.
+
+**CI still runs on every push, including to `main`** — the workflow triggers on
+`push: branches: ["**"]`. What changed is that it now _reports_ rather than _blocks_.
+
+### What is still enforced
+
+| Rule                      | Status | What it stops                                                    |
+| ------------------------- | ------ | ---------------------------------------------------------------- |
+| **Linear history**        | ✅ on  | Merge commits. History stays a straight line and stays readable. |
+| **Force pushes blocked**  | ✅ on  | Rewriting or discarding commits that are already on `main`.      |
+| **Deletion blocked**      | ✅ on  | Deleting the branch.                                             |
+| **Rules apply to admins** | ✅ on  | The owner quietly exempting themselves from the above.           |
+| Require a pull request    | ❌ off | _(removed — the panel could not save)_                           |
+| Required status checks    | ❌ off | _(removed — they gate the push, see above)_                      |
+
+The things that remain are the **irreversible** ones. Losing a commit is unrecoverable;
+shipping a typo is not. That is the trade being made, deliberately.
+
+### What actually protects the live site
+
+Two different things run after a commit, and it is worth knowing which one is the safety
+net:
+
+1. **Vercel's build — this is the real gate.** Vercel runs `pnpm build`, which validates
+   every content file against the Zod schemas. **If a content file is malformed, the
+   build fails, the deploy is never promoted, and the live site carries on serving the
+   last good version.** This is why a bad edit in the panel cannot take the site down: it
+   takes the _deploy_ down, which is a different and much better outcome.
+
+2. **GitHub Actions CI — this is an alarm, not a gate.** It runs the wider suite: lint,
+   typecheck, Prettier, contrast, brand rules, the copy check and the JS budget. It
+   cannot stop a commit and it cannot stop a deploy. It tells you afterwards.
+
+> ### The gap between them, measured
+>
+> On 6 September 2026, on a real commit to `main`:
+>
+> |                             |             |
+> | --------------------------- | ----------- |
+> | Push accepted               | +2 s        |
+> | CI started                  | +4 s        |
+> | **Change live on the site** | **+49 s**   |
+> | CI verdict                  | +6 min 52 s |
+>
+> **The site went live about six minutes before CI reported.** So a commit that builds
+> successfully but breaks a brand rule, a contrast claim or the JS budget **will be live,
+> and will stay live**, until someone reads the red cross and pushes a fix.
+>
+> This is not hypothetical: the first commit pushed under this configuration went red on
+> a Prettier rule while already being served. It was fixed by pushing again.
+
+**Therefore:** for a content edit — a sponsor, a news post, a wording change — save in
+the panel and let the schemas catch you. For anything touching code, layout or the
+design system, **use a branch and a pull request**, and let the checks finish before you
+merge. Nothing enforces that any more; it is now a matter of judgement rather than a
+locked door.
 
 ---
 
@@ -702,8 +813,10 @@ the site already does everywhere. The automated check will stop you either way.
 For the outgoing committee, at the end of your term.
 
 - [ ] Add the incoming web lead to the GitHub repository, with write access.
-- [ ] Raise the required approval count on `main` to 1 once two people have write access
-      (it is 0 today so a solo maintainer is not locked out).
+- [ ] Agree a review habit for **code** changes once two people have write access.
+      `main` no longer requires a pull request — it could not, and still let the admin
+      panel save — so this is convention now, not enforcement. See
+      [What still guards `main`](#what-still-guards-main).
 - [ ] Add them to the Vercel project.
 - [ ] Add them to the Formspree account (this receives sponsorship enquiries — losing
       access to it means losing enquiries).
